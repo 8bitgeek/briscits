@@ -5,6 +5,7 @@
     .global default_interrupt_handler
     .global bss_init
     .global board_init
+    .global timer_init
     .global main
 
     /*
@@ -65,6 +66,9 @@ in_address_space:
 
     // Initialize the board
     call    board_init
+
+    // Initialize the timer
+    call    timer_init
 
     // Call 'main(0,0)' (.data/.bss sections initialized there)
     

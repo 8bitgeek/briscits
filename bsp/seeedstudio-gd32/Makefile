@@ -67,8 +67,9 @@ INCLUDE += -I lib
 
 # CPU and CHIP Source files.
 AS_SRC  += $(CHIP)/vectors.S
-AS_SRC  += $(CHIP_COMMON)/reset.S
-C_SRC  += $(CHIP_COMMON)/bss.c
+AS_SRC  += $(CHIP_COMMON)/boot.S
+C_SRC  += $(CHIP_COMMON)/bss_init.c
+C_SRC  += $(CHIP_COMMON)/timer_init.c
 C_SRC  += $(CHIP_COMMON)/n200_func.c
 C_SRC  += $(CPU)/cpu.c
 
