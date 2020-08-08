@@ -1,7 +1,7 @@
 # BRISCITS
 Basic RISC Intrinsic Time Scheduler = Lightweight preemtive multi-tasking for RISC-V
 
-A light weight preemtive multitaker
+Lightweight preemtive multitasking for RISC micro-controllers
 
 * GD32VF103xB
 
