@@ -2,18 +2,12 @@
 #include <string.h>
 #include <rgb_led.h>
 
-// Pre-defined memory locations for program initialization.
-extern uint32_t _sidata, _sdata, _edata, _sbss, _ebss;
 // Current system core clock speed.
 volatile uint32_t SystemCoreClock = 8000000;
 
 // 'h_init' method which gets called from the boot code.
-void board_init( void ) {
-    // Copy initialized data from .sidata (Flash) to .data (RAM)
-    memcpy( &_sdata, &_sidata, ( ( void* )&_edata - ( void* )&_sdata ) );
-    // Clear the .bss RAM section.
-    memset( &_sbss, 0x00, ( ( void* )&_ebss - ( void* )&_sbss ) );
-
+void board_init( void ) 
+{
     // Enable the GPIOA, GPIOB, GPIOC, and GPIOD peripherals.
     RCC->APB2ENR |=  ( RCC_APB2ENR_IOPAEN |
                         RCC_APB2ENR_IOPBEN |

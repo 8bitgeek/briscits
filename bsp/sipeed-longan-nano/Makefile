@@ -66,7 +66,9 @@ INCLUDE += -I thread
 INCLUDE += -I lib
 
 # CPU and CHIP Source files.
-AS_SRC  += $(CHIP)/boot.S
+AS_SRC  += $(CHIP)/vectors.S
+AS_SRC  += $(CHIP_COMMON)/reset.S
+C_SRC  += $(CHIP_COMMON)/bss.c
 C_SRC  += $(CHIP_COMMON)/n200_func.c
 C_SRC  += $(CPU)/cpu.c
 
@@ -77,6 +79,7 @@ C_SRC  += bsp/$(BOARD)/rgb_led.c
 
 # BRISCIT Source Files
 C_SRC  += thread/brisc_thread.c
+C_SRC  += thread/brisc_mutex.c
 C_SRC  += lib/brisc_delay.c
 
 # Object files to build.

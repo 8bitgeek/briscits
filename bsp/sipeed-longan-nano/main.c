@@ -91,8 +91,6 @@ int main( void )
 {
     int delay = MAX_DELAY;
 
-    board_init();
-
     main_thread_handle  = b_thread_init();
     red_thread_handle   = b_thread_create( "red",   run_red,   &delay, red_stack,   STACK_WORDS );
     green_thread_handle = b_thread_create( "green", run_green, &delay, green_stack, STACK_WORDS );

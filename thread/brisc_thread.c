@@ -7,6 +7,7 @@ typedef struct brisc_scheduler
     brisc_thread_t      threads[BRISC_THREAD_MAX];
     uint8_t             thread_id;
     int8_t              prio;
+    int8_t              lock;
 } brisc_scheduler_t;
 
 #define thread_msip_set()           *( volatile uint8_t * )( TIMER_CTRL_ADDR + TIMER_MSIP ) = 0x01
@@ -19,7 +20,9 @@ typedef struct brisc_scheduler
                                     if ( ( context_sp = thread_schedule_next() ) != 0 ) \
                                         cpu_wr_sp( context_sp )
 #define thread_next_id()            (scheduler_state.thread_id = ( scheduler_state.thread_id+1 >= BRISC_THREAD_MAX ) ? 0 : scheduler_state.thread_id+1)
-#define thread_prio_clear()         scheduler_state.prio = 0;
+#define thread_prio_clear()         (scheduler_state.prio = 0)
+#define thread_lock()               (++scheduler_state.lock)
+#define thread_unlock()             (--scheduler_state.lock)
 
 static brisc_scheduler_t scheduler_state;
 
@@ -51,6 +54,16 @@ void b_thread_stop(int id)
 void b_thread_start(int id)
 {
     b_thread_set_prio(id,BRISC_THREAD_PRIO_MIN);
+}
+
+void b_thread_lock( void )
+{
+    thread_lock();
+}
+
+void b_thread_unlock( void )
+{
+    thread_unlock();
 }
 
 void b_thread_yield( void )
@@ -147,7 +160,7 @@ static cpu_reg_t thread_schedule_next( void )
 {
     brisc_thread_t* thread;
             
-    if ( --scheduler_state.prio > 0 )
+    if ( scheduler_state.lock > 0 || --scheduler_state.prio > 0 )
     {
         return scheduler_state.threads[scheduler_state.thread_id].cpu_state->abi.sp;
     }
