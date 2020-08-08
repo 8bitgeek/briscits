@@ -1,37 +1,19 @@
-## Welcome to GitHub Pages
+# BRISCITS
+Basic RISC Intrinsic Time Scheduler = Lightweight preemtive multi-tasking for RISC-V
 
-You can use the [editor on GitHub](https://github.com/8bitgeek/briscits/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Lightweight preemtive multitasking for RISC micro-controllers
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+# Supported Chips
 
-### Markdown
+* GD32VF103xB
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+# BSP Support
 
-```markdown
-Syntax highlighted code block
+* seeedstudio-gd32
+* sipeed-longan-nano
 
-# Header 1
-## Header 2
-### Header 3
+# Make Examples
 
-- Bulleted
-- List
+* make -f bsp/seeedstudio-gd32/Makefile clean|flash|debug
+* make -f bsp/sipeed-longan-nano/Makefile clean|flash|debug
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/8bitgeek/briscits/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
