@@ -108,6 +108,8 @@ $(TARGET).bin: $(TARGET).elf
 .PHONY: clean
 clean:
 	rm -f $(OBJS)
+
+cleanall: clean
 	rm -f $(TARGET).elf
 	rm -f $(TARGET).bin
 	rm -f $(TARGET).map

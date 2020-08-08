@@ -1,8 +1,15 @@
-#ifndef _HW_INIT_H_
-#define _HW_INIT_H_
+#ifndef _BRISC_BOARD_H_
+#define _BRISC_BOARD_H_
+
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
 
 #include <gd32vf103.h>
+#include <n200_func.h>
+#include <riscv_encoding.h>
+#include <cpu.h>
 
-extern void hw_init( void );
+extern void board_init( void );
 
 #endif

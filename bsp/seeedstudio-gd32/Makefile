@@ -1,7 +1,19 @@
-TARGET=main
+# Board
+BOARD=seeedstudio-gd32
+TARGET=$(BOARD)
+
+# OpenOCD
 OPENOCD=riscv-openocd
-OPENOCD_JTAG_CFG=../common/openocd/olimex-jtag-tiny.cfg 
-OPENOCD_TARGET_CFG=../common/openocd/openocd_gd32vf103.cfg
+OPENOCD_JTAG_CFG=openocd/olimex-jtag-tiny.cfg 
+OPENOCD_TARGET_CFG=openocd/openocd_gd32vf103.cfg
+
+# CPU
+CPU_COMMON=cpu/riscv
+CPU=$(CPU_COMMON)/RV32IMAC
+
+# Chip
+CHIP_COMMON=chip/gd32
+CHIP=$(CHIP_COMMON)/gd32vf103xb
 
 # GCC toolchain programs.
 CC = riscv32-unknown-elf-gcc
@@ -30,7 +42,7 @@ CFLAGS += -mabi=ilp32
 CFLAGS += -mcmodel=medlow
 
 # Linker directives.
-LFLAGS +=  -Xlinker -Map=main.map 
+LFLAGS +=  -Xlinker -Map=$(TARGET).map 
 LFLAGS += -Wall
 LFLAGS += -Wl,--no-relax
 LFLAGS += -Wl,--gc-sections
@@ -42,20 +54,30 @@ LFLAGS += --specs=nosys.specs
 LFLAGS += -march=rv32imac
 LFLAGS += -mabi=ilp32
 LFLAGS += -mcmodel=medlow
-LFLAGS += -T./gd32vf103xb.ld
-
-# Source files.
-AS_SRC  += ./gd32vf103xb_boot.S
-C_SRC  += ./../common/device_headers/n200_func.c
-C_SRC  += ./main.c
-C_SRC  += ./thread.c
-C_SRC  += ./hw_init.c
-C_SRC  += ./delay.c
-C_SRC  += ./cpu.c
-C_SRC  += ./led.c
+LFLAGS += -T$(CHIP)/linker.ld
 
 # Header file directories.
-INCLUDE = -I./../common/device_headers
+INCLUDE += -I bsp/$(BOARD)
+INCLUDE += -I $(CPU)
+INCLUDE += -I $(CPU_COMMON)
+INCLUDE += -I $(CHIP)
+INCLUDE += -I $(CHIP_COMMON)
+INCLUDE += -I thread
+INCLUDE += -I lib
+
+# CPU and CHIP Source files.
+AS_SRC  += $(CHIP)/boot.S
+C_SRC  += $(CHIP_COMMON)/n200_func.c
+C_SRC  += $(CPU)/cpu.c
+
+# BOARD Source files
+C_SRC  += bsp/$(BOARD)/main.c
+C_SRC  += bsp/$(BOARD)/brisc_board.c
+C_SRC  += bsp/$(BOARD)/rgb_led.c
+
+# BRISCIT Source Files
+C_SRC  += thread/brisc_thread.c
+C_SRC  += lib/brisc_delay.c
 
 # Object files to build.
 OBJS  = $(AS_SRC:.S=.o)
@@ -86,6 +108,8 @@ $(TARGET).bin: $(TARGET).elf
 .PHONY: clean
 clean:
 	rm -f $(OBJS)
+
+cleanall: clean
 	rm -f $(TARGET).elf
 	rm -f $(TARGET).bin
 	rm -f $(TARGET).map
@@ -98,8 +122,8 @@ stop:
 	killall $(OPENOCD)
 
 # Rule to start debugger
-debug: main.bin
-	$(GDB) -x ./gdbinit
+debug: $(TARGET).bin
+	$(GDB) -x gdb/gdbinit
 
 flash: $(TARGET).elf
 		$(OPENOCD) -f $(OPENOCD_JTAG_CFG) -f $(OPENOCD_TARGET_CFG) -c "program $(TARGET).elf verify reset exit"
