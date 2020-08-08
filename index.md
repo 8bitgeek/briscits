@@ -14,6 +14,6 @@ Lightweight preemtive multitasking for RISC micro-controllers
 
 # Make Examples
 
-* make -f bsp/seeedstudio-gd32/Makefile clean|flash|debug
-* make -f bsp/sipeed-longan-nano/Makefile clean|flash|debug
+* make -f bsp/seeedstudio-gd32/Makefile 
+* make -f bsp/sipeed-longan-nano/Makefile 
 
