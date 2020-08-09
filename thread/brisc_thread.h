@@ -27,8 +27,9 @@ typedef struct brisc_thread
 
 #define b_thread_int_enabled()      ( read_csr( mstatus ) & MSTATUS_MIE )
 #define b_thread_int_enable()       set_csr( mstatus, MSTATUS_MIE )
-#define b_thread_int_disable()      clear_csr( mstatus, MSTATUS_MIE );
+#define b_thread_int_disable()      clear_csr( mstatus, MSTATUS_MIE )
 #define b_thread_int_set(s)         { if ((s)) b_thread_int_enable(); else b_thread_int_disable(); }
+#define b_thread_block_while(cond)  while((cond)) b_thread_yield()
 
 extern int      b_thread_init     ( void );
 extern int      b_thread_create   ( const char* name, void (*thread_fn)(void*), void* arg, cpu_reg_t* stack, size_t n_stack_words );
