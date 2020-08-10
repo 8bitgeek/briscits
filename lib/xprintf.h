@@ -5,15 +5,18 @@
 #ifndef _STRFUNC
 #define _STRFUNC
 
+#if !defined(_USE_FLOAT)
+    #define _USE_FLOAT      1   /* 1: Use floating point */
+#endif
 #if !defined(_USE_XFUNC_OUT)
-    #define _USE_XFUNC_OUT	0	/* 1: Use output functions */
+    #define _USE_XFUNC_OUT	1	/* 1: Use output functions */
 #endif
 #define	_CR_CRLF		1	    /* 1: Convert \n ==> \r\n in the output char */
 #define	_USE_LONGLONG	1	    /* 1: Enable long long integer in type "ll". */
 #define	_LONGLONG_t		long long	/* Platform dependent long long integer type */
 
 #if !defined(_USE_XFUNC_IN)
-    #define _USE_XFUNC_IN	0	/* 1: Use input function */
+    #define _USE_XFUNC_IN	1	/* 1: Use input function */
 #endif
 #define	_LINE_ECHO		1	    /* 1: Echo back input chars in xgets function */
 

@@ -2,6 +2,7 @@
     "files.associations": {
         "board.h": "c",
         "brisc_delay.h": "c",
-        "brisc_thread.h": "c"
+        "brisc_thread.h": "c",
+        "ftoa.h": "c"
     }
 }

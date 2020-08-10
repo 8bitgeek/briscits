@@ -36,8 +36,9 @@ ASFLAGS += -mcmodel=medlow
 # C compilation directives
 CFLAGS += -c
 CFLAGS += -Wall
-#CFLAGS += -Os
-CFLAGS += -ggdb
+CFLAGS += -Os
+#CFLAGS += -g -Os
+#CFLAGS += -ggdb
 CFLAGS += -fmessage-length=0
 CFLAGS += --specs=nosys.specs
 CFLAGS += -march=rv32imac
@@ -50,10 +51,11 @@ LFLAGS +=  -Xlinker -Map=$(TARGET).map
 LFLAGS += -Wall
 LFLAGS += -Wl,--no-relax
 LFLAGS += -Wl,--gc-sections
-LFLAGS += -nostdlib
+#LFLAGS += -nostdlib
 LFLAGS += -nostartfiles
 LFLAGS += -lc
 LFLAGS += -lgcc
+LFLAGS += -lm
 LFLAGS += --specs=nosys.specs
 LFLAGS += -march=rv32imac
 LFLAGS += -mabi=ilp32
@@ -123,7 +125,9 @@ C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_wwdgt.c
 # xprintf
 CFLAGS += -D_USE_XFUNC_OUT=1
 CFLAGS += -D_USE_XFUNC_IN=1
+CFLAGS += -D_USE_FLOAT=1
 C_SRC  += lib/xprintf.c
+C_SRC  += lib/ftoa.c
 
 # Header file directories.
 INCLUDE += -I bsp/$(BOARD)

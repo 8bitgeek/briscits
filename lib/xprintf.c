@@ -19,7 +19,9 @@
 /-------------------------------------------------------------------------*/
 
 #include "xprintf.h"
-
+#if _USE_FLOAT
+	#include "ftoa.h"
+#endif
 
 #if _USE_XFUNC_OUT
 #include <stdarg.h>
@@ -176,6 +178,18 @@ void xvprintf (
 			xputs(p);
 			while (j++ < w) xputc(' ');
 			continue;
+#if _USE_FLOAT
+		case 'F' :					/* Float */
+			{
+				char a[48];
+				//ftoa(a,48,precision?(precision-'0'):2,(double)va_arg( args, double ));
+				ftoa((double)va_arg( arp, double ),a,48,3);
+				p = a;
+				while(*p)
+					xputc(*p++);
+				continue;
+			}
+#endif
 		case 'C' :					/* Character */
 			xputc((char)va_arg(arp, int)); continue;
 		case 'B' :					/* Binary */
@@ -190,6 +204,9 @@ void xvprintf (
 		default:					/* Unknown type (passthrough) */
 			xputc(c); continue;
 		}
+
+#if _USE_FLOAT
+#endif
 
 		/* Get an argument and put it in numeral */
 #if _USE_LONGLONG
