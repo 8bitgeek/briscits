@@ -2,6 +2,7 @@
 #include <brisc_thread.h>
 #include <brisc_delay.h>
 #include <rgb_led.h>
+#include <xprintf.h>
 
 #define DEC_DELAY       (10)
 #define MIN_DELAY       (10)
@@ -90,6 +91,8 @@ static void run_main(void* arg)
 int main( void )
 {
     int delay = MAX_DELAY;
+
+    xprintf( "CLK=%ldMHz\n", SystemCoreClock/1000000 );
 
     main_thread_handle  = b_thread_init();
     red_thread_handle   = b_thread_create( "red",   run_red,   &delay, red_stack,   STACK_WORDS );

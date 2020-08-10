@@ -1,59 +1,42 @@
 #include <brisc_board.h>
+#include <brisc_thread.h>
 #include <rgb_led.h>
+#include <xprintf.h>
 
-static void board_uart_init(void);
+uint8_t rxbuffer[10];
+uint8_t txbuffer[] = "\n\rUSART DMA receive and transmit example, please input 10 bytes:\n\r";
+#define ARRAYNUM(arr_name)     (uint32_t)(sizeof(arr_name) / sizeof(*(arr_name)))
 
-static void board_uart_init(void) 
+static unsigned char usart_in(void);
+static void usart_out(unsigned char ch);
+static void usart_periph_init(uint32_t usart_periph);
+
+unsigned char usart_in(void)
 {
-    // dma_parameter_struct dma_init_struct;
+    if ( usart_flag_get( USART0, USART_FLAG_RBNE ) )
+        return ( usart_data_receive( USART0 ) & 0xFF );
+    return 0;
+}
 
-    // /* initialize USART */
-    // gd_eval_com_init(USART0);
-    // /* deinitialize DMA channel3(USART0 tx) */
-    // dma_deinit(DMA0, DMA_CH3);
-    // dma_init_struct.direction = DMA_MEMORY_TO_PERIPHERAL;
-    // dma_init_struct.memory_addr = (uint32_t)txbuffer;
-    // dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
-    // dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
-    // dma_init_struct.number = ARRAYNUM(txbuffer);
-    // dma_init_struct.periph_addr = (uint32_t)&USART_DATA(USART0);
-    // dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
-    // dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
-    // dma_init_struct.priority = DMA_PRIORITY_ULTRA_HIGH;
-    // dma_init(DMA0, DMA_CH3, &dma_init_struct);
-    // /* configure DMA mode */
-    // dma_circulation_disable(DMA0, DMA_CH3);
-    // /* enable DMA channel3 */
-    // dma_channel_enable(DMA0, DMA_CH3);
-    
-    // /* USART DMA enable for transmission and reception */
-    // usart_dma_transmit_config(USART0, USART_DENT_ENABLE);
-    // usart_dma_receive_config(USART0, USART_DENR_ENABLE);
+void usart_out(unsigned char ch)
+{
+    b_thread_block_while( !usart_flag_get( USART0, USART_FLAG_TBE ) );
+    usart_data_transmit( USART0, (uint8_t) ch );
+}
 
-    // /* wait DMA Channel transfer complete */
-    // while(RESET == dma_flag_get(DMA0, DMA_CH3, DMA_FLAG_FTF));
-    // while(1){
-    //     /* deinitialize DMA channel4 (USART0 rx) */
-    //     dma_deinit(DMA0, DMA_CH4);
-    //     dma_init_struct.direction = DMA_PERIPHERAL_TO_MEMORY;
-    //     dma_init_struct.memory_addr = (uint32_t)rxbuffer;
-    //     dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
-    //     dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
-    //     dma_init_struct.number = 10;
-    //     dma_init_struct.periph_addr = (uint32_t)&USART_DATA(USART0);
-    //     dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
-    //     dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
-    //     dma_init_struct.priority = DMA_PRIORITY_ULTRA_HIGH;
-    //     dma_init(DMA0, DMA_CH4, &dma_init_struct);
-    //     /* configure DMA mode */
-    //     dma_circulation_disable(DMA0, DMA_CH4);
-    //     /* enable DMA channel4 */
-    //     dma_channel_enable(DMA0, DMA_CH4);
-
-    //     /* wait DMA channel transfer complete */
-    //     while(RESET == dma_flag_get(DMA0, DMA_CH4, DMA_FLAG_FTF));
-    //     printf("\n\r%s\n\r", rxbuffer);
-    // }
+static void usart_periph_init(uint32_t usart_periph)
+{
+    /* USART configure */
+    usart_deinit(usart_periph);
+    usart_baudrate_set(usart_periph, 115200U);
+    usart_word_length_set(usart_periph, USART_WL_8BIT);
+    usart_stop_bit_set(usart_periph, USART_STB_1BIT);
+    usart_parity_config(usart_periph, USART_PM_NONE);
+    usart_hardware_flow_rts_config(usart_periph, USART_RTS_DISABLE);
+    usart_hardware_flow_cts_config(usart_periph, USART_CTS_DISABLE);
+    usart_receive_config(usart_periph, USART_RECEIVE_ENABLE);
+    usart_transmit_config(usart_periph, USART_TRANSMIT_ENABLE);
+    usart_enable(usart_periph);
 }
 
 void board_init( void ) 
@@ -72,12 +55,14 @@ void board_init( void )
                 GPIO_OSPEED_2MHZ, 
                 GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_5 );
 
+    /* USART0 */
+    gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_9);           /* connect port to USARTx_Tx */
+    gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10);    /* connect port to USARTx_Rx */
+
     gpio_bit_set( GPIOC, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_5 );
 
-    rgb_led_r(false);
-    rgb_led_g(false);
-    rgb_led_b(false);
+    usart_periph_init(USART0);
 
-    board_uart_init();
-
+    xdev_out(usart_out);
+    xdev_in(usart_in);
 }

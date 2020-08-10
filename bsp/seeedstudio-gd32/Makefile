@@ -17,14 +17,56 @@ CHIP_FAMILY=gd32
 CHIP_COMMON=chip/$(CHIP_FAMILY)
 CHIP=$(CHIP_COMMON)/gd32vf103xb
 
+# GCC toolchain programs.
+CC = riscv32-unknown-elf-gcc
+OC = riscv32-unknown-elf-objcopy
+OS = riscv32-unknown-elf-size
+GDB = riscv32-unknown-elf-gdb
+
+# Assembly directives.
+ASFLAGS += -c
+ASFLAGS += -O0
+ASFLAGS += -Wall
+ASFLAGS += -fmessage-length=0
+ASFLAGS += -march=rv32imac
+ASFLAGS += -mabi=ilp32
+ASFLAGS += -mcmodel=medlow
+
+# C compilation directives
+CFLAGS += -c
+CFLAGS += -Wall
+CFLAGS += -Os
+#CFLAGS += -ggdb
+CFLAGS += -fmessage-length=0
+CFLAGS += --specs=nosys.specs
+CFLAGS += -march=rv32imac
+CFLAGS += -mabi=ilp32
+CFLAGS += -mcmodel=medlow
+CFLAGS += -fdata-sections -ffunction-sections
+
+# Linker directives.
+LFLAGS +=  -Xlinker -Map=$(TARGET).map 
+LFLAGS += -Wall
+LFLAGS += -Wl,--no-relax
+LFLAGS += -Wl,--gc-sections
+LFLAGS += -nostdlib
+LFLAGS += -nostartfiles
+LFLAGS += -lc
+LFLAGS += -lgcc
+LFLAGS += --specs=nosys.specs
+LFLAGS += -march=rv32imac
+LFLAGS += -mabi=ilp32
+LFLAGS += -mcmodel=medlow
+LFLAGS += -Wl,--gc-sections
+LFLAGS += -T$(CHIP)/linker.ld
+
 # Firmware Library 
 FIRMWARE_DIR=bsp/lib/GD32VF103_Firmware_Library/Firmware
 INCLUDE += -I $(FIRMWARE_DIR)/GD32VF103_standard_peripheral
 INCLUDE += -I $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Include
-INCLUDE += -I $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Include
 INCLUDE += -I $(FIRMWARE_DIR)/RISCV/drivers
 INCLUDE += -I $(FIRMWARE_DIR)/RISCV
-INCLUDE += -I $(FIRMWARE_DIR)/RISCV
+
 # peripheral
 C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/system_gd32vf103.c
 C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_adc.c
@@ -48,7 +90,9 @@ C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_spi.c
 C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_timer.c
 C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_usart.c
 C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_wwdgt.c
+
 # usb
+# INCLUDE += -I $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Include
 # C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usb_core.c 
 # C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usb_dev.c 
 # C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usb_host.c 
@@ -62,48 +106,23 @@ C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_wwdgt.c
 # C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbh_pipe.c 
 # C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbh_transc.c 
 
-# GCC toolchain programs.
-CC = riscv32-unknown-elf-gcc
-OC = riscv32-unknown-elf-objcopy
-OS = riscv32-unknown-elf-size
-GDB = riscv32-unknown-elf-gdb
+# stubs
+# INCLUDE += -I $(FIRMWARE_DIR)/RISCV/stubs
+# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/_exit.c
+# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/close.c
+# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/fstat.c
+# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/isatty.c
+# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/kill.c
+# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/lseek.c
+# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/read.c
+# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/sbrk.c
+# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/write_hex.c
+# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/write.c
 
-# Assembly directives.
-ASFLAGS += -c
-ASFLAGS += -O0
-ASFLAGS += -Wall
-ASFLAGS += -fmessage-length=0
-ASFLAGS += -march=rv32imac
-ASFLAGS += -mabi=ilp32
-ASFLAGS += -mcmodel=medlow
-
-# C compilation directives
-CFLAGS += -c
-CFLAGS += -Wall
-CFLAGS += -ggdb # -O0
-CFLAGS += -g
-CFLAGS += -fmessage-length=0
-CFLAGS += --specs=nosys.specs
-CFLAGS += -march=rv32imac
-CFLAGS += -mabi=ilp32
-CFLAGS += -mcmodel=medlow
-CFLAGS += -fdata-sections -ffunction-sections
-
-# Linker directives.
-LFLAGS +=  -Xlinker -Map=$(TARGET).map 
-LFLAGS += -Wall
-LFLAGS += -Wl,--no-relax
-LFLAGS += -Wl,--gc-sections
-LFLAGS += -nostdlib
-LFLAGS += -nostartfiles
-LFLAGS += -lc
-LFLAGS += -lgcc
-LFLAGS += --specs=nosys.specs
-LFLAGS += -march=rv32imac
-LFLAGS += -mabi=ilp32
-LFLAGS += -mcmodel=medlow
-LFLAGS += -Wl,--gc-sections
-LFLAGS += -T$(CHIP)/linker.ld
+# xprintf
+CFLAGS += -D_USE_XFUNC_OUT=1
+CFLAGS += -D_USE_XFUNC_IN=1
+C_SRC  += lib/xprintf.c
 
 # Header file directories.
 INCLUDE += -I bsp/$(BOARD)
