@@ -36,8 +36,8 @@ ASFLAGS += -mcmodel=medlow
 # C compilation directives
 CFLAGS += -c
 CFLAGS += -Wall
-CFLAGS += -Os
-#CFLAGS += -ggdb
+#CFLAGS += -Os
+CFLAGS += -ggdb
 CFLAGS += -fmessage-length=0
 CFLAGS += --specs=nosys.specs
 CFLAGS += -march=rv32imac
@@ -196,7 +196,7 @@ stop:
 
 # Rule to start debugger
 debug: $(TARGET).bin
-	$(GDB) -x gdb/gdbinit
+	$(GDB) -x bsp/$(BOARD)/gdbinit
 
 flash: $(TARGET).elf
 		$(OPENOCD) -f $(OPENOCD_JTAG_CFG) -f $(OPENOCD_TARGET_CFG) -c "program $(TARGET).elf verify reset exit"

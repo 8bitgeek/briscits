@@ -1,0 +1,5 @@
+target remote localhost:3333
+load seeedstudio-gd32.elf
+file seeedstudio-gd32.elf
+break main
+continue
