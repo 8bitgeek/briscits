@@ -123,9 +123,9 @@ C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_wwdgt.c
 # C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/write.c
 
 # xprintf
-CFLAGS += -D_USE_XFUNC_OUT=1
-CFLAGS += -D_USE_XFUNC_IN=1
-CFLAGS += -D_USE_FLOAT=1
+CFLAGS += -DXPRINTF_USE_XFUNC_OUT=1
+CFLAGS += -DXPRINTF_USE_XFUNC_IN=1
+CFLAGS += -DXPRINTF_USE_FLOAT=1
 C_SRC  += lib/xprintf.c
 C_SRC  += lib/ftoa.c
 

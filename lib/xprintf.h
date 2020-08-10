@@ -5,23 +5,23 @@
 #ifndef _STRFUNC
 #define _STRFUNC
 
-#if !defined(_USE_FLOAT)
-    #define _USE_FLOAT      1   /* 1: Use floating point */
+#if !defined(XPRINTF_USE_FLOAT)
+    #define XPRINTF_USE_FLOAT      1   /* 1: Use floating point */
 #endif
-#if !defined(_USE_XFUNC_OUT)
-    #define _USE_XFUNC_OUT	1	/* 1: Use output functions */
+#if !defined(XPRINTF_USE_XFUNC_OUT)
+    #define XPRINTF_USE_XFUNC_OUT	1	/* 1: Use output functions */
 #endif
 #define	_CR_CRLF		1	    /* 1: Convert \n ==> \r\n in the output char */
 #define	_USE_LONGLONG	1	    /* 1: Enable long long integer in type "ll". */
 #define	_LONGLONG_t		long long	/* Platform dependent long long integer type */
 
-#if !defined(_USE_XFUNC_IN)
-    #define _USE_XFUNC_IN	1	/* 1: Use input function */
+#if !defined(XPRINTF_USE_XFUNC_IN)
+    #define XPRINTF_USE_XFUNC_IN	1	/* 1: Use input function */
 #endif
 #define	_LINE_ECHO		1	    /* 1: Echo back input chars in xgets function */
 
 
-#if _USE_XFUNC_OUT
+#if XPRINTF_USE_XFUNC_OUT
 #define xdev_out(func) xfunc_out = (void(*)(unsigned char))(func)
 extern void (*xfunc_out)(unsigned char);
 void xputc (char c);
@@ -37,7 +37,7 @@ void put_dump (const void* buff, unsigned long addr, int len, int width);
 #define DW_LONG		sizeof(long)
 #endif
 
-#if _USE_XFUNC_IN
+#if XPRINTF_USE_XFUNC_IN
 #define xdev_in(func) xfunc_in = (unsigned char(*)(void))(func)
 extern unsigned char (*xfunc_in)(void);
 int xgets (char* buff, int len);

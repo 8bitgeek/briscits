@@ -19,11 +19,11 @@
 /-------------------------------------------------------------------------*/
 
 #include "xprintf.h"
-#if _USE_FLOAT
+#if XPRINTF_USE_FLOAT
 	#include "ftoa.h"
 #endif
 
-#if _USE_XFUNC_OUT
+#if XPRINTF_USE_XFUNC_OUT
 #include <stdarg.h>
 void (*xfunc_out)(unsigned char);	/* Pointer to the output stream */
 static char *outptr;
@@ -178,7 +178,7 @@ void xvprintf (
 			xputs(p);
 			while (j++ < w) xputc(' ');
 			continue;
-#if _USE_FLOAT
+#if XPRINTF_USE_FLOAT
 		case 'F' :					/* Float */
 			{
 				char a[48];
@@ -205,7 +205,7 @@ void xvprintf (
 			xputc(c); continue;
 		}
 
-#if _USE_FLOAT
+#if XPRINTF_USE_FLOAT
 #endif
 
 		/* Get an argument and put it in numeral */
@@ -345,11 +345,11 @@ void put_dump (
 	xputc('\n');
 }
 
-#endif /* _USE_XFUNC_OUT */
+#endif /* XPRINTF_USE_XFUNC_OUT */
 
 
 
-#if _USE_XFUNC_IN
+#if XPRINTF_USE_XFUNC_IN
 unsigned char (*xfunc_in)(void);	/* Pointer to the input stream */
 
 /*----------------------------------------------*/
@@ -473,4 +473,4 @@ int xatoi (			/* 0:Failed, 1:Successful */
 	return 1;
 }
 
-#endif /* _USE_XFUNC_IN */
+#endif /* XPRINTF_USE_XFUNC_IN */
