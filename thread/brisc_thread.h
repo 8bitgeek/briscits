@@ -31,7 +31,7 @@ typedef struct brisc_thread
 #define b_int_set(s)         { if ((s)) b_int_enable(); else b_int_disable(); }
 #define b_thread_block_while(cond)  while((cond)) b_thread_yield()
 
-extern int      b_thread_init     ( void );
+extern int      b_thread_init     ( const char* name );
 extern int      b_thread_create   ( const char* name, void (*thread_fn)(void*), void* arg, cpu_reg_t* stack, size_t n_stack_words );
 extern void     b_thread_start    ( int id );
 extern void     b_thread_stop     ( int id );

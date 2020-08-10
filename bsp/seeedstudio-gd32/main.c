@@ -4,9 +4,10 @@
 #include <rgb_led.h>
 #include <xprintf.h>
 
-#define DEC_DELAY       (5)
-#define MIN_DELAY       (5)
-#define MAX_DELAY       (100)
+#define DEC_DELAY       (2)
+#define INC_DELAY       DEC_DELAY
+#define MIN_DELAY       (2)
+#define MAX_DELAY       (50)
 
 #define EVER            ;;
 #define STACK_BYTES     (1024)
@@ -31,9 +32,20 @@ static void run_main (void* arg);
 
 static void sweep_delay(int* delay)
 {
-    *delay = *delay - DEC_DELAY;
-    if ( *delay < MIN_DELAY )
-        *delay = MAX_DELAY;
+    static bool dir=false;
+
+    if ( dir )
+    {
+        *delay = *delay + INC_DELAY;
+        if ( *delay >= MAX_DELAY )
+            dir = !dir;
+    }
+    if ( !dir )
+    {
+        *delay = *delay - DEC_DELAY;
+        if ( *delay <= MIN_DELAY )
+            dir = !dir;
+    }
 } 
 
 
@@ -91,44 +103,28 @@ static void run_main(void* arg)
 int main( void )
 {
     int delay = MAX_DELAY;
-    char* failed_thread="";
+    char* thread_name;
 
     xprintf( "CLK=%ldMHz\n", SystemCoreClock/1000000 );
 
-    if ( ( main_thread_handle  = b_thread_init() ) >= 0 )
+    if ( (main_thread_handle  = b_thread_init( (thread_name="main") )) >= 0 )
     {
-        if ( (red_thread_handle = b_thread_create( "red",   run_red,   &delay, red_stack,   STACK_WORDS )) >= 0)
+        if ( (red_thread_handle = b_thread_create( (thread_name="red"),   run_red,   &delay, red_stack,   STACK_WORDS )) >= 0)
         {
-            if ( (green_thread_handle = b_thread_create( "green", run_green, &delay, green_stack, STACK_WORDS )) >= 0)
+            if ( (green_thread_handle = b_thread_create( (thread_name="green"), run_green, &delay, green_stack, STACK_WORDS )) >= 0)
             {
-                if ( (blue_thread_handle  = b_thread_create( "blue",  run_blue,  &delay, blue_stack,  STACK_WORDS )) >= 0)
+                if ( (blue_thread_handle  = b_thread_create( (thread_name="blue"),  run_blue,  &delay, blue_stack,  STACK_WORDS )) >= 0)
                 {
                     b_thread_start( red_thread_handle );
                     b_thread_start( green_thread_handle );
                     b_thread_start( blue_thread_handle );
                     run_main(&delay);
                 }
-                else
-                {
-                    failed_thread = "blue";
-                }
-            }
-            else
-            {
-                failed_thread = "green";
             }
         }
-        else
-        {
-            failed_thread = "red";
-        }
-    }
-    else
-    {
-        failed_thread = "main";
     }
     
-    xprintf( "failed to create '%s' thread\n\n", failed_thread );
+    xprintf( "failed to create '%s' thread\n\n", thread_name );
 
     return 0;
 }
