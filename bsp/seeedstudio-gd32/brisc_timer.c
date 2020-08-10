@@ -4,6 +4,8 @@
 // 'h_init' method which gets called from the boot code.
 void brisc_timer_init( void ) 
 {
+    SystemInit();
+
     // Disable interrupts globally.
     clear_csr( mstatus, MSTATUS_MIE );
     clear_csr( mstatus, MSTATUS_SIE );

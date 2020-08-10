@@ -4,9 +4,9 @@
 #include <rgb_led.h>
 #include <xprintf.h>
 
-#define DEC_DELAY       (10)
-#define MIN_DELAY       (10)
-#define MAX_DELAY       (200)
+#define DEC_DELAY       (5)
+#define MIN_DELAY       (5)
+#define MAX_DELAY       (100)
 
 #define EVER            ;;
 #define STACK_BYTES     (1024)

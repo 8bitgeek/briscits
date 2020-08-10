@@ -41,8 +41,6 @@ static void usart_periph_init(uint32_t usart_periph)
 
 void board_init( void ) 
 {
-    SystemInit();
-
     rcu_periph_clock_enable(RCU_GPIOA);
     rcu_periph_clock_enable(RCU_GPIOB);
     rcu_periph_clock_enable(RCU_GPIOC);

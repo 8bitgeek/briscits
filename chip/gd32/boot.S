@@ -64,12 +64,12 @@ in_address_space:
     // Initialize RAM sections
     call    bss_init
 
-    // Initialize the board
-    call    board_init
-
     // Initialize the timer
     call    brisc_timer_init
-
+    
+    // Initialize the board
+    call    board_init
+ 
     // Call 'main(0,0)' (.data/.bss sections initialized there)
     
     li      a0, 0
