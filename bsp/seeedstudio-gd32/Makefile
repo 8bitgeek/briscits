@@ -1,6 +1,7 @@
 # Board
 BOARD=seeedstudio-gd32
 TARGET=$(BOARD)
+CFLAGS += -DHXTAL_VALUE=8000000
 
 # OpenOCD
 OPENOCD=riscv-openocd
@@ -12,8 +13,54 @@ CPU_COMMON=cpu/riscv
 CPU=$(CPU_COMMON)/RV32IMAC
 
 # Chip
-CHIP_COMMON=chip/gd32
+CHIP_FAMILY=gd32
+CHIP_COMMON=chip/$(CHIP_FAMILY)
 CHIP=$(CHIP_COMMON)/gd32vf103xb
+
+# Firmware Library 
+FIRMWARE_DIR=bsp/lib/GD32VF103_Firmware_Library/Firmware
+INCLUDE += -I $(FIRMWARE_DIR)/GD32VF103_standard_peripheral
+INCLUDE += -I $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Include
+INCLUDE += -I $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Include
+INCLUDE += -I $(FIRMWARE_DIR)/RISCV/drivers
+INCLUDE += -I $(FIRMWARE_DIR)/RISCV
+INCLUDE += -I $(FIRMWARE_DIR)/RISCV
+# peripheral
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/system_gd32vf103.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_adc.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_bkp.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_can.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_crc.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_dac.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_dbg.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_dma.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_eclic.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_exmc.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_exti.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_fmc.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_fwdgt.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_gpio.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_i2c.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_pmu.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_rcu.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_rtc.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_spi.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_timer.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_usart.c
+C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_wwdgt.c
+# usb
+# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usb_core.c 
+# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usb_dev.c 
+# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usb_host.c 
+# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usbd_int.c 
+# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usbh_int.c 
+# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbd_core.c 
+# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbd_enum.c 
+# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbd_transc.c 
+# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbh_core.c 
+# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbh_enum.c 
+# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbh_pipe.c 
+# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbh_transc.c 
 
 # GCC toolchain programs.
 CC = riscv32-unknown-elf-gcc
@@ -40,6 +87,7 @@ CFLAGS += --specs=nosys.specs
 CFLAGS += -march=rv32imac
 CFLAGS += -mabi=ilp32
 CFLAGS += -mcmodel=medlow
+CFLAGS += -fdata-sections -ffunction-sections
 
 # Linker directives.
 LFLAGS +=  -Xlinker -Map=$(TARGET).map 
@@ -54,6 +102,7 @@ LFLAGS += --specs=nosys.specs
 LFLAGS += -march=rv32imac
 LFLAGS += -mabi=ilp32
 LFLAGS += -mcmodel=medlow
+LFLAGS += -Wl,--gc-sections
 LFLAGS += -T$(CHIP)/linker.ld
 
 # Header file directories.
@@ -69,13 +118,13 @@ INCLUDE += -I lib
 AS_SRC  += $(CHIP)/vectors.S
 AS_SRC  += $(CHIP_COMMON)/boot.S
 C_SRC  += $(CHIP_COMMON)/bss_init.c
-C_SRC  += $(CHIP_COMMON)/timer_init.c
 C_SRC  += $(CHIP_COMMON)/n200_func.c
 C_SRC  += $(CPU)/cpu.c
 
 # BOARD Source files
 C_SRC  += bsp/$(BOARD)/main.c
 C_SRC  += bsp/$(BOARD)/brisc_board.c
+C_SRC  += bsp/$(BOARD)/brisc_timer.c
 C_SRC  += bsp/$(BOARD)/rgb_led.c
 
 # BRISCIT Source Files

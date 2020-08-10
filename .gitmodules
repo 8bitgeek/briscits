@@ -1,3 +1,6 @@
 [submodule "libopencm3"]
 	path = libopencm3
 	url = https://github.com/8bitgeek/libopencm3.git
+[submodule "bsp/lib/GD32VF103_Firmware_Library"]
+	path = bsp/lib/GD32VF103_Firmware_Library
+	url = https://github.com/8bitgeek/GD32VF103_Firmware_Library.git

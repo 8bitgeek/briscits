@@ -12,7 +12,8 @@ CPU_COMMON=cpu/riscv
 CPU=$(CPU_COMMON)/RV32IMAC
 
 # Chip
-CHIP_COMMON=chip/gd32
+CHIP_FAMILY=gd32
+CHIP_COMMON=chip/$(CHIP_FAMILY)
 CHIP=$(CHIP_COMMON)/gd32vf103xb
 
 # GCC toolchain programs.

@@ -2,24 +2,16 @@
 
 extern void rgb_led_r(bool state)
 {
-    if ( state )
-        GPIOB->ODR &= ~( 0x1 << 5 );
-    else
-        GPIOB->ODR |=  ( 0x1 << 5 );
+    gpio_bit_write( GPIOB, GPIO_PIN_5, state );
 }
 
 extern void rgb_led_g(bool state)
 {
-    if ( state )
-        GPIOB->ODR &= ~( 0x1 << 0 );
-    else
-        GPIOB->ODR |=  ( 0x1 << 0 );
+    gpio_bit_write( GPIOB, GPIO_PIN_0, state );
 }
+
 extern void rgb_led_b(bool state)
 {
-    if ( state )
-        GPIOB->ODR &= ~( 0x1 << 1 );
-    else
-        GPIOB->ODR |=  ( 0x1 << 1 );
+    gpio_bit_write( GPIOB, GPIO_PIN_1, state );
 }
 
