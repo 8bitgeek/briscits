@@ -4,7 +4,7 @@
 #include <brisc_board.h>
 
 #ifndef BRISC_THREAD_MAX
-    #define BRISC_THREAD_MAX      10
+    #define BRISC_THREAD_MAX      8
 #endif
 
 #ifndef BRISC_THREAD_NAME_MAX

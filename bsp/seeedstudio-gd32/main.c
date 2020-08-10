@@ -91,19 +91,44 @@ static void run_main(void* arg)
 int main( void )
 {
     int delay = MAX_DELAY;
+    char* failed_thread="";
 
     xprintf( "CLK=%ldMHz\n", SystemCoreClock/1000000 );
 
-    main_thread_handle  = b_thread_init();
-    red_thread_handle   = b_thread_create( "red",   run_red,   &delay, red_stack,   STACK_WORDS );
-    green_thread_handle = b_thread_create( "green", run_green, &delay, green_stack, STACK_WORDS );
-    blue_thread_handle  = b_thread_create( "blue",  run_blue,  &delay, blue_stack,  STACK_WORDS );
-
-    b_thread_start( red_thread_handle );
-    b_thread_start( green_thread_handle );
-    b_thread_start( blue_thread_handle );
-
-    run_main(&delay);
+    if ( ( main_thread_handle  = b_thread_init() ) >= 0 )
+    {
+        if ( (red_thread_handle = b_thread_create( "red",   run_red,   &delay, red_stack,   STACK_WORDS )) >= 0)
+        {
+            if ( (green_thread_handle = b_thread_create( "green", run_green, &delay, green_stack, STACK_WORDS )) >= 0)
+            {
+                if ( (blue_thread_handle  = b_thread_create( "blue",  run_blue,  &delay, blue_stack,  STACK_WORDS )) >= 0)
+                {
+                    b_thread_start( red_thread_handle );
+                    b_thread_start( green_thread_handle );
+                    b_thread_start( blue_thread_handle );
+                    run_main(&delay);
+                }
+                else
+                {
+                    failed_thread = "blue";
+                }
+            }
+            else
+            {
+                failed_thread = "green";
+            }
+        }
+        else
+        {
+            failed_thread = "red";
+        }
+    }
+    else
+    {
+        failed_thread = "main";
+    }
+    
+    xprintf( "failed to create '%s' thread\n\n", failed_thread );
 
     return 0;
 }

@@ -2,6 +2,7 @@
 BOARD=seeedstudio-gd32
 TARGET=$(BOARD)
 CFLAGS += -DHXTAL_VALUE=8000000
+CFLAGS += -DBRISC_THREAD_MAX=4
 
 # OpenOCD
 OPENOCD=riscv-openocd

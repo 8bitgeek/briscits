@@ -126,6 +126,7 @@ int b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_
  *        > 0 indicates the maximum number of contiguous time slices the thread is allowed to get.
  * @param id The thread handle.
  * @param prio The thread priority -1 .. 127
+ * @return < 0 on failure
  */
 int b_thread_set_prio ( int id, int8_t prio )
 {
