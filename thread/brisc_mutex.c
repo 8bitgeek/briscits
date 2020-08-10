@@ -4,16 +4,16 @@
 
 extern void b_mutex_lock( brisc_mutex_t* mutex )
 {
-    int state = b_thread_int_enabled();
-    b_thread_int_disable();
+    int state = b_int_enabled();
+    b_int_disable();
     while ( b_mutex_try_lock(mutex) )
     {
-        b_thread_int_enable();
+        b_int_enable();
         b_thread_yield();
-        b_thread_int_disable();
+        b_int_disable();
     }
     *mutex = 1;
-    b_thread_int_set(state);
+    b_int_set(state);
 }
 
 extern bool b_mutex_try_lock( brisc_mutex_t* mutex )

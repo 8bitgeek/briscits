@@ -25,10 +25,10 @@ typedef struct brisc_thread
     cpu_state_t*        cpu_state;
 } brisc_thread_t;
 
-#define b_thread_int_enabled()      ( read_csr( mstatus ) & MSTATUS_MIE )
-#define b_thread_int_enable()       set_csr( mstatus, MSTATUS_MIE )
-#define b_thread_int_disable()      clear_csr( mstatus, MSTATUS_MIE )
-#define b_thread_int_set(s)         { if ((s)) b_thread_int_enable(); else b_thread_int_disable(); }
+#define b_int_enabled()      ( read_csr( mstatus ) & MSTATUS_MIE )
+#define b_int_enable()       set_csr( mstatus, MSTATUS_MIE )
+#define b_int_disable()      clear_csr( mstatus, MSTATUS_MIE )
+#define b_int_set(s)         { if ((s)) b_int_enable(); else b_int_disable(); }
 #define b_thread_block_while(cond)  while((cond)) b_thread_yield()
 
 extern int      b_thread_init     ( void );
