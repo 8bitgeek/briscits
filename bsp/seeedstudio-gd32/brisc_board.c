@@ -3,13 +3,9 @@
 #include <rgb_led.h>
 #include <xprintf.h>
 
-uint8_t rxbuffer[10];
-uint8_t txbuffer[] = "\n\rUSART DMA receive and transmit example, please input 10 bytes:\n\r";
-#define ARRAYNUM(arr_name)     (uint32_t)(sizeof(arr_name) / sizeof(*(arr_name)))
-
 static unsigned char usart_in(void);
 static void usart_out(unsigned char ch);
-static void usart_periph_init(uint32_t usart_periph);
+static void usart_config(uint32_t usart_periph);
 
 unsigned char usart_in(void)
 {
@@ -24,7 +20,7 @@ void usart_out(unsigned char ch)
     usart_data_transmit( USART0, (uint8_t) ch );
 }
 
-static void usart_periph_init(uint32_t usart_periph)
+static void usart_config(uint32_t usart_periph)
 {
     /* USART configure */
     usart_deinit(usart_periph);
@@ -39,6 +35,24 @@ static void usart_periph_init(uint32_t usart_periph)
     usart_enable(usart_periph);
 }
 
+void spi_config(uint32_t spi_periph)
+{
+    spi_parameter_struct spi_init_struct;
+    /* deinitilize SPI and the parameters */
+    spi_i2s_deinit(spi_periph);
+    spi_struct_para_init(&spi_init_struct);
+
+    /* SPIx parameter config */
+    spi_init_struct.trans_mode           = SPI_TRANSMODE_FULLDUPLEX;
+    spi_init_struct.device_mode          = SPI_MASTER;
+    spi_init_struct.frame_size           = SPI_FRAMESIZE_8BIT;
+    spi_init_struct.clock_polarity_phase = SPI_CK_PL_HIGH_PH_2EDGE;
+    spi_init_struct.nss                  = SPI_NSS_SOFT;
+    spi_init_struct.prescale             = SPI_PSC_8;
+    spi_init_struct.endian               = SPI_ENDIAN_MSB;
+    spi_init(spi_periph, &spi_init_struct);
+}
+
 void board_init( void ) 
 {
     rcu_periph_clock_enable(RCU_GPIOA);
@@ -47,20 +61,25 @@ void board_init( void )
     rcu_periph_clock_enable(RCU_GPIOD);
     rcu_periph_clock_enable(RCU_DMA0);
     rcu_periph_clock_enable(RCU_USART0);
+    rcu_periph_clock_enable(RCU_SPI1);
 
+    /* RGB LEDx */
     gpio_init(  GPIOB, 
                 GPIO_MODE_OUT_PP, 
                 GPIO_OSPEED_2MHZ, 
                 GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_5 );
-
-    /* USART0 */
-    gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_9);           /* connect port to USARTx_Tx */
-    gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10);    /* connect port to USARTx_Rx */
-
     gpio_bit_set( GPIOC, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_5 );
 
-    usart_periph_init(USART0);
-
+    /* USART0 */
+    gpio_init( GPIOA, GPIO_MODE_AF_PP,       GPIO_OSPEED_50MHZ, GPIO_PIN_9  );    /* connect port to USARTx_Tx */
+    gpio_init( GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10 );    /* connect port to USARTx_Rx */
+    usart_config( USART0 );
     xdev_out(usart_out);
     xdev_in(usart_in);
+
+    /* SPI1 GPIO CS/PB12, SCK/PB13, MISO/PB14, MOSI/PB15 */
+    gpio_init( GPIOB, GPIO_MODE_OUT_PP,      GPIO_OSPEED_50MHZ, GPIO_PIN_12 );
+    gpio_init( GPIOB, GPIO_MODE_AF_PP,       GPIO_OSPEED_50MHZ, GPIO_PIN_13 | GPIO_PIN_15 );
+    gpio_init( GPIOB, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_14 );
+    spi_config( SPI1 );
 }
