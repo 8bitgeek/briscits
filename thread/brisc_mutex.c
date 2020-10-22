@@ -9,20 +9,11 @@ extern void b_mutex_lock( brisc_mutex_t* mutex )
 
 extern bool b_mutex_try_lock( brisc_mutex_t* mutex )
 {
-    int state = b_int_enabled();
-    b_int_disable();
-    if ( !*mutex )
-    {
-        *mutex = 1;
-        b_int_set(state);
-        return true;
-    }
-    b_int_set(state);
-    return false;
+    return atomic_acquire(mutex);
 }
 
 extern void b_mutex_unlock( brisc_mutex_t* mutex )
 {
-    *mutex = 0;
+    atomic_release(mutex);
 }
 

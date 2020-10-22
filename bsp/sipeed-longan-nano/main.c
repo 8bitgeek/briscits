@@ -1,6 +1,7 @@
 #include <brisc_board.h>
 #include <brisc_thread.h>
 #include <brisc_delay.h>
+#include <brisc_mutex.h>
 #include <rgb_led.h>
 #include <xprintf.h>
 
@@ -12,6 +13,8 @@
 #define EVER            ;;
 #define STACK_BYTES     (1024)
 #define STACK_WORDS     STACK_BYTES / sizeof(cpu_reg_t)
+
+static brisc_mutex_t    mutex;
 
 static cpu_reg_t red_stack   [ STACK_WORDS ];
 static cpu_reg_t green_stack [ STACK_WORDS ];
@@ -28,7 +31,6 @@ static void run_red  (void* arg);
 static void run_green(void* arg);
 static void run_blue (void* arg);
 static void run_main (void* arg);
-
 
 static void sweep_delay(int* delay)
 {
@@ -51,39 +53,55 @@ static void sweep_delay(int* delay)
 
 static void run_red(void* arg)
 {
-    int* delay = (int*)arg;
     for(EVER)
     {
+        int* delay;
+        
+        b_mutex_lock(&mutex);
+        delay = (int*)arg;
+        
         rgb_led_r(false);
         b_delay_ms(*delay);
         rgb_led_r(true);
         b_delay_ms(*delay);
-    }
 
+        b_mutex_unlock(&mutex);
+    }
 }
 
 static void run_green(void* arg)
 {
-    int* delay = (int*)arg;
     for(EVER)
     {
+        int* delay;
+        
+        b_mutex_lock(&mutex);
+        delay = (int*)arg;
+        
         rgb_led_g(true);
         b_delay_ms(*delay);
         rgb_led_g(false);
         b_delay_ms(*delay);
-    }
 
+        b_mutex_unlock(&mutex);
+    }
 }
 
 static void run_blue(void* arg)
 {
-    int* delay = (int*)arg;
     for(EVER)
     {
+        int* delay;
+        
+        b_mutex_lock(&mutex);
+        delay = (int*)arg;
+        
         rgb_led_b(false);
         b_delay_ms((*delay)*2);
         rgb_led_b(true);
         b_delay_ms((*delay)*2);
+
+        b_mutex_unlock(&mutex);
     }
 }
 
@@ -94,7 +112,9 @@ static void run_main(void* arg)
     int* delay = (int*)arg;
     for(EVER)
     {
+        b_mutex_lock(&mutex);
         sweep_delay(delay);
+        b_mutex_unlock(&mutex);
         b_delay_ms((*delay)*2);
     }
 }
@@ -110,6 +130,8 @@ int main( void )
     #else
         xprintf( "CLK = %f MHz\n", SystemCoreClock/1000000 );
     #endif
+
+    b_mutex_init( &mutex );
 
     if ( (main_thread_handle  = b_thread_init( (thread_name="main") )) >= 0 )
     {

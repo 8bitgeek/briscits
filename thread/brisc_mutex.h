@@ -3,7 +3,7 @@
 
 #include <brisc_board.h>
 
-typedef int     brisc_mutex_t;
+typedef uint32_t    brisc_mutex_t;
 
 #define BRISC_MUTEX_DECL(n)       brisc_mutex_t n = 0
 
