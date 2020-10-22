@@ -115,6 +115,7 @@ static void run_main(void* arg)
         b_mutex_lock(&mutex);
         sweep_delay(delay);
         b_mutex_unlock(&mutex);
+        
         b_delay_ms((*delay)*2);
     }
 }
@@ -142,8 +143,8 @@ int main( void )
                 if ( (blue_thread_handle  = b_thread_create( (thread_name="blue"),  run_blue,  &delay, blue_stack,  STACK_WORDS )) >= 0)
                 {
                     b_thread_start( red_thread_handle );
-                    b_thread_start( green_thread_handle );
                     b_thread_start( blue_thread_handle );
+                    b_thread_start( green_thread_handle );
                     run_main(&delay);
                 }
             }
