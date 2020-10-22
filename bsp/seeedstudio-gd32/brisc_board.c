@@ -68,7 +68,7 @@ void board_init( void )
                 GPIO_MODE_OUT_PP, 
                 GPIO_OSPEED_2MHZ, 
                 GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_5 );
-    gpio_bit_set( GPIOC, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_5 );
+    gpio_bit_set( GPIOB, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_5 );
 
     /* USART0 */
     gpio_init( GPIOA, GPIO_MODE_AF_PP,       GPIO_OSPEED_50MHZ, GPIO_PIN_9  );    /* connect port to USARTx_Tx */
