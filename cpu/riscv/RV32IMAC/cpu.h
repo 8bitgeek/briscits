@@ -52,8 +52,10 @@ typedef union cpu_state_t
 #define cpu_push_state() 			    \
 	__asm (								\
         "   addi    sp,sp,-128      \n" \
-        "   csrr    t0,mepc         \n" \
-        "   sw      t0,124(sp)      \n" \
+        "   csrw    mscratch,x5     \n" \
+        "   csrr    x5,mepc         \n" \
+        "   sw      x5,124(sp)      \n" \
+        "   csrr    x5,mscratch     \n" \
         "   sw      x1,120(sp)      \n" \
         "   sw      x2,116(sp)      \n" \
         "   sw      x3,112(sp)      \n" \
@@ -90,8 +92,8 @@ typedef union cpu_state_t
 
 #define cpu_pop_state()                 \
 	__asm (								\
-        "   lw      t0,124(sp)      \n" \
-        "   csrw    mepc,t0         \n" \
+        "   lw      x5,124(sp)      \n" \
+        "   csrw    mepc,x5         \n" \
         "   lw      x1,120(sp)      \n" \
         "   lw      x2,116(sp)      \n" \
         "   lw      x3,112(sp)      \n" \

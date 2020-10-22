@@ -1,5 +1,5 @@
 # BRISCITS
-Basic RISC Intrinsic Time Scheduler = Lightweight preemtive multitasking for RISC micro-controllers
+Basic RISC Intrinsic Time Scheduler = Lightweight preemtive multitasking for RISC-V micro-controllers
 
 # Setup
 
