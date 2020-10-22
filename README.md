@@ -1,6 +1,12 @@
 # BRISCITS
 Basic RISC Intrinsic Time Scheduler = Lightweight preemtive multitasking for RISC-V micro-controllers
 
+# Setup
+
+* git clone --recurse-submodules https://github.com/8bitgeek/briscits.git
+* cd briscits 
+* git submodule update --init --recursive
+
 # Supported Chips
 
 * GD32VF103xB

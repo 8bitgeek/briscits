@@ -16,6 +16,7 @@ clean:
 	make -f bsp/sipeed-longan-nano/Makefile clean
 	make -f bsp/seeedstudio-gd32/Makefile clean
 
-cleanall:
+distclean:
 	make -f bsp/sipeed-longan-nano/Makefile cleanall
 	make -f bsp/seeedstudio-gd32/Makefile cleanall
+

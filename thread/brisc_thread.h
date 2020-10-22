@@ -4,7 +4,7 @@
 #include <brisc_board.h>
 
 #ifndef BRISC_THREAD_MAX
-    #define BRISC_THREAD_MAX      10
+    #define BRISC_THREAD_MAX      8
 #endif
 
 #ifndef BRISC_THREAD_NAME_MAX
@@ -25,13 +25,13 @@ typedef struct brisc_thread
     cpu_state_t*        cpu_state;
 } brisc_thread_t;
 
-#define b_thread_int_enabled()      ( read_csr( mstatus ) & MSTATUS_MIE )
-#define b_thread_int_enable()       set_csr( mstatus, MSTATUS_MIE )
-#define b_thread_int_disable()      clear_csr( mstatus, MSTATUS_MIE )
-#define b_thread_int_set(s)         { if ((s)) b_thread_int_enable(); else b_thread_int_disable(); }
+#define b_int_enabled()      ( read_csr( mstatus ) & MSTATUS_MIE )
+#define b_int_enable()       set_csr( mstatus, MSTATUS_MIE )
+#define b_int_disable()      clear_csr( mstatus, MSTATUS_MIE )
+#define b_int_set(s)         { if ((s)) b_int_enable(); else b_int_disable(); }
 #define b_thread_block_while(cond)  while((cond)) b_thread_yield()
 
-extern int      b_thread_init     ( void );
+extern int      b_thread_init     ( const char* name );
 extern int      b_thread_create   ( const char* name, void (*thread_fn)(void*), void* arg, cpu_reg_t* stack, size_t n_stack_words );
 extern void     b_thread_start    ( int id );
 extern void     b_thread_stop     ( int id );

@@ -30,15 +30,18 @@ static int       thread_new_id( void );
 static cpu_reg_t thread_schedule_next ( void );
 static void      thread_exit  ( void );
 
-
-int b_thread_init( void )
+/**
+ * @brief Initialize briscits before any threads may be created.
+ * @param name The name of the main thread.
+ */
+int b_thread_init( const char* name )
 {
     memset(&scheduler_state,0,sizeof(scheduler_state));
     for(int n=0; n < BRISC_THREAD_MAX; n++)
         scheduler_state.threads[n].prio = BRISC_THREAD_PRIO_INACTIVE;
 
     /* insert the 'main' thread into the scheduler */
-    return b_thread_create( "main", NULL, NULL, NULL, 0 ); 
+    return b_thread_create( name, NULL, NULL, NULL, 0 ); 
 }
 
 brisc_systick_t b_thread_systick( void )
@@ -126,6 +129,7 @@ int b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_
  *        > 0 indicates the maximum number of contiguous time slices the thread is allowed to get.
  * @param id The thread handle.
  * @param prio The thread priority -1 .. 127
+ * @return < 0 on failure
  */
 int b_thread_set_prio ( int id, int8_t prio )
 {

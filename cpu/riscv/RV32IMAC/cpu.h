@@ -130,8 +130,6 @@ typedef union cpu_state_t
 
 #define cpu_wr_sp(ptr) __asm  ( "  mv  sp,%0\n" : : "r" (ptr) )
 
-void* __attribute__((naked)) cpu_rd_sp(void);
-
 #define cpu_systick_enter()             \
     __asm(  "  nop               \n"    \
             )
@@ -139,6 +137,11 @@ void* __attribute__((naked)) cpu_rd_sp(void);
 #define cpu_systick_exit()              \
     __asm(  "  mret              \n"    \
             )
+
+extern void* __attribute__((naked))     cpu_rd_sp   ( void );
+extern uint32_t                         atomic_acquire ( uint32_t* lock );
+extern void                             atomic_release ( uint32_t* lock );
+
 
 #endif
 

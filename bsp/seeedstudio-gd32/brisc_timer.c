@@ -1,12 +1,11 @@
 #include <brisc_board.h>
 #include <string.h>
 
-// Current system core clock speed.
-volatile uint32_t SystemCoreClock = 8000000;
-
 // 'h_init' method which gets called from the boot code.
-void timer_init( void ) 
+void brisc_timer_init( void ) 
 {
+    SystemInit();
+
     // Disable interrupts globally.
     clear_csr( mstatus, MSTATUS_MIE );
     clear_csr( mstatus, MSTATUS_SIE );

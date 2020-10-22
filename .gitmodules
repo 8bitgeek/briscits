@@ -1,0 +1,3 @@
+[submodule "bsp/lib/GD32VF103_Firmware_Library"]
+	path = bsp/lib/GD32VF103_Firmware_Library
+	url = https://github.com/8bitgeek/GD32VF103_Firmware_Library.git

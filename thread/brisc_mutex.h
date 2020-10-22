@@ -3,7 +3,7 @@
 
 #include <brisc_board.h>
 
-typedef int     brisc_mutex_t;
+typedef uint32_t    brisc_mutex_t;
 
 #define BRISC_MUTEX_DECL(n)       brisc_mutex_t n = 0
 
@@ -12,5 +12,6 @@ typedef int     brisc_mutex_t;
 extern void     b_mutex_lock      ( brisc_mutex_t* mutex );
 extern bool     b_mutex_try_lock  ( brisc_mutex_t* mutex );
 extern void     b_mutex_unlock    ( brisc_mutex_t* mutex );
+extern void     b_mutex_release   ( brisc_mutex_t* mutex );
 
 #endif
