@@ -137,7 +137,8 @@ typedef union cpu_state_t
             )
 
 extern void* __attribute__((naked))     cpu_rd_sp   ( void );
-extern uint32_t                         cpu_acquire ( uint32_t* lock );
+extern uint32_t                         atomic_acquire ( uint32_t* lock );
+extern void                             atomic_release ( uint32_t* lock );
 
 
 #endif
