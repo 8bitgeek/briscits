@@ -83,3 +83,8 @@ void board_init( void )
     gpio_init( GPIOB, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_14 );
     spi_config( SPI1 );
 }
+
+extern uint32_t board_clkfreq( void )
+{
+    return SystemCoreClock;
+}
