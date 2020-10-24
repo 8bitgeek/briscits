@@ -155,6 +155,7 @@ C_SRC  += bsp/$(BOARD)/rgb_led.c
 C_SRC  += thread/brisc_thread.c
 C_SRC  += thread/brisc_mutex.c
 C_SRC  += lib/brisc_delay.c
+C_SRC  += lib/brisc_heap.c
 
 # Object files to build.
 OBJS  = $(AS_SRC:.S=.o)
