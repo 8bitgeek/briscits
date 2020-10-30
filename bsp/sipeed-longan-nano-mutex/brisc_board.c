@@ -1,6 +1,5 @@
 #include <brisc_board.h>
 #include <brisc_thread.h>
-#include <rgb_led.h>
 #include <xprintf.h>
 
 static unsigned char usart_in(void);
