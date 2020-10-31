@@ -184,6 +184,7 @@ static cpu_reg_t thread_schedule_next( void )
 
 /**
  * @brief timer interrupt, increment systick, and potentially switch thread context
+ * @note Allows for higher priority interrupt to preempt once state is preserved.
  */
 volatile __attribute__( ( naked ) ) void eclic_mtip_handler( void ) 
 {
@@ -192,7 +193,11 @@ volatile __attribute__( ( naked ) ) void eclic_mtip_handler( void )
         cpu_push_state();
         
             systick_service();
+            b_int_enable();
+           
             thread_scheduler_service();
+
+            b_int_disable();
 
         cpu_pop_state();
 
@@ -201,6 +206,7 @@ volatile __attribute__( ( naked ) ) void eclic_mtip_handler( void )
 
 /**
  * @brief software interrupt, thread yield, give up remaining prio and switch context.
+ * @note Allows for higher priority interrupt to preempt once state is preserved.
  */
 volatile __attribute__( ( naked ) ) void eclic_msip_handler( void )
 {
@@ -210,7 +216,11 @@ volatile __attribute__( ( naked ) ) void eclic_msip_handler( void )
         
             thread_msip_clear();
             thread_prio_clear();
+            b_int_enable();
+
             thread_scheduler_service();
+
+            b_int_disable();
 
         cpu_pop_state();
 
