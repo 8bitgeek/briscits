@@ -135,7 +135,7 @@ INCLUDE += -I $(CPU)
 INCLUDE += -I $(CPU_COMMON)
 INCLUDE += -I $(CHIP)
 INCLUDE += -I $(CHIP_COMMON)
-INCLUDE += -I thread
+INCLUDE += -I src
 INCLUDE += -I lib
 
 # CPU and CHIP Source files.
@@ -151,8 +151,10 @@ C_SRC  += bsp/$(BOARD)/brisc_board.c
 C_SRC  += bsp/$(BOARD)/brisc_timer.c
 
 # BRISCIT Source Files
-C_SRC  += thread/brisc_thread.c
-C_SRC  += thread/brisc_mutex.c
+C_SRC  += src/brisc_sched.c
+C_SRC  += src/brisc_irq.c
+C_SRC  += src/brisc_thread.c
+C_SRC  += src/brisc_mutex.c
 C_SRC  += lib/brisc_delay.c
 
 # Object files to build.

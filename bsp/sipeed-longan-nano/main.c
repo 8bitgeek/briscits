@@ -1,4 +1,3 @@
-#include <brisc_board.h>
 #include <brisc_thread.h>
 #include <brisc_delay.h>
 #include <rgb_led.h>
