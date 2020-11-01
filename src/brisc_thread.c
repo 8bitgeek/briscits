@@ -1,33 +1,12 @@
 #include <brisc_thread.h>
+#include <brisc_sched.h>
 #include <string.h>
 
-typedef struct brisc_scheduler
-{
-    brisc_systick_t     systick;
-    brisc_thread_t      threads[BRISC_THREAD_MAX];
-    uint8_t             thread_id;
-    int8_t              prio;
-    int8_t              lock;
-} brisc_scheduler_t;
-
 #define thread_msip_set()           *( volatile uint8_t * )( TIMER_CTRL_ADDR + TIMER_MSIP ) = 0x01
-#define thread_msip_clear()         *( volatile uint8_t * )( TIMER_CTRL_ADDR + TIMER_MSIP ) = 0x00
-#define thread_mtime_clear()        *( volatile uint64_t * )( TIMER_CTRL_ADDR + TIMER_MTIME ) = 0
-#define thread_state(id)            ((id) >= 0 && (id) < BRISC_THREAD_MAX) ? (&scheduler_state.threads[(id)]) : NULL
-#define systick_service()           ++scheduler_state.systick;                          \
-                                    thread_mtime_clear();
-#define thread_scheduler_service()  register cpu_reg_t context_sp;                      \
-                                    if ( ( context_sp = thread_schedule_next() ) != 0 ) \
-                                        cpu_wr_sp( context_sp )
-#define thread_next_id()            (scheduler_state.thread_id = ( scheduler_state.thread_id+1 >= BRISC_THREAD_MAX ) ? 0 : scheduler_state.thread_id+1)
-#define thread_prio_clear()         (scheduler_state.prio = 0)
-#define thread_lock()               (++scheduler_state.lock)
-#define thread_unlock()             (--scheduler_state.lock)
-
-static brisc_scheduler_t scheduler_state;
+#define thread_lock()               (++brisc_scheduler_state.lock)
+#define thread_unlock()             (--brisc_scheduler_state.lock)
 
 static int       thread_new_id( void );
-static cpu_reg_t thread_schedule_next ( void );
 static void      thread_exit  ( void );
 
 /**
@@ -36,9 +15,9 @@ static void      thread_exit  ( void );
  */
 int b_thread_init( const char* name )
 {
-    memset(&scheduler_state,0,sizeof(scheduler_state));
+    memset(&brisc_scheduler_state,0,sizeof(brisc_scheduler_state));
     for(int n=0; n < BRISC_THREAD_MAX; n++)
-        scheduler_state.threads[n].prio = BRISC_THREAD_PRIO_INACTIVE;
+        brisc_scheduler_state.threads[n].prio = BRISC_THREAD_PRIO_INACTIVE;
 
     /* insert the 'main' thread into the scheduler */
     return b_thread_create( name, NULL, NULL, NULL, 0 ); 
@@ -46,7 +25,7 @@ int b_thread_init( const char* name )
 
 brisc_systick_t b_thread_systick( void )
 {
-    return scheduler_state.systick;
+    return brisc_scheduler_state.systick;
 }
 
 void b_thread_stop(int id)
@@ -96,7 +75,7 @@ int b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_
     int id = thread_new_id();
     if ( id >= 0 )
     {
-        brisc_thread_t* thread = thread_state(id);
+        brisc_thread_t* thread = b_thread_state(id);
         if ( thread_fn == NULL && stack == NULL )
         {
             /* 'main' thread already has 'context' */
@@ -133,7 +112,7 @@ int b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_
  */
 int b_thread_set_prio ( int id, int8_t prio )
 {
-    brisc_thread_t* thread = thread_state(id);
+    brisc_thread_t* thread = b_thread_state(id);
     if ( thread )
     {
         thread->prio = prio;
@@ -147,72 +126,11 @@ static int thread_new_id( void )
 {
     for(int id=0; id < BRISC_THREAD_MAX; id++)
     {
-        if ( scheduler_state.threads[id].prio == BRISC_THREAD_PRIO_INACTIVE )
+        if ( brisc_scheduler_state.threads[id].prio == BRISC_THREAD_PRIO_INACTIVE )
         {
-            scheduler_state.threads[id].prio = BRISC_THREAD_PRIO_SUSPEND;
+            brisc_scheduler_state.threads[id].prio = BRISC_THREAD_PRIO_SUSPEND;
             return id;
         }
     }
     return -1;
-}
-
-/**
- * @brief determine which thread gets this time slice.
- * @return the context (stack pointer) to the thread to allocate this time slice to.
- */
-static cpu_reg_t thread_schedule_next( void )
-{
-    brisc_thread_t* thread;
-            
-    if ( scheduler_state.lock > 0 || --scheduler_state.prio > 0 )
-    {
-        return scheduler_state.threads[scheduler_state.thread_id].cpu_state->abi.sp;
-    }
-    else
-    {
-        for(int nThread=0; nThread < BRISC_THREAD_MAX; nThread++)
-        {
-            if ( (thread = thread_state( thread_next_id() ))->prio > 0 )
-            {
-                scheduler_state.prio = thread->prio;
-                return thread->cpu_state->abi.sp;
-            }
-        }
-    }
-    return 0;
-}
-
-/**
- * @brief timer interrupt, increment systick, and potentially switch thread context
- */
-volatile __attribute__( ( naked ) ) void eclic_mtip_handler( void ) 
-{
-    cpu_systick_enter();
-    
-        cpu_push_state();
-        
-            systick_service();
-            thread_scheduler_service();
-
-        cpu_pop_state();
-
-    cpu_systick_exit();
-}
-
-/**
- * @brief software interrupt, thread yield, give up remaining prio and switch context.
- */
-volatile __attribute__( ( naked ) ) void eclic_msip_handler( void )
-{
-    cpu_systick_enter();
-    
-        cpu_push_state();
-        
-            thread_msip_clear();
-            thread_prio_clear();
-            thread_scheduler_service();
-
-        cpu_pop_state();
-
-    cpu_systick_exit();
 }

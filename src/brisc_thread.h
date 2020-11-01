@@ -25,11 +25,13 @@ typedef struct brisc_thread
     cpu_state_t*        cpu_state;
 } brisc_thread_t;
 
-#define b_int_enabled()      ( read_csr( mstatus ) & MSTATUS_MIE )
-#define b_int_enable()       set_csr( mstatus, MSTATUS_MIE )
-#define b_int_disable()      clear_csr( mstatus, MSTATUS_MIE )
-#define b_int_set(s)         { if ((s)) b_int_enable(); else b_int_disable(); }
+#define b_int_enabled()             ( read_csr( mstatus ) & MSTATUS_MIE )
+#define b_int_enable()              set_csr( mstatus, MSTATUS_MIE )
+#define b_int_disable()             clear_csr( mstatus, MSTATUS_MIE )
+#define b_int_set(s)                { if ((s)) b_int_enable(); else b_int_disable(); }
 #define b_thread_block_while(cond)  while((cond)) b_thread_yield()
+#define b_thread_prio_clear()       (brisc_scheduler_state.prio = 0)
+
 
 extern int      b_thread_init     ( const char* name );
 extern int      b_thread_create   ( const char* name, void (*thread_fn)(void*), void* arg, cpu_reg_t* stack, size_t n_stack_words );
