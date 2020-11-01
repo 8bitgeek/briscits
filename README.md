@@ -30,6 +30,9 @@ Basic RISC Intrinsic Time Scheduler = Lightweight preemtive multitasking for RIS
 `make -f bsp/<board-support>/Makefile stop`
 
 ### Examples
-`make -f bsp/seeedstudio-gd32/Makefile`
-`make -f bsp/sipeed-longan-nano/Makefile` 
+~~~~
+make -f bsp/seeedstudio-gd32/Makefile
+make -f bsp/sipeed-longan-nano/Makefile
+make -f bsp/sipeed-longan-nano-mutex/Makefile
+~~~~
 
