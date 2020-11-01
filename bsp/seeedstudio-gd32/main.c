@@ -105,11 +105,7 @@ int main( void )
     int delay = MAX_DELAY;
     char* thread_name;
 
-    #if XPRINTF_USE_FLOAT
-        xprintf( "CLK = %f GHz\n", (float)SystemCoreClock/1000000000.0f );
-    #else
-        xprintf( "CLK = %f MHz\n", SystemCoreClock/1000000 );
-    #endif
+    xprintf( "CLK = %f GHz\n", (float)board_clkfreq()/1000000000.0f );
 
     if ( (main_thread_handle  = b_thread_init( (thread_name="main") )) >= 0 )
     {
