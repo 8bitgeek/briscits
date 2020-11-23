@@ -8,7 +8,6 @@
                                     if ( ( context_sp = thread_schedule_next() ) != 0 ) \
                                         cpu_wr_sp( context_sp )
 
-
 #define systick_service()           ++brisc_scheduler_state.systick;                          \
                                     thread_mtime_clear()
 

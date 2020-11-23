@@ -11,41 +11,41 @@ typedef union cpu_state_t
 {
     struct {
         // stored in "stack order" i.e. high register first
-        uint32_t    x[CPU_MAX_XREG];
+        cpu_reg_t    x[CPU_MAX_XREG];
     } reg;
     struct {
-        uint32_t    t6;     //  x31 Temporaries
-        uint32_t    t5;     //  x30
-        uint32_t    t4;     //  x29
-        uint32_t    t3;     //  x28
-        uint32_t    s11;    //  x27 Saved Registers
-        uint32_t    s10;    //  x26
-        uint32_t    s9;     //  x25
-        uint32_t    s8;     //  x24
-        uint32_t    s7;     //  x23
-        uint32_t    s6;     //  x22
-        uint32_t    s5;     //  x21
-        uint32_t    s4;     //  x20
-        uint32_t    s3;     //  x19
-        uint32_t    s2;     //  x18
-        uint32_t    a7;     //  x17 Function arguments
-        uint32_t    a6;     //  x16
-        uint32_t    a5;     //  x15
-        uint32_t    a4;     //  x14
-        uint32_t    a3;     //  x13
-        uint32_t    a2;     //  x12
-        uint32_t    a1;     //  x11 Function arguments / return values
-        uint32_t    a0;     //  x10
-        uint32_t    s1;     //  x9  Saved register
-        uint32_t    fp;     //  x8  Saved register / frame pointer
-        uint32_t    t2;     //  x7  Temporaries
-        uint32_t    t1;     //  x6  
-        uint32_t    t0;     //  x5
-        uint32_t    tp;     //  x4  Thread pointer
-        uint32_t    gp;     //  x3  Global pointer
-        uint32_t    sp;     //  x2  Stack pointer
-        uint32_t    ra;     //  x1  Return address
-        uint32_t    pc;     //  mepc program counter
+        cpu_reg_t    t6;     //  x31 Temporaries
+        cpu_reg_t    t5;     //  x30
+        cpu_reg_t    t4;     //  x29
+        cpu_reg_t    t3;     //  x28
+        cpu_reg_t    s11;    //  x27 Saved Registers
+        cpu_reg_t    s10;    //  x26
+        cpu_reg_t    s9;     //  x25
+        cpu_reg_t    s8;     //  x24
+        cpu_reg_t    s7;     //  x23
+        cpu_reg_t    s6;     //  x22
+        cpu_reg_t    s5;     //  x21
+        cpu_reg_t    s4;     //  x20
+        cpu_reg_t    s3;     //  x19
+        cpu_reg_t    s2;     //  x18
+        cpu_reg_t    a7;     //  x17 Function arguments
+        cpu_reg_t    a6;     //  x16
+        cpu_reg_t    a5;     //  x15
+        cpu_reg_t    a4;     //  x14
+        cpu_reg_t    a3;     //  x13
+        cpu_reg_t    a2;     //  x12
+        cpu_reg_t    a1;     //  x11 Function arguments / return values
+        cpu_reg_t    a0;     //  x10
+        cpu_reg_t    s1;     //  x9  Saved register
+        cpu_reg_t    fp;     //  x8  Saved register / frame pointer
+        cpu_reg_t    t2;     //  x7  Temporaries
+        cpu_reg_t    t1;     //  x6  
+        cpu_reg_t    t0;     //  x5
+        cpu_reg_t    tp;     //  x4  Thread pointer
+        cpu_reg_t    gp;     //  x3  Global pointer
+        cpu_reg_t    sp;     //  x2  Stack pointer
+        cpu_reg_t    ra;     //  x1  Return address
+        cpu_reg_t    pc;     //  mepc program counter
     } abi;
 } cpu_state_t;
 
@@ -138,9 +138,9 @@ typedef union cpu_state_t
     __asm(  "  mret              \n"    \
             )
 
-extern void* __attribute__((naked))     cpu_rd_sp   ( void );
-extern uint32_t                         atomic_acquire ( uint32_t* lock );
-extern void                             atomic_release ( uint32_t* lock );
+extern void*    __attribute__((naked))  cpu_rd_sp      ( void );
+extern cpu_reg_t                        atomic_acquire ( cpu_reg_t* lock );
+extern void                             atomic_release ( cpu_reg_t* lock );
 
 
 #endif
