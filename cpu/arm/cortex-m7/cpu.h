@@ -19,7 +19,6 @@
     #define CPU_SP_XREG      0  /* sp Stack Pointer Register    */
 #endif
 
-
 typedef uint32_t cpu_reg_t;
 
 typedef union cpu_state_t
@@ -55,10 +54,6 @@ typedef union cpu_state_t
         } hw;
     } abi;
 } cpu_state_t;
-
-extern void*    __attribute__((naked))  cpu_rd_sp      ( void );
-extern cpu_reg_t                        atomic_acquire ( cpu_reg_t* lock );
-extern void                             atomic_release ( cpu_reg_t* lock );
 
 #define cpu_wr_sp(ptr) __asm  ( "  mv  sp,%0\n" : : "r" (ptr) )
 
@@ -139,6 +134,15 @@ extern void                             atomic_release ( cpu_reg_t* lock );
 			)
 #endif
 
+extern cpu_reg_t cpu_atomic_acquire ( cpu_reg_t* lock );
+extern void      cpu_atomic_release ( cpu_reg_t* lock );
+
+extern void*    	__attribute__((naked)) cpu_rd_sp(void);
+extern void 		__attribute__((naked)) cpu_int_enable(void);
+extern cpu_reg_t	__attribute__((naked)) cpu_int_disable(void);
+extern cpu_reg_t	__attribute__((naked)) cpu_int_enabled(void);
+extern void 		__attribute__((naked)) cpu_int_set(cpu_reg_t enable);
+extern void 		__attribute__((naked)) chip_wfi(void);
 
 #endif
 

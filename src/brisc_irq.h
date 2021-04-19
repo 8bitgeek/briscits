@@ -3,7 +3,7 @@
 
 #include <brisc_sched.h>
 
-volatile __attribute__( ( naked ) ) void eclic_mtip_handler( void );
-volatile __attribute__( ( naked ) ) void eclic_msip_handler( void );
+volatile __attribute__( ( naked ) ) void brisc_isr_systick( void );
+volatile __attribute__( ( naked ) ) void brisc_isr_yield( void );
 
 #endif
