@@ -5,6 +5,12 @@
 
 #define CPU_MAX_XREG    32
 
+/* Scheduler Register Offsets */
+#define CPU_A0_XREG     21  /* a0 Arg[0] Register           */
+#define CPU_RA_XREG     30  /* ra Return Address Register   */
+#define CPU_PC_XREG     31  /* pc Program Counter           */
+#define CPU_SP_XREG     29  /* sp Stack Pointer Register    */
+
 typedef uint32_t cpu_reg_t;
 
 typedef union cpu_state_t
@@ -139,9 +145,19 @@ typedef union cpu_state_t
             )
 
 extern void*    __attribute__((naked))  cpu_rd_sp      ( void );
-extern cpu_reg_t                        atomic_acquire ( cpu_reg_t* lock );
-extern void                             atomic_release ( cpu_reg_t* lock );
 
+extern cpu_reg_t cpu_atomic_acquire ( cpu_reg_t* lock );
+extern void      cpu_atomic_release ( cpu_reg_t* lock );
+
+extern void         cpu_int_enable(void);
+extern cpu_reg_t    cpu_int_disable(void);
+extern cpu_reg_t    cpu_int_enabled(void);
+extern void         cpu_int_set(cpu_reg_t enable);
+
+volatile __attribute__( ( naked ) ) void eclic_mtip_handler( void );
+volatile __attribute__( ( naked ) ) void eclic_msip_handler( void );
+
+#define cpu_systick_clear()   *( volatile uint64_t * )( TIMER_CTRL_ADDR + TIMER_MTIME ) = 0
+#define cpu_yield_clear()     *( volatile uint8_t * )( TIMER_CTRL_ADDR + TIMER_MSIP ) = 0x00
 
 #endif
-

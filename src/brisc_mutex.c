@@ -9,7 +9,7 @@ extern void b_mutex_lock( brisc_mutex_t* mutex )
 
 extern bool b_mutex_try_lock( brisc_mutex_t* mutex )
 {
-    return atomic_acquire(mutex);
+    return b_atomic_acquire(mutex);
 }
 
 extern void b_mutex_unlock( brisc_mutex_t* mutex )
@@ -20,6 +20,6 @@ extern void b_mutex_unlock( brisc_mutex_t* mutex )
 
 extern void b_mutex_release( brisc_mutex_t* mutex )
 {
-    atomic_release(mutex);
+    b_atomic_release(mutex);
 }
 

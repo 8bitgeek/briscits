@@ -88,11 +88,11 @@ int b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_
             /* initialize the cpu state initial stack frame */
             cpu_state_t* cpu_state = (cpu_state_t*) &stack_uint8 [ (n_stack_words*sizeof(cpu_reg_t)) - sizeof(cpu_state_t) ];
             memset( cpu_state, 0, sizeof(cpu_state_t) );
-    
-            cpu_state->abi.a0 = (cpu_reg_t)arg;
-            cpu_state->abi.ra = (cpu_reg_t)thread_exit;
-            cpu_state->abi.pc = (cpu_reg_t)thread_fn;
-            cpu_state->abi.sp = (cpu_reg_t)cpu_state;
+
+            cpu_state->reg.x[CPU_A0_XREG] = (cpu_reg_t)arg;
+            cpu_state->reg.x[CPU_RA_XREG] = (cpu_reg_t)thread_exit;
+            cpu_state->reg.x[CPU_PC_XREG] = (cpu_reg_t)thread_fn;
+            cpu_state->reg.x[CPU_SP_XREG] = (cpu_reg_t)cpu_state;
 
             /* initialize the initial thread state */
             thread->cpu_state  = cpu_state;
