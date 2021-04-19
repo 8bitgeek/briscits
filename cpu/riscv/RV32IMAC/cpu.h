@@ -5,6 +5,12 @@
 
 #define CPU_MAX_XREG    32
 
+/* Scheduler Register Offsets */
+#define CPU_A0_XREG     21  /* a0 Arg[0] Register           */
+#define CPU_RA_XREG     30  /* ra Return Address Register   */
+#define CPU_PC_XREG     31  /* pc Program Counter           */
+#define CPU_SP_XREG     29  /* sp Stack Pointer Register    */
+
 typedef uint32_t cpu_reg_t;
 
 typedef union cpu_state_t
