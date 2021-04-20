@@ -35,9 +35,6 @@ SOFTWARE.
 #include <brisc_sched.h>
 #include <string.h>
 
-#define thread_lock()               (++brisc_scheduler_state.lock)
-#define thread_unlock()             (--brisc_scheduler_state.lock)
-
 static int       thread_new_id( void );
 static void      thread_exit  ( void );
 
@@ -72,12 +69,12 @@ void b_thread_start(int id)
 
 void b_thread_lock( void )
 {
-    thread_lock();
+    ++brisc_scheduler_state.lock
 }
 
 void b_thread_unlock( void )
 {
-    thread_unlock();
+    --brisc_scheduler_state.lock
 }
 
 void b_thread_yield( void )
