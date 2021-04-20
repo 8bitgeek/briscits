@@ -69,12 +69,12 @@ void b_thread_start(int id)
 
 void b_thread_lock( void )
 {
-    ++brisc_scheduler_state.lock
+    ++brisc_scheduler_state.lock;
 }
 
 void b_thread_unlock( void )
 {
-    --brisc_scheduler_state.lock
+    --brisc_scheduler_state.lock;
 }
 
 void b_thread_yield( void )

@@ -37,7 +37,7 @@ SOFTWARE.
 // Pre-defined memory locations for program initialization.
 extern uint32_t _sidata, _sdata, _edata, _sbss, _ebss;
 
-void bss_init( void ) 
+void _bss_init( void ) 
 {
     // Copy initialized data from .sidata (Flash) to .data (RAM)
     memcpy( &_sdata, &_sidata, ( ( void* )&_edata - ( void* )&_sdata ) );

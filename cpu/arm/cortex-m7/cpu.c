@@ -34,6 +34,19 @@ SOFTWARE.
 #include "cpu.h"
 #include <core_cm7.h>
 
+void _fpu_init(void)
+{
+	#if defined(ARM_FVP_LAZY_STACKING)
+		
+		/* set CP10 and CP11 Full Access */
+		SCB->CPACR |= (0xF << 20);  		
+
+		/* Lazy Stacking */
+        FPU->FPCCR |= (FPU_FPCCR_ASPEN_Msk | FPU_FPCCR_LSPEN_Msk);
+
+	#endif
+}
+
 extern void __attribute__((naked)) cpu_int_enable(void)
 {
 	__asm("   isb                   \n"
