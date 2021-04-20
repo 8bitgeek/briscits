@@ -35,7 +35,6 @@ SOFTWARE.
 #include <brisc_sched.h>
 #include <string.h>
 
-#define thread_msip_set()           *( volatile uint8_t * )( TIMER_CTRL_ADDR + TIMER_MSIP ) = 0x01
 #define thread_lock()               (++brisc_scheduler_state.lock)
 #define thread_unlock()             (--brisc_scheduler_state.lock)
 
@@ -83,13 +82,11 @@ void b_thread_unlock( void )
 
 void b_thread_yield( void )
 {
-    /* trigger the timer "soft" interrupt */
-    thread_msip_set();
+    cpu_yield();
 }
 
 static void thread_exit( void )
 {
-    // TODO - de-allocate, clean up
     // wait to die
     for(;;);
 }

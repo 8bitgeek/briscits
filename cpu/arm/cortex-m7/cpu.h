@@ -177,5 +177,12 @@ extern cpu_reg_t	__attribute__((naked)) cpu_int_enabled(void);
 extern void 		__attribute__((naked)) cpu_int_set(cpu_reg_t enable);
 extern void 		__attribute__((naked)) chip_wfi(void);
 
+volatile __attribute__( ( naked ) ) void PendSV_IRQ( void );
+volatile __attribute__( ( naked ) ) void SysTick_IRQ( void );
+
+extern void cpu_systick_clear(void);
+extern void cpu_yield_clear(void);
+extern void cpu_yield(void);
+
 #endif
 

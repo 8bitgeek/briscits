@@ -32,6 +32,7 @@ SOFTWARE.
 
 ******************************************************************************/
 #include "cpu.h"
+#include <core_cm7.h>
 
 extern void __attribute__((naked)) cpu_int_enable(void)
 {
@@ -151,4 +152,30 @@ void __attribute__((naked)) chip_wfi(void)
 	__asm(" isb    \n"
 	      " wfi    \n"
 	      " bx lr  \n");
+}
+
+extern void cpu_systick_clear(void)
+{
+	SCB->ICSR |= SCB_ICSR_PENDSTCLR_Msk;
+}
+
+extern void cpu_yield_clear(void)
+{
+	SCB->ICSR |= SCB_ICSR_PENDSVCLR_Msk;
+}
+
+extern void cpu_yield(void)
+{
+	SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+	__asm(" dsb\n");
+}
+
+volatile __attribute__( ( naked ) ) void PendSV_IRQ( void )
+{
+	brisc_isr_yield();
+}
+
+volatile __attribute__( ( naked ) ) void SysTick_IRQ( void )
+{
+	brisc_isr_systick();
 }
