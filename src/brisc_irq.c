@@ -34,12 +34,12 @@ SOFTWARE.
 #include <brisc_irq.h>
 #include <brisc_sched.h>
 
-#define thread_scheduler_service()  register cpu_reg_t context_sp;                      \
-                                    if ( ( context_sp = thread_schedule_next() ) != 0 ) \
+#define thread_scheduler_service()  register cpu_reg_t context_sp;          \
+                        if ( ( context_sp = thread_schedule_next() ) != 0 ) \
                                         cpu_wr_sp( context_sp )
 
-#define systick_service()           ++brisc_scheduler_state.systick;                          \
-                                    cpu_systick_clear()
+#define systick_service() ++brisc_scheduler_state.systick;                  \
+                        cpu_systick_clear()
 
 /**
  * @brief timer interrupt, increment systick, and potentially switch thread context
