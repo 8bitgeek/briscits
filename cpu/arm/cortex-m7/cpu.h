@@ -149,7 +149,7 @@ typedef union cpu_state_t
 			: 								\
 			:								\
 			:								\
-			)                               \
+			);                               \
             brisc_scheduler_state.threads[brisc_scheduler_state.thread_id].cpu_state = (cpu_state_t*)cpu_rd_sp()
 
 

@@ -32,7 +32,9 @@ SOFTWARE.
 
 ******************************************************************************/
 #include "cpu.h"
+#include <stm32f746xx.h>
 #include <core_cm7.h>
+#include <brisc_irq.h>
 
 void _fpu_init(void)
 {
@@ -54,7 +56,7 @@ extern void __attribute__((naked)) cpu_int_enable(void)
 		  "   bx       lr           \n");
 }
 
-extern int __attribute__((naked)) cpu_int_disable(void)
+extern cpu_reg_t __attribute__((naked)) cpu_int_disable(void)
 {
 	__asm("   mrs     r0, primask  \n"
 		  "	  eor     r0, r0, #1   \n"
@@ -63,7 +65,7 @@ extern int __attribute__((naked)) cpu_int_disable(void)
 		  ::: "r0");
 }
 
-extern int	__attribute__((naked)) cpu_int_enabled(void)
+extern cpu_reg_t	__attribute__((naked)) cpu_int_enabled(void)
 {
 	__asm(" mrs      r0, primask   \n"
 		  "	eor      r0, r0, #1    \n"
@@ -71,7 +73,7 @@ extern int	__attribute__((naked)) cpu_int_enabled(void)
 		  ::: "r0");
 }
 
-extern void __attribute__((naked)) cpu_int_set(int enable)
+extern void __attribute__((naked)) cpu_int_set(cpu_reg_t enable)
 {
 	__asm("   cmp	  r0, #0  \n"
 		  "   beq	  1f      \n"
@@ -106,7 +108,8 @@ extern uint32_t cpu_atomic_acquire(cpu_reg_t* lock)
 	cpu_reg_t int_state = cpu_int_disable();
     cpu_reg_t t = *lock;
     *lock = 1;
-    int_state ? cpu_int_enable();
+    if ( int_state )
+		cpu_int_enable();
     return t;
 }
 
@@ -158,13 +161,6 @@ void __attribute__((naked)) chip_interrupts_set(cpu_reg_t enable)
 		  "   bx      lr      \n"
 		  "1: cpsid   i       \n"
 		  "   bx      lr      \n");
-}
-
-void __attribute__((naked)) chip_wfi(void)
-{
-	__asm(" isb    \n"
-	      " wfi    \n"
-	      " bx lr  \n");
 }
 
 extern void cpu_systick_clear(void)

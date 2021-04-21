@@ -46,7 +46,7 @@ extern cpu_reg_t thread_schedule_next( void )
             
     if ( brisc_scheduler_state.lock > 0 || --brisc_scheduler_state.prio > 0 )
     {
-        return brisc_scheduler_state.threads[brisc_scheduler_state.thread_id].cpu_state->abi.sp;
+        return brisc_scheduler_state.threads[brisc_scheduler_state.thread_id].cpu_state->reg.x[CPU_SP_XREG];
     }
     else
     {
@@ -55,7 +55,7 @@ extern cpu_reg_t thread_schedule_next( void )
             if ( (thread = b_thread_state( thread_next_id() ))->prio > 0 )
             {
                 brisc_scheduler_state.prio = thread->prio;
-                return thread->cpu_state->abi.sp;
+                return thread->cpu_state->reg.x[CPU_SP_XREG];
             }
         }
     }

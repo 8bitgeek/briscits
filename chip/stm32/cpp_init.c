@@ -42,7 +42,7 @@ extern uint32_t __init_array_start, __init_array_end,
 void _cpp_init( void )
 {
     cpp_unit_ptr_t constructor_fp = (cpp_unit_ptr_t)&__init_array_start;
-    while ( (uint32_t)constructor_fp != &__init_array_end )
+    while ( ( void * )constructor_fp != ( void* )&__init_array_end )
     {
         constructor_fp();
         constructor_fp = (cpp_unit_ptr_t)(((uint32_t)constructor_fp)+4);
@@ -52,7 +52,7 @@ void _cpp_init( void )
 void _cpp_deinit( void )
 {
     cpp_unit_ptr_t constructor_fp = (cpp_unit_ptr_t)&__fini_array_start;
-    while ( (uint32_t)constructor_fp != &__fini_array_end )
+    while ( ( void * )constructor_fp != ( void* )&__fini_array_end )
     {
         constructor_fp();
         constructor_fp = (cpp_unit_ptr_t)(((uint32_t)constructor_fp)+4);

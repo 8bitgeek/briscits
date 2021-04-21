@@ -1,0 +1,5 @@
+target remote localhost:3333
+load main.elf
+file main.elf
+break main
+continue

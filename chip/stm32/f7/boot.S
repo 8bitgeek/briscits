@@ -38,6 +38,7 @@ SOFTWARE.
 		.global _bss_init
 		.global _cpp_init		
 		.global _cpp_deinit		
+		.global _core_clock_init
 		.global _systick_init
 		.global board_init
 		.global main
@@ -70,12 +71,15 @@ reset_handler:
 		ldr		r2, =_fpu_init
 		blx		r2
 
-
 		// Call constructors
 		ldr		r2, =_cpp_init
 		blx		r2
 
-		// Initialize the timer
+		// Initialize the core clock
+		ldr		r2, =_core_clock_init
+		blx		r2
+
+		// Initialize the systick timer
 		ldr		r2, =_systick_init
 		blx		r2
 
@@ -84,7 +88,7 @@ reset_handler:
 		blx		r2
 
 start:
-		// Jump to application entry point
+		// Jump to main
 		movs	r0, #0
 		movs 	r1, #0
 		mov 	lr, r0
@@ -96,14 +100,11 @@ start:
 		ldr		r2, =_cpp_deinit
 		blx		r2
 
-		// Returned from application entry point, loop forever.
+		// Returned from main, loop forever.
 exit:
-_exit:	b 		reset_handler
-
-_halt:	b		_halt
-
+_exit:
+_halt:
 _hard_fault:
 		b		_halt
-
 
 		.end
