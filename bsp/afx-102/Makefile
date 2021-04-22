@@ -10,9 +10,9 @@ MCU_FLOAT    	= soft
 CFLAGS += -DBRISC_THREAD_MAX=4
 
 # OpenOCD
-OPENOCD=riscv-openocd
-OPENOCD_JTAG_CFG=openocd/olimex-jtag-tiny.cfg 
-OPENOCD_TARGET_CFG=openocd/openocd_gd32vf103.cfg
+OPENOCD=openocd
+OPENOCD_JTAG_CFG=interface/stlink-v2.cfg
+OPENOCD_TARGET_CFG=target/stm32f7x.cfg
 
 # CPU
 CPU_COMMON=cpu/arm
@@ -39,9 +39,9 @@ ASFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork
 CFLAGS += -DSTM32F746xx
 CFLAGS += -c
 CFLAGS += -Wall
-CFLAGS += -Os
-#CFLAGS += -g -Os
-#CFLAGS += -ggdb
+# CFLAGS += -Os
+# CFLAGS += -g -Os
+CFLAGS += -ggdb
 CFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT)
 
 
@@ -143,7 +143,7 @@ stop:
 
 # Rule to start debugger
 debug: $(TARGET).bin
-	$(GDB) -x bsp/$(BOARD)/gdbinit
+	$(GDB) -tui -x bsp/$(BOARD)/gdbinit
 
 flash: $(TARGET).elf
 		$(OPENOCD) -f $(OPENOCD_JTAG_CFG) -f $(OPENOCD_TARGET_CFG) -c "program $(TARGET).elf verify reset exit"

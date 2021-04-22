@@ -8,6 +8,7 @@ static void peripheral_clock_setup( void );
 void board_init( void ) 
 {
     peripheral_clock_setup();
+	cpu_int_enable();
 }
 
 static void peripheral_clock_setup( void )
