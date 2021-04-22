@@ -88,83 +88,96 @@ typedef union cpu_state_t
     } abi;
 } cpu_state_t;
 
-#define cpu_wr_sp(ptr) __asm  ( "  mv  sp,%0\n" : : "r" (ptr) )
+#define cpu_wr_sp(ptr) __asm__ __volatile__ ( " msr psp, %0\n\t" : : "r" (ptr) )
 
-#define cpu_systick_enter()             \
-    __asm(  "  nop               \n"    \
+#define cpu_systick_enter()             		\
+    	__asm(  "  nop               \n"    	\
             )
 
-#define cpu_systick_exit()              \
-    __asm(  "  mret              \n"    \
-            )
+
 
 #if defined(ARM_FVP_LAZY_STACKING)
 	/* This saves the context on the PSP, the Cortex-M7 pushes the other registers using hardware */
-	#define cpu_push_state() 			\
-		__asm__ __volatile__ (				\
+	#define cpu_push_state() 					\
+		__asm__ __volatile__ (					\
 			"	.thumb_func					\n"	\
 			"	mrs			r0, psp			\n"	/* get process stack pointer into R1 to use to push regs onto process stack */	\
 			"	stmdb		r0!, {r4-r11}	\n"	/* push remainder of CPU register onto process stack */	\
-			"	stmdb	    r0!, {r13}	    \n"	/* store stack pointer */ \
+			"	mov			r4, sp	    	\n"	\
+			"	stmdb		r0!, {r4}	    \n"	\
 			"	tst			lr, #0x10		\n"	/* Is the VFP in use? */		\
 			"	bne			1f				\n"	/* No, we're done pushing */	\
 			"	vstmdb		r0!, {s16-s31}	\n"	/* Push the VFP register onto the process stack */		\
 			"1:								\n"	/* */ \
 			"	stmdb		r0!, {lr}		\n" /* push link register (VFP state) onto process stack */			\
 			"	msr			psp, r0			\n"	/* update the process stack pointer */	\
-			: 								\
-			:								\
-			:								\
-			)                               \
+			: 									\
+			:									\
+			:									\
+			);                              	\
             brisc_scheduler_state.threads[brisc_scheduler_state.thread_id].cpu_state = (cpu_state_t*)cpu_rd_sp()
 
 
 	/* This loads the context from the PSP, the Cortex-M7 loads the other registers using hardware */
-	#define cpu_pop_state()				\
-		__asm__ __volatile__ (				\
+	#define cpu_pop_state()						\
+		__asm__ __volatile__ (					\
 			"	.thumb_func					\n" \
 			"	mrs			r0, psp			\n"	/* get the process stack to r0 to restore the registers  */	\
-			"	ldmfd	    r0!, {r13}	    \n"	/* restore stack pointer */ \
 			"	ldmfd		r0!, {lr}		\n" /* restore link (VFP state) from process stack */	\
 			"	tst			lr, #0x10		\n"	/* restore the high FP registers if required */	\
 			"	bne			1f				\n"	/* */ \
 			"	vldmia		r0!, {s16-s31}	\n"	/* */ \
 			"1:								\n"	/* */ \
+			"	ldmfd		r0!, {r4}	    \n"	\
+			"	mov			sp, r4		    \n"	\
 			"	ldmfd		r0!, {r4-r11}	\n"	\
 			"	msr			psp, r0			\n"	\
-			"	bx			lr				\n" \
-			:								\
-			:								\
-			:								\
+			:									\
+			:									\
+			:									\
 			)
+
+	#define cpu_systick_exit()              	\
+		__asm( 
+			"	bx			lr				\n" \
+            )
+
 #else
 	/* This saves the context on the PSP, the Cortex-M7 pushes the other registers using hardware */
-	#define cpu_push_state() 			\
-		__asm__ __volatile__ (				\
-			"	push	{lr}			\n" \
-			"	mrs		r0, psp			\n"	\
-			"	stmdb	r0!, {r4-r11}	\n"	\
-			"	stmdb	r0!, {r13}	    \n"	\
-			"	msr		psp, r0			\n"	\
-			: 								\
-			:								\
-			:								\
-			);                               \
+	#define cpu_push_state() 					\
+		__asm__ __volatile__ (					\
+			"	push	{lr}				\n" \
+			"	mrs		r0, 	psp			\n"	\
+			"	stmdb	r0!, 	{r4-r11}	\n"	\
+			"	mov		r4, 	sp	    	\n"	\
+			"	stmdb	r0!, 	{r4}	    \n"	\
+			"	msr		psp, 	r0			\n"	\
+			: 									\
+			:									\
+			:									\
+			);                               	\
             brisc_scheduler_state.threads[brisc_scheduler_state.thread_id].cpu_state = (cpu_state_t*)cpu_rd_sp()
 
 
 	/* This loads the context from the PSP, the Cortex-M7 loads the other registers using hardware */
-	#define cpu_pop_state()				\
-		__asm__ __volatile__ (				\
-			"	mrs		r0, psp			\n"	\
-			"	ldmfd	r0!, {r13}	    \n"	\
-			"	ldmfd	r0!, {r4-r11}	\n"	\
-			"	msr		psp, r0			\n"	\
-			"	pop		{pc}			\n"	\
-			:								\
-			:								\
-			:								\
+	#define cpu_pop_state()						\
+		__asm__ __volatile__ (					\
+			"	mrs		r0,  	psp			\n"	\
+			"	ldmfd	r0!, 	{r4}	    \n"	\
+			"	mov		sp,  	r4		    \n"	\
+			"	ldmfd	r0!, 	{r4-r11}	\n"	\
+			"	msr		psp, 	r0			\n"	\
+			:									\
+			:									\
+			:									\
 			)
+
+	#define cpu_systick_exit()              	\
+			__asm( 								\
+			"	pop		{pc}				\n"	\
+            )
+
+
 #endif
 
 extern cpu_reg_t cpu_atomic_acquire ( cpu_reg_t* lock );
@@ -177,8 +190,8 @@ extern cpu_reg_t	__attribute__((naked)) cpu_int_enabled(void);
 extern void 		__attribute__((naked)) cpu_int_set(cpu_reg_t enable);
 extern void 		__attribute__((naked)) chip_wfi(void);
 
-volatile __attribute__( ( naked ) ) void PendSV_IRQ( void );
-volatile __attribute__( ( naked ) ) void SysTick_IRQ( void );
+volatile __attribute__( ( naked ) ) void PendSV_IRQ_Handler( void );
+volatile __attribute__( ( naked ) ) void SysTick_IRQ_Handler( void );
 
 extern void cpu_systick_clear(void);
 extern void cpu_yield_clear(void);

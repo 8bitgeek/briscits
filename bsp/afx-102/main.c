@@ -1,6 +1,5 @@
 #include <brisc_thread.h>
 #include <brisc_delay.h>
-#include <rgb_led.h>
 #include <xprintf.h>
 
 #define DEC_DELAY       (2)
@@ -51,12 +50,6 @@ static void run_red(void* arg)
 {
     for(EVER)
     {
-        int* delay = (int*)arg;
-        
-        rgb_led_r(false);
-        b_delay_ms(*delay);
-        rgb_led_r(true);
-        b_delay_ms(*delay);
     }
 }
 
@@ -64,12 +57,6 @@ static void run_green(void* arg)
 {
     for(EVER)
     {
-        int* delay = (int*)arg;
-        
-        rgb_led_g(true);
-        b_delay_ms(*delay);
-        rgb_led_g(false);
-        b_delay_ms(*delay);
     }
 }
 
@@ -77,12 +64,6 @@ static void run_blue(void* arg)
 {
     for(EVER)
     {
-        int* delay = (int*)arg;
-        
-        rgb_led_b(false);
-        b_delay_ms((*delay)*2);
-        rgb_led_b(true);
-        b_delay_ms((*delay)*2);
     }
 }
 

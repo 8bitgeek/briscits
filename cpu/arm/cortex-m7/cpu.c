@@ -179,12 +179,12 @@ extern void cpu_yield(void)
 	__asm(" dsb\n");
 }
 
-volatile __attribute__( ( naked ) ) void PendSV_IRQ( void )
+volatile __attribute__( ( naked ) ) void PendSV_IRQ_Handler( void )
 {
 	brisc_isr_yield();
 }
 
-volatile __attribute__( ( naked ) ) void SysTick_IRQ( void )
+volatile __attribute__( ( naked ) ) void SysTick_IRQ_Handler( void )
 {
 	brisc_isr_systick();
 }

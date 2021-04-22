@@ -46,6 +46,8 @@ SOFTWARE.
         .global __main_stack_end__
         .global	__process_stack_end__
 
+		.global _hard_fault
+		.global default_interrupt_handler
 		.global reset_handler
 		.type	reset_handler, %function
 		.code   16
@@ -105,6 +107,9 @@ exit:
 _exit:
 _halt:
 _hard_fault:
+default_interrupt_handler:
 		b		_halt
+
+
 
 		.end
