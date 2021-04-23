@@ -46,6 +46,8 @@ SOFTWARE.
         .global __main_stack_end__
         .global	__process_stack_end__
 
+		.global UsageFault_IRQ_Handler
+		.global BusFault_IRQ_Handler
 		.global _hard_fault
 		.global default_interrupt_handler
 		.global reset_handler
@@ -104,12 +106,24 @@ start:
 
 		// Returned from main, loop forever.
 exit:
+		b 		exit
+
 _exit:
+		b 		_exit
+
 _halt:
+		b 		_halt
+
 _hard_fault:
+		b 		_hard_fault
+
 default_interrupt_handler:
-		b		_halt
+		b		default_interrupt_handler
 
+BusFault_IRQ_Handler:
+		b		BusFault_IRQ_Handler
 
+UsageFault_IRQ_Handler:
+		b 		UsageFault_IRQ_Handler
 
 		.end

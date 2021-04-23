@@ -37,18 +37,18 @@ SOFTWARE.
 #include <stdint.h>
 
 #if defined(ARM_FVP_LAZY_STACKING)
-    #define CPU_MAX_XREG    17
+    #define CPU_MAX_XREG    18
     /* Scheduler Register Offsets */
     #define CPU_A0_XREG      9  /* r0 Arg[0] Register           */
     #define CPU_RA_XREG     14  /* ra Return Address Register   */
     #define CPU_PC_XREG     15  /* pc Program Counter           */
     #define CPU_SP_XREG      0  /* sp Stack Pointer Register    */
 #else
-    #define CPU_MAX_XREG    16
+    #define CPU_MAX_XREG    17
     /* Scheduler Register Offsets */
-    #define CPU_A0_XREG      8  /* r0 Arg[0] Register           */
-    #define CPU_RA_XREG     13  /* ra Return Address Register   */
-    #define CPU_PC_XREG     14  /* pc Program Counter           */
+    #define CPU_A0_XREG      9  /* r0 Arg[0] Register           */
+    #define CPU_RA_XREG     14  /* ra Return Address Register   */
+    #define CPU_PC_XREG     15  /* pc Program Counter           */
     #define CPU_SP_XREG      0  /* sp Stack Pointer Register    */
 #endif
 

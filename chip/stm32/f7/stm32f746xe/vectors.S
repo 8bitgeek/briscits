@@ -33,6 +33,7 @@ SOFTWARE.
 ******************************************************************************/
 
 		.macro	vector v 
+			.word 	v
 			.weak	v
 			.set    v,default_interrupt_handler
 		.endm
