@@ -16,10 +16,10 @@ static int blue_thread_handle  = (-1);
 static int main_thread_handle  = (-1);
 
 typedef struct _app_state_ {
-    int red_count;
-    int green_count;
-    int blue_count;
-    int main_count;
+    float red_count;
+    float green_count;
+    float blue_count;
+    float main_count;
 } app_state_t;
 
 app_state_t app_state;
@@ -31,27 +31,45 @@ static void run_main (void* arg);
 
 static void run_red(void* arg)
 {
+    brisc_systick_t timeout_start=b_thread_systick();
+
     for(EVER)
     {
-        ++app_state.red_count;
+        if ( b_thread_systick() - timeout_start > 1 )
+        {
+            app_state.red_count += 0.001f;
+            timeout_start=b_thread_systick();
+        }
         b_thread_yield();
     }
 }
 
 static void run_green(void* arg)
 {
+    brisc_systick_t timeout_start=b_thread_systick();
+
     for(EVER)
     {
-        ++app_state.green_count;
+        if ( b_thread_systick() - timeout_start > 1 )
+        {
+            app_state.green_count += 0.001f;
+            timeout_start=b_thread_systick();
+        }
         b_thread_yield();
     }
 }
 
 static void run_blue(void* arg)
 {
+    brisc_systick_t timeout_start=b_thread_systick();
+
     for(EVER)
     {
-        ++app_state.blue_count;
+        if ( b_thread_systick() - timeout_start > 1 )
+        {
+            app_state.blue_count += 0.001f;
+            timeout_start=b_thread_systick();
+        }
         b_thread_yield();
     }
 }
@@ -59,9 +77,15 @@ static void run_blue(void* arg)
 
 static void run_main(void* arg)
 {
+    brisc_systick_t timeout_start=b_thread_systick();
+
     for(EVER)
     {
-        ++app_state.main_count;
+        if ( b_thread_systick() - timeout_start > 1 )
+        {
+            app_state.main_count += 0.001f;
+            timeout_start=b_thread_systick();
+        }
         b_thread_yield();
     }
 }

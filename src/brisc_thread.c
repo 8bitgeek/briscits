@@ -119,9 +119,14 @@ int b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_
             cpu_state->reg.x[CPU_A0_XREG] = (cpu_reg_t)arg;
             cpu_state->reg.x[CPU_RA_XREG] = (cpu_reg_t)thread_exit;
             cpu_state->reg.x[CPU_PC_XREG] = (cpu_reg_t)thread_fn;
+            
             #if defined(CPU_PSR_XREG) && defined(CPU_DEFAULT_PSR)
                 cpu_state->reg.x[CPU_PSR_XREG] = (cpu_reg_t)CPU_DEFAULT_PSR;
             #endif
+            #if defined(ARM_FVP_LAZY_STACKING)
+				cpu_state->reg.x[0] = DEFAULT_EXCEPTION_RETURN;
+			#endif
+
             // cpu_state->reg.x[CPU_SP_XREG] = (cpu_reg_t)cpu_state; //??
 
             /* initialize the initial thread state */

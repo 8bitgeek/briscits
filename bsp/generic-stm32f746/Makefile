@@ -1,13 +1,13 @@
 # Board
+MCU_CHIP	 	= stm32f7xx
+MCU_CORE     	= cortex-m7
+MCU_FLOAT    	= softfp
+MCU_FPU 		= fpv4-sp-d16
+
 BOARD=generic-stm32f746
 TARGET=$(BOARD)
 
-MCU_CHIP	 	= stm32f7xx
-MCU_CORE     	= cortex-m7
-MCU_FLOAT    	= soft
-
-#CFLAGS += -DBRISC_THREAD_MAX=4 -DARM_FVP_LAZY_STACKING
-CFLAGS += -DBRISC_THREAD_MAX=4
+CFLAGS += -DBRISC_THREAD_MAX=4 -DARM_FVP_LAZY_STACKING -DHSE_VALUE=8000000
 
 # OpenOCD
 OPENOCD=openocd
@@ -33,7 +33,7 @@ GDB = arm-none-eabi-gdb
 ASFLAGS += -c
 ASFLAGS += -O0
 ASFLAGS += -Wall
-ASFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT)
+ASFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT) -mfpu=$(MCU_FPU)
 
 # C compilation directives
 CFLAGS += -DSTM32F746xx
@@ -42,7 +42,7 @@ CFLAGS += -Wall
 # CFLAGS += -Os
 # CFLAGS += -g -Os
 CFLAGS += -ggdb
-CFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT)
+CFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT) -mfpu=$(MCU_FPU)
 
 
 # Linker directives.
@@ -57,7 +57,7 @@ LFLAGS += -lc
 LFLAGS += -lgcc
 LFLAGS += -lm
 LFLAGS += --specs=nosys.specs
-LFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT)
+LFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT) -mfpu=$(MCU_FPU)
 LFLAGS += -Wl,--gc-sections
 LFLAGS += -T$(CHIP)/linker.ld
 

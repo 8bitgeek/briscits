@@ -39,6 +39,7 @@ SOFTWARE.
 #define CPU_DEFAULT_PSR 0x21000000
 
 #if defined(ARM_FVP_LAZY_STACKING)
+	#define DEFAULT_EXCEPTION_RETURN	0xfffffffd
     #define CPU_MAX_XREG    17
     /* Scheduler Register Offsets */
     #define CPU_A0_XREG      9  /* r0 Arg[0] Register           */
@@ -90,7 +91,7 @@ typedef union cpu_state_t
 } cpu_state_t;
 
 #define cpu_wr_sp(ptr) 		__asm__ __volatile__ ( " msr psp, %0\n\t" : : "r" (ptr) )
-#define cpu_systick_enter() __asm__ __volatile__ ( " nop\n\t" )
+#define cpu_systick_enter() // __asm__ __volatile__ ( " nop\n\t" )
 
 #if defined(ARM_FVP_LAZY_STACKING)
 	/* This saves the context on the PSP, the Cortex-M7 pushes the other registers using hardware */
@@ -108,8 +109,8 @@ typedef union cpu_state_t
 			: 									\
 			:									\
 			:									\
-			);                              	\
-            brisc_scheduler_state.threads[brisc_scheduler_state.thread_id].cpu_state = (cpu_state_t*)cpunexti_rd_sp()
+			);                             		\
+            brisc_scheduler_state.threads[brisc_scheduler_state.thread_id].cpu_state = (cpu_state_t*)cpu_rd_sp()
 
 
 	/* This loads the context from the PSP, the Cortex-M7 loads the other registers using hardware */
@@ -130,7 +131,7 @@ typedef union cpu_state_t
 			)
 
 	#define cpu_systick_exit()              	\
-		__asm( 
+		__asm( 									\
 			"	bx			lr				\n" \
             )
 
