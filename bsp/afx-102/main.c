@@ -2,11 +2,6 @@
 #include <brisc_delay.h>
 #include <string.h>
 
-#define DEC_DELAY       (2)
-#define INC_DELAY       DEC_DELAY
-#define MIN_DELAY       (2)
-#define MAX_DELAY       (50)
-
 #define EVER            ;;
 #define STACK_BYTES     (1024)
 #define STACK_WORDS     STACK_BYTES / sizeof(cpu_reg_t)

@@ -43,7 +43,6 @@ SOFTWARE.
 
 /**
  * @brief timer interrupt, increment systick, and potentially switch thread context
- * @note Allows for higher priority interrupt to preempt once state is preserved.
  */
 volatile __attribute__( ( naked ) ) void brisc_isr_systick( void ) 
 {
@@ -52,11 +51,8 @@ volatile __attribute__( ( naked ) ) void brisc_isr_systick( void )
         cpu_push_state();
         
             systick_service();
-            b_int_enable();
            
             thread_scheduler_service();
-
-            b_int_disable();
 
         cpu_pop_state();
 
@@ -65,7 +61,6 @@ volatile __attribute__( ( naked ) ) void brisc_isr_systick( void )
 
 /**
  * @brief software interrupt, thread yield, give up remaining prio and switch context.
- * @note Allows for higher priority interrupt to preempt once state is preserved.
  */
 volatile __attribute__( ( naked ) ) void brisc_isr_yield( void )
 {
@@ -75,11 +70,8 @@ volatile __attribute__( ( naked ) ) void brisc_isr_yield( void )
         
             cpu_yield_clear();
             b_thread_prio_clear();
-            b_int_enable();
 
             thread_scheduler_service();
-
-            b_int_disable();
 
         cpu_pop_state();
 
