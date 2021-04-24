@@ -10,7 +10,4 @@ target remote localhost:3333
 load afx-102.elf
 file afx-102.elf
 break main
-break SysTick_IRQ_Handler
-break PendSV_IRQ_Handler
-break b_thread_create
 continue
