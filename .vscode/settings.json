@@ -6,6 +6,7 @@
         "ftoa.h": "c",
         "xprintf.h": "c",
         "brisc_sched.h": "c",
-        "brisc_board.h": "c"
+        "brisc_board.h": "c",
+        "core_cm7.h": "c"
     }
 }

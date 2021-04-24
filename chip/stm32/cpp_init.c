@@ -31,33 +31,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#include <brisc_sched.h>
+#include <brisc_board.h>
 #include <string.h>
 
-brisc_scheduler_t brisc_scheduler_state;
+typedef void (*cpp_unit_ptr_t)(void);
 
-/**
- * @brief determine which thread gets this time slice.
- * @return the context (stack pointer) to the thread to allocate this time slice to.
- */
-extern cpu_reg_t thread_schedule_next( void )
+extern uint32_t __init_array_start, __init_array_end,
+                __fini_array_start, __fini_array_end;
+
+void _cpp_init( void )
 {
-    brisc_thread_t* thread;
-            
-    if ( brisc_scheduler_state.lock > 0 || --brisc_scheduler_state.prio > 0 )
+    cpp_unit_ptr_t constructor_fp = (cpp_unit_ptr_t)&__init_array_start;
+    while ( ( void * )constructor_fp != ( void* )&__init_array_end )
     {
-        return (cpu_reg_t)brisc_scheduler_state.threads[brisc_scheduler_state.thread_id].cpu_state;
+        constructor_fp();
+        constructor_fp = (cpp_unit_ptr_t)(((uint32_t)constructor_fp)+4);
     }
-    else
+}
+
+void _cpp_deinit( void )
+{
+    cpp_unit_ptr_t constructor_fp = (cpp_unit_ptr_t)&__fini_array_start;
+    while ( ( void * )constructor_fp != ( void* )&__fini_array_end )
     {
-        for(int nThread=0; nThread < BRISC_THREAD_MAX; nThread++)
-        {
-            if ( (thread = b_thread_state( thread_next_id() ))->prio > 0 )
-            {
-                brisc_scheduler_state.prio = thread->prio;
-                return (cpu_reg_t)thread->cpu_state;
-            }
-        }
+        constructor_fp();
+        constructor_fp = (cpp_unit_ptr_t)(((uint32_t)constructor_fp)+4);
     }
-    return 0;
 }

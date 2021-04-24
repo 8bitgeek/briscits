@@ -31,33 +31,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#include <brisc_sched.h>
-#include <string.h>
+#include <brisc_board.h>
+#include <core_cm7.h>
 
-brisc_scheduler_t brisc_scheduler_state;
-
-/**
- * @brief determine which thread gets this time slice.
- * @return the context (stack pointer) to the thread to allocate this time slice to.
- */
-extern cpu_reg_t thread_schedule_next( void )
+void _systick_init( void ) 
 {
-    brisc_thread_t* thread;
-            
-    if ( brisc_scheduler_state.lock > 0 || --brisc_scheduler_state.prio > 0 )
-    {
-        return (cpu_reg_t)brisc_scheduler_state.threads[brisc_scheduler_state.thread_id].cpu_state;
-    }
-    else
-    {
-        for(int nThread=0; nThread < BRISC_THREAD_MAX; nThread++)
-        {
-            if ( (thread = b_thread_state( thread_next_id() ))->prio > 0 )
-            {
-                brisc_scheduler_state.prio = thread->prio;
-                return (cpu_reg_t)thread->cpu_state;
-            }
-        }
-    }
-    return 0;
+    /* number of ticks between interrupts */
+	uint32_t ticks = SystemCoreClock / 1000;	
+
+    /* set reload register */
+	SysTick->LOAD  = (ticks & SysTick_LOAD_RELOAD_Msk) - 1;	
+
+    /* Load the SysTick Counter Value */
+	SysTick->VAL   = 0;											
+	SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
+					SysTick_CTRL_TICKINT_Msk   |
+					SysTick_CTRL_ENABLE_Msk;	
+
+    /* Enable SysTick IRQ and SysTick Timer */				
+	__DSB();
 }

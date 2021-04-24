@@ -69,12 +69,12 @@ void b_thread_start(int id)
 
 void b_thread_lock( void )
 {
-    ++brisc_scheduler_state.lock
+    ++brisc_scheduler_state.lock;
 }
 
 void b_thread_unlock( void )
 {
-    --brisc_scheduler_state.lock
+    --brisc_scheduler_state.lock;
 }
 
 void b_thread_yield( void )
@@ -119,7 +119,7 @@ int b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_
             cpu_state->reg.x[CPU_A0_XREG] = (cpu_reg_t)arg;
             cpu_state->reg.x[CPU_RA_XREG] = (cpu_reg_t)thread_exit;
             cpu_state->reg.x[CPU_PC_XREG] = (cpu_reg_t)thread_fn;
-            cpu_state->reg.x[CPU_SP_XREG] = (cpu_reg_t)cpu_state;
+            cpu_set_initial_state(cpu_state);
 
             /* initialize the initial thread state */
             thread->cpu_state  = cpu_state;

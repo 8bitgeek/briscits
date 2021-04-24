@@ -32,7 +32,22 @@ SOFTWARE.
 
 ******************************************************************************/
 #include "cpu.h"
+#include <stm32f746xx.h>
 #include <core_cm7.h>
+#include <brisc_irq.h>
+
+void _fpu_init(void)
+{
+	#if defined(ARM_FVP_LAZY_STACKING)
+		
+		/* set CP10 and CP11 Full Access */
+		SCB->CPACR |= (0xF << 20);  		
+
+		/* Lazy Stacking */
+        FPU->FPCCR |= (FPU_FPCCR_ASPEN_Msk | FPU_FPCCR_LSPEN_Msk);
+
+	#endif
+}
 
 extern void __attribute__((naked)) cpu_int_enable(void)
 {
@@ -41,7 +56,7 @@ extern void __attribute__((naked)) cpu_int_enable(void)
 		  "   bx       lr           \n");
 }
 
-extern int __attribute__((naked)) cpu_int_disable(void)
+extern cpu_reg_t __attribute__((naked)) cpu_int_disable(void)
 {
 	__asm("   mrs     r0, primask  \n"
 		  "	  eor     r0, r0, #1   \n"
@@ -50,7 +65,7 @@ extern int __attribute__((naked)) cpu_int_disable(void)
 		  ::: "r0");
 }
 
-extern int	__attribute__((naked)) cpu_int_enabled(void)
+extern cpu_reg_t	__attribute__((naked)) cpu_int_enabled(void)
 {
 	__asm(" mrs      r0, primask   \n"
 		  "	eor      r0, r0, #1    \n"
@@ -58,7 +73,7 @@ extern int	__attribute__((naked)) cpu_int_enabled(void)
 		  ::: "r0");
 }
 
-extern void __attribute__((naked)) cpu_int_set(int enable)
+extern void __attribute__((naked)) cpu_int_set(cpu_reg_t enable)
 {
 	__asm("   cmp	  r0, #0  \n"
 		  "   beq	  1f      \n"
@@ -72,7 +87,7 @@ extern void __attribute__((naked)) cpu_int_set(int enable)
 
 extern void* __attribute__((naked)) cpu_rd_sp(void)
 {
-	__asm__ __volatile__ (	" mrs	r0, msp			\n" \
+	__asm__ __volatile__ (	" mrs	r0, psp			\n" \
 							" bx	lr				\n" \
 							:							\
 							:							\
@@ -93,7 +108,8 @@ extern uint32_t cpu_atomic_acquire(cpu_reg_t* lock)
 	cpu_reg_t int_state = cpu_int_disable();
     cpu_reg_t t = *lock;
     *lock = 1;
-    int_state ? cpu_int_enable();
+    if ( int_state )
+		cpu_int_enable();
     return t;
 }
 
@@ -147,13 +163,6 @@ void __attribute__((naked)) chip_interrupts_set(cpu_reg_t enable)
 		  "   bx      lr      \n");
 }
 
-void __attribute__((naked)) chip_wfi(void)
-{
-	__asm(" isb    \n"
-	      " wfi    \n"
-	      " bx lr  \n");
-}
-
 extern void cpu_systick_clear(void)
 {
 	SCB->ICSR |= SCB_ICSR_PENDSTCLR_Msk;
@@ -170,12 +179,12 @@ extern void cpu_yield(void)
 	__asm(" dsb\n");
 }
 
-volatile __attribute__( ( naked ) ) void PendSV_IRQ( void )
+extern void cpu_set_initial_state(cpu_state_t* cpu_state)
 {
-	brisc_isr_yield();
-}
-
-volatile __attribute__( ( naked ) ) void SysTick_IRQ( void )
-{
-	brisc_isr_systick();
+	#if defined(CPU_PSR_XREG) && defined(CPU_DEFAULT_PSR)
+		cpu_state->reg.x[CPU_PSR_XREG] = (cpu_reg_t)CPU_DEFAULT_PSR;
+	#endif
+	#if defined(ARM_FVP_LAZY_STACKING)
+		cpu_state->reg.x[0] = DEFAULT_EXCEPTION_RETURN;
+	#endif
 }

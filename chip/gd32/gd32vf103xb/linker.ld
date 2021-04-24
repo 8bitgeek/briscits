@@ -7,7 +7,6 @@ MEMORY
   RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 32K
 }
 
-
 SECTIONS
 {
   __stack_size = DEFINED(__stack_size) ? __stack_size : 1K;

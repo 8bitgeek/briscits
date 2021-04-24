@@ -33,10 +33,8 @@ SOFTWARE.
 ******************************************************************************/
 #include "riscv_encoding.h"
 
-    .global eclic_msip_handler
-    .global eclic_mtip_handler
     .global default_interrupt_handler
-    .global bss_init
+    .global _bss_init
     .global board_init
     .global brisc_timer_init
     .global main
@@ -95,7 +93,7 @@ in_address_space:
     csrw    CSR_MTVEC, a0
 
     // Initialize RAM sections
-    call    bss_init
+    call    _bss_init
 
     // Initialize the timer
     call    brisc_timer_init

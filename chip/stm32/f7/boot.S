@@ -34,42 +34,22 @@ SOFTWARE.
    		.syntax unified
 		.section .init, "ax"
 
-		.extern fpu_init		// initialize the FPU
-		.extern	early_init		// first initialization
-		.extern caribou_heap_init		// second initialization
-		.extern	late_init		// third initialization
-		.extern main			// main program entry point
+		.global _fpu_init		// initialize the FPU
+		.global _bss_init
+		.global _cpp_init		
+		.global _cpp_deinit		
+		.global _core_clock_init
+		.global _systick_init
+		.global board_init
+		.global main
 
-		.extern _isr
-
-		.global	exit
-		.global	_exit
-		.global _panic
-		.global _fault
-		.global _halt
-		.global _hard_fault
-		.global _mpu_fault
-		.global _bus_fault
-		.global _usage_fault
-
-        .global	__main_stack_base__
-        .global	__main_stack_size__
         .global __main_stack_end__
-        .global	__process_stack_base__
-        .global	__process_stack_size__
         .global	__process_stack_end__
 
-		.global	__bss_start__
-		.global	__bss_end__
-
-		.global	__heap_start__
-		.global	__heap_end__
-
-		.global	__init_array_start
-		.global	__init_array_end
-		.global	__fini_array_start
-		.global	__fini_array_end
-
+		.global UsageFault_IRQ_Handler
+		.global BusFault_IRQ_Handler
+		.global _hard_fault
+		.global default_interrupt_handler
 		.global reset_handler
 		.type	reset_handler, %function
 		.code   16
@@ -87,65 +67,32 @@ reset_handler:
 		msr		control,r0
 		isb
 
-		// Set up process stack
-		ldr 	r0, =__process_stack_base__
-		ldr 	r1, =__process_stack_end__
-		//movs	r2, #0xFA
-		movs	r2, #0x00
-		bl 		memory_set
-
-		// Initialize stack
-		ldr 	r0, =__main_stack_base__
-		ldr 	r1, =__main_stack_end__
-		//movs	r2, #0xFA
-		movs	r2, #0x00
-		bl 		memory_set
-
 		// Data initialization.
-		// NOTE: It assumes that the DATA size is a multiple of 4.
-        ldr     r0, =_textdata
-        ldr     r1, =_data
-        ldr     r2, =_edata
-        bl		memory_copy
-
-		// Zero the bss.
-		ldr 	r0, =__bss_start__
-		ldr 	r1, =__bss_end__
-		movs	r2, #0
-		bl 		memory_set
+		ldr		r2, =_bss_init
+		blx		r2
 
 		// FPU init
-		ldr		r2, =fpu_init
-		blx		r2
-
-		// Early init
-		ldr		r2, =early_init
-		blx		r2
-
-		// initialize the heap
-		ldr 	r0, =__heap_start__
-		ldr		r1, =__heap_end__
-		ldr		r2, =caribou_heap_init
+		ldr		r2, =_fpu_init
 		blx		r2
 
 		// Call constructors
-		ldr 	r0, =__init_array_start
-		ldr 	r1, =__init_array_end
-ctor_loop:
-		cmp		 r0, r1
-		beq 	ctor_end
-		ldr 	r2, [r0]
-		adds 	r0, #4
-		push 	{r0-r1}
-		blx 	r2
-		pop 	{r0-r1}
-		b 		ctor_loop
-ctor_end:
+		ldr		r2, =_cpp_init
+		blx		r2
+
+		// Initialize the core clock
+		ldr		r2, =_core_clock_init
+		blx		r2
+
+		// Initialize the systick timer
+		ldr		r2, =_systick_init
+		blx		r2
+
+		// Initialize the board
+		ldr		r2, =board_init
+		blx		r2
 
 start:
-		// Jump to application entry point
-		ldr		r2, =late_init
-		blx		r2
+		// Jump to main
 		movs	r0, #0
 		movs 	r1, #0
 		mov 	lr, r0
@@ -154,53 +101,17 @@ start:
 		blx 	r2
 
 		// Call destructors
-		ldr 	r0, =__fini_array_start
-		ldr 	r1, =__fini_array_end
-dtor_loop:
-		cmp		 r0, r1
-		beq 	dtor_end
-		ldr 	r2, [r0]
-		adds 	r0, #4
-		push 	{r0-r1}
-		blx 	r2
-		pop 	{r0-r1}
-		b 		dtor_loop
-dtor_end:
+		ldr		r2, =_cpp_deinit
+		blx		r2
 
-		// Returned from application entry point, loop forever.
+		// loop forever.
 exit:
-_exit:	b 		reset_handler
-
-_halt:	b		_halt
-
+_exit:
+_halt:
 _hard_fault:
-		b		_halt
-
-		// src = r0
-		// dest = r1
-		// end = r2
-memory_copy:
-		cmp 	r0, r1
-		beq 	2f
-		subs 	r2, r2, r1
-		beq 	2f
-1:
-		ldrb 	r3, [r0]
-		adds 	r0, r0, #1
-		strb 	r3, [r1]
-		adds 	r1, r1, #1
-		subs 	r2, r2, #1
-		bne 	1b
-2:
-		bx 		lr
-
-memory_set:
-		cmp		r0, r1
-		beq 	1f
-		strb 	r2, [r0]
-		adds 	r0, r0, #1
-		b 		memory_set
-1:
-		bx lr
+default_interrupt_handler:
+BusFault_IRQ_Handler:
+UsageFault_IRQ_Handler:
+		b 		exit
 
 		.end

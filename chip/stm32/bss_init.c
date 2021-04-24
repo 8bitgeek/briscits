@@ -31,33 +31,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#include <brisc_sched.h>
+#include <brisc_board.h>
 #include <string.h>
 
-brisc_scheduler_t brisc_scheduler_state;
+// Pre-defined memory locations for program initialization.
+extern uint32_t _textdata, _data, _edata, __bss_start__, __bss_end__;
 
-/**
- * @brief determine which thread gets this time slice.
- * @return the context (stack pointer) to the thread to allocate this time slice to.
- */
-extern cpu_reg_t thread_schedule_next( void )
+void _bss_init( void ) 
 {
-    brisc_thread_t* thread;
-            
-    if ( brisc_scheduler_state.lock > 0 || --brisc_scheduler_state.prio > 0 )
-    {
-        return (cpu_reg_t)brisc_scheduler_state.threads[brisc_scheduler_state.thread_id].cpu_state;
-    }
-    else
-    {
-        for(int nThread=0; nThread < BRISC_THREAD_MAX; nThread++)
-        {
-            if ( (thread = b_thread_state( thread_next_id() ))->prio > 0 )
-            {
-                brisc_scheduler_state.prio = thread->prio;
-                return (cpu_reg_t)thread->cpu_state;
-            }
-        }
-    }
-    return 0;
+    // Copy initialized data from .sidata (Flash) to .data (RAM)
+    memcpy( &_data, &_textdata, ( ( void* )&_edata - ( void* )&_data ) );
+    // Clear the .bss RAM section.
+    memset( &__bss_start__, 0x00, ( ( void* )&__bss_end__ - ( void* )&__bss_start__ ) );
 }
