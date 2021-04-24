@@ -57,7 +57,6 @@ static void run_blue(void* arg)
 }
 
 
-// 'main' thread - sweeps the delay
 static void run_main(void* arg)
 {
     for(EVER)
