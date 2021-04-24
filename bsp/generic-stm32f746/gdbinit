@@ -7,7 +7,7 @@ end
 layout split
 winheight src 24
 target remote localhost:3333
-load afx-102.elf
-file afx-102.elf
+load generic-stm32f746.elf
+file generic-stm32f746.elf
 break main
 continue

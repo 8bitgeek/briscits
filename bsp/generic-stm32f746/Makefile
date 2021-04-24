@@ -1,5 +1,5 @@
 # Board
-BOARD=afx-102
+BOARD=generic-stm32f746
 TARGET=$(BOARD)
 
 MCU_CHIP	 	= stm32f7xx
