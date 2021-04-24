@@ -104,26 +104,14 @@ start:
 		ldr		r2, =_cpp_deinit
 		blx		r2
 
-		// Returned from main, loop forever.
+		// loop forever.
 exit:
-		b 		exit
-
 _exit:
-		b 		_exit
-
 _halt:
-		b 		_halt
-
 _hard_fault:
-		b 		_hard_fault
-
 default_interrupt_handler:
-		b		default_interrupt_handler
-
 BusFault_IRQ_Handler:
-		b		BusFault_IRQ_Handler
-
 UsageFault_IRQ_Handler:
-		b 		UsageFault_IRQ_Handler
+		b 		exit
 
 		.end

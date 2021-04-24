@@ -37,7 +37,7 @@ __process_stack_size__  = 0x0600;
 MEMORY
 {
     flash : org = 0x08000000, len = 512k
-    ram : org = 0x20000000, len = 320k
+    ram   : org = 0x20000000, len = 320k
 }
 
 __ram_start__           = ORIGIN(ram);
