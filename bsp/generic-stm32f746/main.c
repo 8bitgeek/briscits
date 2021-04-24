@@ -35,7 +35,7 @@ static void run_red(void* arg)
 
     for(EVER)
     {
-        if ( b_thread_systick() - timeout_start > 1 )
+        if ( b_thread_systick() - timeout_start >= 1 )
         {
             app_state.red_count += 0.001f;
             timeout_start=b_thread_systick();
@@ -50,7 +50,7 @@ static void run_green(void* arg)
 
     for(EVER)
     {
-        if ( b_thread_systick() - timeout_start > 1 )
+        if ( b_thread_systick() - timeout_start >= 1 )
         {
             app_state.green_count += 0.001f;
             timeout_start=b_thread_systick();
@@ -65,7 +65,7 @@ static void run_blue(void* arg)
 
     for(EVER)
     {
-        if ( b_thread_systick() - timeout_start > 1 )
+        if ( b_thread_systick() - timeout_start >= 1 )
         {
             app_state.blue_count += 0.001f;
             timeout_start=b_thread_systick();
@@ -81,9 +81,9 @@ static void run_main(void* arg)
 
     for(EVER)
     {
-        if ( b_thread_systick() - timeout_start > 1 )
+        if ( b_thread_systick() - timeout_start >= 1 )
         {
-            app_state.main_count += 0.001f;
+            app_state.main_count = app_state.red_count + app_state.green_count + app_state.blue_count;
             timeout_start=b_thread_systick();
         }
         b_thread_yield();

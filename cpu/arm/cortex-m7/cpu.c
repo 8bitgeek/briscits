@@ -179,3 +179,12 @@ extern void cpu_yield(void)
 	__asm(" dsb\n");
 }
 
+extern void cpu_set_initial_state(cpu_state_t* cpu_state)
+{
+	#if defined(CPU_PSR_XREG) && defined(CPU_DEFAULT_PSR)
+		cpu_state->reg.x[CPU_PSR_XREG] = (cpu_reg_t)CPU_DEFAULT_PSR;
+	#endif
+	#if defined(ARM_FVP_LAZY_STACKING)
+		cpu_state->reg.x[0] = DEFAULT_EXCEPTION_RETURN;
+	#endif
+}
