@@ -87,7 +87,7 @@ extern void __attribute__((naked)) cpu_int_set(cpu_reg_t enable)
 
 extern void* __attribute__((naked)) cpu_rd_sp(void)
 {
-	__asm__ __volatile__ (	" mrs	r0, msp			\n" \
+	__asm__ __volatile__ (	" mrs	r0, psp			\n" \
 							" bx	lr				\n" \
 							:							\
 							:							\
@@ -179,12 +179,3 @@ extern void cpu_yield(void)
 	__asm(" dsb\n");
 }
 
-volatile __attribute__( ( naked ) ) void PendSV_IRQ_Handler( void )
-{
-	brisc_isr_yield();
-}
-
-volatile __attribute__( ( naked ) ) void SysTick_IRQ_Handler( void )
-{
-	brisc_isr_systick();
-}
