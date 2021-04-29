@@ -110,7 +110,6 @@ SECTIONS
     } > flash
 
     _etext = .;
-    _textdata = _etext;
 
     .stacks :
     {
@@ -119,18 +118,18 @@ SECTIONS
         . += __main_stack_size__;
         . = ALIGN(8);
         __main_stack_end__ = .;
-        __process_stack_base__ = .;
+        _sstack = .;
         __main_thread_stack_base__ = .;
         . += __process_stack_size__;
         . = ALIGN(8);
-        __process_stack_end__ = .;
+        _estack = .;
         __main_thread_stack_end__ = .;
     } > ram
 
     .data :
     {
         . = ALIGN(4);
-        PROVIDE(_data = .);
+        PROVIDE(_sdata = .);
         *(.data)
         . = ALIGN(4);
         *(.data.*)
@@ -143,14 +142,14 @@ SECTIONS
     .bss :
     {
         . = ALIGN(4);
-        PROVIDE(__bss_start__ = .);
+        PROVIDE(_sbss = .);
         *(.bss)
         . = ALIGN(4);
         *(.bss.*)
         . = ALIGN(4);
         *(COMMON)
         . = ALIGN(4);
-        PROVIDE(__bss_end__ = .);
+        PROVIDE(_ebss = .);
     } > ram
 }
 

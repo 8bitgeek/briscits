@@ -12,7 +12,7 @@
     .type vtable, %object
     .section .vector_table,"a",%progbits
 vtable:
-    jal reset_handler
+    jal briscits_reset_handler
     .align 2
     .word 0
     .word 0

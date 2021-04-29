@@ -80,5 +80,7 @@ extern int      b_thread_set_prio ( int id, int8_t prio );
 extern void     b_thread_yield    ( void );
 brisc_systick_t b_thread_systick  ( void );
 
+extern void     b_thread_set_systick_fn (void (*systick_fn)(void) );
+extern void     b_thread_set_yield_fn   (void (*yield_fn)(void) );
 
 #endif

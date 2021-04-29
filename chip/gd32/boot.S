@@ -56,10 +56,10 @@ default_interrupt_loop:
     * Assembly 'reset handler' function to initialize core CPU registers.
     */
 
-    .global reset_handler
-    .type reset_handler,@function
+    .global briscits_reset_handler
+    .type briscits_reset_handler,@function
 
-reset_handler:
+briscits_reset_handler:
 
     // Disable interrupts until they are needed.
 
@@ -106,4 +106,4 @@ in_address_space:
     li      a0, 0
     li      a1, 0
     call    main
-    j       reset_handler
+    j       briscits_reset_handler

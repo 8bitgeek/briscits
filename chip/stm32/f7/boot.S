@@ -44,24 +44,24 @@ SOFTWARE.
 		.global main
 
         .global __main_stack_end__
-        .global	__process_stack_end__
+        .global	_estack
 
 		.global UsageFault_IRQ_Handler
 		.global BusFault_IRQ_Handler
 		.global _hard_fault
 		.global default_interrupt_handler
-		.global reset_handler
-		.type	reset_handler, %function
+		.global briscits_reset_handler
+		.type	briscits_reset_handler, %function
 		.code   16
         .align 	2
 		.thumb_func
-reset_handler:
+briscits_reset_handler:
 		cpsid	i					// disable interrupts
 
 		ldr r0, =__main_stack_end__
 		mov sp, r0
 
-		ldr		r0,=__process_stack_end__
+		ldr		r0,=_estack
 		msr		psp,r0
 		movs	r0,#0x02			// PSP stack, unprivilaged can run in thread mode.
 		msr		control,r0

@@ -44,14 +44,15 @@ SOFTWARE.
 /**
  * @brief timer interrupt, increment systick, and potentially switch thread context
  */
-volatile __attribute__( ( naked ) ) void brisc_isr_systick( void ) 
+__attribute__( ( naked ) ) void brisc_isr_systick( void ) 
 {
     cpu_systick_enter();
     
         cpu_push_state();
         
             systick_service();
-           
+            if ( brisc_scheduler_state.systick_fn )
+                brisc_scheduler_state.systick_fn();
             thread_scheduler_service();
 
         cpu_pop_state();
@@ -62,7 +63,7 @@ volatile __attribute__( ( naked ) ) void brisc_isr_systick( void )
 /**
  * @brief software interrupt, thread yield, give up remaining prio and switch context.
  */
-volatile __attribute__( ( naked ) ) void brisc_isr_yield( void )
+__attribute__( ( naked ) ) void brisc_isr_yield( void )
 {
     cpu_systick_enter();
     
@@ -70,7 +71,8 @@ volatile __attribute__( ( naked ) ) void brisc_isr_yield( void )
         
             cpu_yield_clear();
             b_thread_prio_clear();
-
+            if ( brisc_scheduler_state.yield_fn )
+                brisc_scheduler_state.yield_fn();
             thread_scheduler_service();
 
         cpu_pop_state();

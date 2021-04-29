@@ -1,5 +1,5 @@
 OUTPUT_ARCH( "riscv" )
-ENTRY( reset_handler )
+ENTRY( briscits_reset_handler )
 
 MEMORY
 { 

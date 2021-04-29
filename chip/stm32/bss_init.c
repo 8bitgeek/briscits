@@ -35,12 +35,12 @@ SOFTWARE.
 #include <string.h>
 
 // Pre-defined memory locations for program initialization.
-extern uint32_t _textdata, _data, _edata, __bss_start__, __bss_end__;
+extern uint32_t _etext, _sdata, _edata, _sbss, _ebss;
 
 void _bss_init( void ) 
 {
     // Copy initialized data from .sidata (Flash) to .data (RAM)
-    memcpy( &_data, &_textdata, ( ( void* )&_edata - ( void* )&_data ) );
+    memcpy( &_sdata, &_etext, ( ( char* )&_edata - ( char* )&_sdata ) );
     // Clear the .bss RAM section.
-    memset( &__bss_start__, 0x00, ( ( void* )&__bss_end__ - ( void* )&__bss_start__ ) );
+    memset( &_sbss, 0x00, ( ( char* )&_ebss - ( char* )&_sbss ) );
 }

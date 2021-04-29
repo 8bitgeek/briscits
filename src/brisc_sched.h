@@ -43,6 +43,8 @@ typedef struct brisc_scheduler
     uint8_t             thread_id;
     int8_t              prio;
     int8_t              lock;
+    void (*systick_fn)(void);
+    void (*yield_fn)(void);
 } brisc_scheduler_t;
 
 extern brisc_scheduler_t brisc_scheduler_state;

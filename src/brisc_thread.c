@@ -52,6 +52,17 @@ int b_thread_init( const char* name )
     return b_thread_create( name, NULL, NULL, NULL, 0 ); 
 }
 
+extern void b_thread_set_systick_fn(void (*systick_fn)(void))
+{
+    brisc_scheduler_state.systick_fn = systick_fn;
+}
+
+extern void b_thread_set_yield_fn(void (*yield_fn)(void))
+{
+    brisc_scheduler_state.yield_fn = yield_fn;
+}
+
+
 brisc_systick_t b_thread_systick( void )
 {
     return brisc_scheduler_state.systick;

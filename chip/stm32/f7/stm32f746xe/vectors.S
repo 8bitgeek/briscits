@@ -38,7 +38,7 @@ SOFTWARE.
 			.set    v,default_interrupt_handler
 		.endm
 
-		.extern	reset_handler			/* Reset Vector */
+		.extern	briscits_reset_handler			/* Reset Vector */
 		.global default_interrupt_handler
 		.extern PendSV_IRQ_Handler
 		.extern SysTick_IRQ_Handler
@@ -56,7 +56,7 @@ SOFTWARE.
 
 _vectors:
 		.word 	__main_stack_end__	
-		.word 	reset_handler						/* Reset Vector 						 */
+		.word 	briscits_reset_handler				/* Reset Vector 						 */
 		vector 	NonMaskableInt_IRQ_Handler			/* Non Maskable Interrupt       		 */
 		.word 	_hard_fault		
 		vector 	MemoryManagement_IRQ_Handler		/* Cortex-M7 Memory Management Interrupt */

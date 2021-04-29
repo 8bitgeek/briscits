@@ -186,6 +186,7 @@ extern void cpu_systick_clear(void);
 extern void cpu_yield_clear(void);
 extern void cpu_yield(void);
 extern void cpu_set_initial_state(cpu_state_t* cpu_state);
+void _fpu_init(void);
 
 #endif
 
