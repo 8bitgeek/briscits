@@ -5,6 +5,11 @@
 #ifndef _STRFUNC
 #define _STRFUNC
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #if !defined(XPRINTF_USE_FLOAT)
     #define XPRINTF_USE_FLOAT      1   /* 1: Use floating point */
 #endif
@@ -43,6 +48,10 @@ extern unsigned char (*xfunc_in)(void);
 int xgets (char* buff, int len);
 int xfgets (unsigned char (*func)(void), char* buff, int len);
 int xatoi (char** str, long* res);
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif

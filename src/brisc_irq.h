@@ -36,7 +36,16 @@ SOFTWARE.
 
 #include <brisc_sched.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 __attribute__( ( naked ) ) void brisc_isr_systick( void );
 __attribute__( ( naked ) ) void brisc_isr_yield( void );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

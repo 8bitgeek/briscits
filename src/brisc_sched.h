@@ -36,6 +36,11 @@ SOFTWARE.
 
 #include <brisc_thread.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 typedef struct brisc_scheduler
 {
     brisc_systick_t     systick;
@@ -55,5 +60,9 @@ extern brisc_scheduler_t brisc_scheduler_state;
                             ( brisc_scheduler_state.thread_id+1 >= BRISC_THREAD_MAX ) ? 0 : brisc_scheduler_state.thread_id+1 )
 
 extern cpu_reg_t thread_schedule_next( void );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

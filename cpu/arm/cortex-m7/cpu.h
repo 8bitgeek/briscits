@@ -36,6 +36,11 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #define CPU_DEFAULT_PSR 0x21000000
 
 #if defined(ARM_FVP_LAZY_STACKING)
@@ -179,14 +184,20 @@ extern cpu_reg_t	__attribute__((naked)) cpu_int_enabled(void);
 extern void 		__attribute__((naked)) cpu_int_set(cpu_reg_t enable);
 extern void 		__attribute__((naked)) chip_wfi(void);
 
-#define brisc_isr_yield PendSV_IRQ_Handler
-#define brisc_isr_systick SysTick_IRQ_Handler
+#define brisc_isr_yield 	PendSV_IRQ_Handler
+#define brisc_isr_systick 	SysTick_IRQ_Handler
+#define brisc_isr_swi 		SVCall_IRQ_Handler
 
 extern void cpu_systick_clear(void);
 extern void cpu_yield_clear(void);
 extern void cpu_yield(void);
 extern void cpu_set_initial_state(cpu_state_t* cpu_state);
-void _fpu_init(void);
+extern void	_fpu_init(void);
+extern int 	cpu_swi(cpu_reg_t fn, cpu_reg_t arg);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

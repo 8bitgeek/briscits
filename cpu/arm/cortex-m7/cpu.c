@@ -36,6 +36,8 @@ SOFTWARE.
 #include <core_cm7.h>
 #include <brisc_irq.h>
 
+extern int brisc_swi_service(cpu_reg_t reg_fn,cpu_reg_t reg_arg);
+
 void _fpu_init(void)
 {
 	#if defined(ARM_FVP_LAZY_STACKING)
@@ -188,3 +190,41 @@ extern void cpu_set_initial_state(cpu_state_t* cpu_state)
 		cpu_state->reg.x[0] = DEFAULT_EXCEPTION_RETURN;
 	#endif
 }
+
+extern int 	cpu_swi(cpu_reg_t fn, cpu_reg_t arg)
+{
+	int rc;
+	__asm__ __volatile__(	"	mov		r4,%1			\n"			/* R4=fn */
+							"   mov		r5,%2			\n"			/* R5=arg */
+							"	svc		#0				\n"			/* Software Interrupt*/
+							"	mov		%0,r4			\n"			/* rc=R4 */
+							: "=r" (rc)
+							: "r" (fn), "r" (arg)
+							: "r4","r5"
+						);
+	return rc;
+}
+
+void __attribute__((naked)) brisc_isr_swi(void)
+{
+	cpu_reg_t fn;
+	cpu_reg_t arg;
+	cpu_reg_t rc;
+	__asm__ __volatile__(	"	push	{lr}			\n"
+							"	mov		%0,r4			\n"			/* fn=R4 */
+							"   mov		%1,r5			\n"			/* arg=R5 */
+							: "=r" (fn), "=r" (arg)
+							:
+							:
+						);
+
+	rc = brisc_swi_service(fn,arg);
+
+	__asm__ __volatile__(	"	mov		r4,%0			\n"			/* fn=R4 */
+							"   pop		{pc}			\n"
+							:
+							: "r" (rc)
+							: "r4"
+						);
+}
+

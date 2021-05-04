@@ -36,6 +36,11 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #define CPU_MAX_XREG    32
 
 /* Scheduler Register Offsets */
@@ -195,5 +200,9 @@ volatile __attribute__( ( naked ) ) void eclic_msip_handler( void );
 #define cpu_yield()           *( volatile uint8_t * )( TIMER_CTRL_ADDR + TIMER_MSIP ) = 0x01
 
 extern void cpu_set_initial_state(cpu_state_t* cpu_state);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

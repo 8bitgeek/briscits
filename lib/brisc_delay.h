@@ -34,8 +34,17 @@ SOFTWARE.
 #ifndef _DELAY_H_
 #define _DELAY_H_
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdint.h>
 
 extern void b_delay_ms( uint32_t ms );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

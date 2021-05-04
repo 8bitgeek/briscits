@@ -36,6 +36,15 @@ SOFTWARE.
 
 #include <brisc_board.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 extern void _core_clock_init( void );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
