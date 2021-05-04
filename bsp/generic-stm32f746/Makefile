@@ -11,8 +11,9 @@ CFLAGS += -DBRISC_THREAD_MAX=4 -DARM_FVP_LAZY_STACKING -DHSE_VALUE=8000000
 
 # OpenOCD
 OPENOCD=openocd
-OPENOCD_JTAG_CFG=interface/stlink-v2.cfg
-OPENOCD_TARGET_CFG=target/stm32f7x.cfg
+OPENOCD_LOCAL_CFG=-f bsp/$(BOARD)/openocd-local.cfg
+#OPENOCD_JTAG_CFG=-f interface/stlink-v2.cfg
+#OPENOCD_TARGET_CFG=-f target/stm32f7x.cfg
 
 # CPU
 CPU_COMMON=cpu/arm
@@ -94,6 +95,7 @@ C_SRC  += bsp/$(BOARD)/brisc_board.c
 
 # BRISCIT Source Files
 C_SRC  += src/brisc_sched.c
+C_SRC  += src/brisc_swi.c
 C_SRC  += src/brisc_irq.c
 C_SRC  += src/brisc_thread.c
 C_SRC  += src/brisc_mutex.c
@@ -136,7 +138,7 @@ cleanall: clean
 
 # Rule to start openocd
 start:
-	$(OPENOCD) -f $(OPENOCD_JTAG_CFG) -f $(OPENOCD_TARGET_CFG)  2> /dev/null > /dev/null &
+	$(OPENOCD) $(OPENOCD_LOCAL_CFG) 2> /dev/null > /dev/null &
 
 stop:
 	killall $(OPENOCD)
@@ -146,5 +148,5 @@ debug: $(TARGET).bin
 	$(GDB) -tui -x bsp/$(BOARD)/gdbinit
 
 flash: $(TARGET).elf
-		$(OPENOCD) -f $(OPENOCD_JTAG_CFG) -f $(OPENOCD_TARGET_CFG) -c "program $(TARGET).elf verify reset exit"
+		$(OPENOCD) $(OPENOCD_LOCAL_CFG) -c "program $(TARGET).elf verify reset exit"
 

@@ -31,13 +31,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#include <brisc_irq.h>
+#include <brisc_swi.h>
 #include <brisc_sched.h>
 
-static int kcall_service(kcall_t fn,void* arg);
-
-
-int brisc_swi(kcall_t fn, void* arg)
+int brisc_swi(brisc_swi_fn_t fn, void* arg)
 {
 	return cpu_swi((cpu_reg_t)fn,(cpu_reg_t)arg);
 }
@@ -73,7 +70,7 @@ extern int brisc_swi_service(cpu_reg_t reg_fn,cpu_reg_t reg_arg)
     void* arg = (void*)reg_arg;
 	switch(fn)
 	{
-        case BRISC_SWI_NOP=0:       return brisc_swi_nop(arg);
+        case BRISC_SWI_NOP:         return brisc_swi_nop(arg);
         case BRISC_SHMEM_PALLOC:    return brisc_swi_shmem_palloc(arg);
         case BRISC_SHMEM_PFREE:     return brisc_swi_shmem_pfree(arg);
         case BRISC_GET_PATTR:       return brisc_swi_get_pattr(arg);
