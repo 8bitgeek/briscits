@@ -186,7 +186,7 @@ extern void 		__attribute__((naked)) chip_wfi(void);
 
 #define brisc_isr_yield 	PendSV_IRQ_Handler
 #define brisc_isr_systick 	SysTick_IRQ_Handler
-#define brisc_isr_swi 		SVCall_IRQ_Handler
+#define brisc_isr_swi 		SVC_IRQ_Handler
 
 extern void cpu_systick_clear(void);
 extern void cpu_yield_clear(void);

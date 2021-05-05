@@ -44,7 +44,7 @@ SOFTWARE.
 		.extern SysTick_IRQ_Handler
 		.extern BusFault_IRQ_Handler
 		.extern MemoryManagement_IRQ_Handler
-		.extern	SVCall_IRQ_Handler
+		.extern	SVC_IRQ_Handler
 		.extern NonMaskableInt_IRQ_Handler 
 		.global _hard_fault
 
@@ -66,7 +66,7 @@ _vectors:
 		.word 	default_interrupt_handler
 		.word 	default_interrupt_handler
 		.word 	default_interrupt_handler
-		.word 	SVCall_IRQ_Handler					/* Cortex-M7 SV Call Interrupt 			 */
+		.word 	SVC_IRQ_Handler					/* Cortex-M7 SV Call Interrupt 			 */
 		vector 	DebugMonitor_IRQ_Handler			/* Cortex-M7 Debug Monitor Interrupt 	 */
 		.word 	default_interrupt_handler
 		.word 	PendSV_IRQ_Handler					/* Cortex-M7 Pend SV Interrupt  		 */
