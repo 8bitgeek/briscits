@@ -44,8 +44,6 @@ extern "C"
 typedef enum
 {
 	BRISC_SWI_NOP=0,        /**< No Operation, test the kernel SWI */
-    BRISC_SHMEM_PALLOC,     /**< Shared Memory Page Allocate */
-    BRISC_SHMEM_PFREE,      /**< Shared Memory Page Free */
     BRISC_GET_PATTR,        /**< Get Page Attributes */
     BRISC_SET_PATTR,        /**< Set Page Attributes */
 } brisc_swi_fn_t;

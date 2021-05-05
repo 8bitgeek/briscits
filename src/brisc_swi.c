@@ -35,8 +35,6 @@ SOFTWARE.
 #include <brisc_sched.h>
 
 static cpu_reg_t brisc_swi_nop(cpu_reg_t arg);
-static cpu_reg_t brisc_swi_shmem_palloc(cpu_reg_t arg);
-static cpu_reg_t brisc_swi_shmem_pfree(cpu_reg_t arg);
 static cpu_reg_t brisc_swi_get_pattr(cpu_reg_t arg);
 static cpu_reg_t brisc_swi_set_pattr(cpu_reg_t arg);
 
@@ -53,8 +51,6 @@ extern cpu_reg_t brisc_swi_service(cpu_reg_t reg_fn,cpu_reg_t reg_arg)
 	switch(fn)
 	{
         case BRISC_SWI_NOP:         return brisc_swi_nop(arg);
-        case BRISC_SHMEM_PALLOC:    return brisc_swi_shmem_palloc(arg);
-        case BRISC_SHMEM_PFREE:     return brisc_swi_shmem_pfree(arg);
         case BRISC_GET_PATTR:       return brisc_swi_get_pattr(arg);
         case BRISC_SET_PATTR:       return brisc_swi_set_pattr(arg);
 	}
@@ -70,16 +66,6 @@ extern cpu_reg_t brisc_swi(brisc_swi_fn_t fn, void* arg)
 static cpu_reg_t brisc_swi_nop(cpu_reg_t arg)
 {
 	return arg;
-}
-
-static cpu_reg_t brisc_swi_shmem_palloc(cpu_reg_t arg)
-{
-	return 0;
-}
-
-static cpu_reg_t brisc_swi_shmem_pfree(cpu_reg_t arg)
-{
-	return 0;
 }
 
 static cpu_reg_t brisc_swi_get_pattr(cpu_reg_t arg)
