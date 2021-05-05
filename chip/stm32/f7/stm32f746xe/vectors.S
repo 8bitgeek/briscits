@@ -58,17 +58,17 @@ _vectors:
 		.word 	__main_stack_end__	
 		.word 	briscits_reset_handler				/* Reset Vector 						 */
 		vector 	NonMaskableInt_IRQ_Handler			/* Non Maskable Interrupt       		 */
-		.word 	_hard_fault		
+		.word 	_hard_fault							/* Hard Fault */
 		vector 	MemoryManagement_IRQ_Handler		/* Cortex-M7 Memory Management Interrupt */
 		vector 	BusFault_IRQ_Handler				/* Cortex-M7 Bus Fault Interrupt 		 */
 		vector 	UsageFault_IRQ_Handler				/* Cortex-M7 Usage Fault Interrupt 		 */
-		.word 	_hard_fault
-		.word 	_hard_fault
-		.word 	_hard_fault
-		.word 	_hard_fault
-		vector 	SVCall_IRQ_Handler					/* Cortex-M7 SV Call Interrupt 			 */
+		.word 	default_interrupt_handler
+		.word 	default_interrupt_handler
+		.word 	default_interrupt_handler
+		.word 	default_interrupt_handler
+		.word 	SVCall_IRQ_Handler					/* Cortex-M7 SV Call Interrupt 			 */
 		vector 	DebugMonitor_IRQ_Handler			/* Cortex-M7 Debug Monitor Interrupt 	 */
-		.word 	_hard_fault
+		.word 	default_interrupt_handler
 		.word 	PendSV_IRQ_Handler					/* Cortex-M7 Pend SV Interrupt  		 */
 		.word 	SysTick_IRQ_Handler					/* Cortex-M7 System Tick Interrupt  	 */
 		/* ---- */

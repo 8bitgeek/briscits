@@ -36,7 +36,7 @@ SOFTWARE.
 #include <core_cm7.h>
 #include <brisc_irq.h>
 
-extern int brisc_swi_service(cpu_reg_t reg_fn,cpu_reg_t reg_arg);
+extern cpu_reg_t brisc_swi_service(cpu_reg_t reg_fn,cpu_reg_t reg_arg);
 
 void _fpu_init(void)
 {
@@ -158,7 +158,6 @@ void __attribute__((naked)) chip_interrupts_set(cpu_reg_t enable)
 {
 	__asm("   cmp	  r0, #0  \n"
 		  "   beq	  1f      \n"
-		  "   isb             \n"
 		  "	  cpsie   i       \n"
 		  "   bx      lr      \n"
 		  "1: cpsid   i       \n"
@@ -191,9 +190,9 @@ extern void cpu_set_initial_state(cpu_state_t* cpu_state)
 	#endif
 }
 
-extern int 	cpu_swi(cpu_reg_t fn, cpu_reg_t arg)
+extern cpu_reg_t cpu_swi(cpu_reg_t fn, void* arg)
 {
-	int rc;
+	cpu_reg_t rc;
 	__asm__ __volatile__(	"	mov		r4,%1			\n"			/* R4=fn */
 							"   mov		r5,%2			\n"			/* R5=arg */
 							"	svc		#0				\n"			/* Software Interrupt*/
@@ -218,7 +217,7 @@ void __attribute__((naked)) brisc_isr_swi(void)
 							:
 						);
 
-	rc = brisc_swi_service(fn,arg);
+						rc = brisc_swi_service(fn,arg);
 
 	__asm__ __volatile__(	"	mov		r4,%0			\n"			/* fn=R4 */
 							"   pop		{pc}			\n"

@@ -57,7 +57,7 @@ typedef enum
  * @param arg The argument pointer to data related to the kind of operation.
  * @return dependent upon the operation.
  */
-extern int brisc_swi(brisc_swi_fn_t fn, void* arg);
+extern cpu_reg_t brisc_swi(brisc_swi_fn_t fn, void* arg);
 
 #ifdef __cplusplus
 }

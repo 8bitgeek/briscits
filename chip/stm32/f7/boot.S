@@ -63,7 +63,7 @@ briscits_reset_handler:
 
 		ldr		r0,=_estack
 		msr		psp,r0
-		movs	r0,#0x02			// PSP stack, unprivilaged can run in thread mode.
+		movs	r0,#0x02			// unprivilaged thread mode stack (PSP).
 		msr		control,r0
 		isb
 
@@ -108,10 +108,12 @@ start:
 exit:
 _exit:
 _halt:
-_hard_fault:
 default_interrupt_handler:
 BusFault_IRQ_Handler:
 UsageFault_IRQ_Handler:
 		b 		exit
+
+_hard_fault:
+		b 		_hard_fault
 
 		.end

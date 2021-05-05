@@ -193,7 +193,7 @@ extern void cpu_yield_clear(void);
 extern void cpu_yield(void);
 extern void cpu_set_initial_state(cpu_state_t* cpu_state);
 extern void	_fpu_init(void);
-extern int 	cpu_swi(cpu_reg_t fn, cpu_reg_t arg);
+extern cpu_reg_t cpu_swi(cpu_reg_t fn, void* arg);
 
 #ifdef __cplusplus
 }

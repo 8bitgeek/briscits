@@ -34,40 +34,22 @@ SOFTWARE.
 #include <brisc_swi.h>
 #include <brisc_sched.h>
 
-int brisc_swi(brisc_swi_fn_t fn, void* arg)
-{
-	return cpu_swi((cpu_reg_t)fn,(cpu_reg_t)arg);
-}
+static cpu_reg_t brisc_swi_nop(cpu_reg_t arg);
+static cpu_reg_t brisc_swi_shmem_palloc(cpu_reg_t arg);
+static cpu_reg_t brisc_swi_shmem_pfree(cpu_reg_t arg);
+static cpu_reg_t brisc_swi_get_pattr(cpu_reg_t arg);
+static cpu_reg_t brisc_swi_set_pattr(cpu_reg_t arg);
 
-static int brisc_swi_nop(void* arg)
-{
-	return 0;
-}
-
-static int brisc_swi_shmem_palloc(void* arg)
-{
-	return 0;
-}
-
-static int brisc_swi_shmem_pfree(void* arg)
-{
-	return 0;
-}
-
-static int brisc_swi_get_pattr(void* arg)
-{
-	return 0;
-}
-
-static int brisc_swi_set_pattr(void* arg)
-{
-	return 0;
-}
-
-extern int brisc_swi_service(cpu_reg_t reg_fn,cpu_reg_t reg_arg)
+/**
+ * @brief Callback from the SVC Interrupt Service Routine. We enter
+ *        this function in Interrupt Context.
+ * @param fn The function code.
+ * @param arg The function code argument.
+ */
+extern cpu_reg_t brisc_swi_service(cpu_reg_t reg_fn,cpu_reg_t reg_arg)
 {
     brisc_swi_fn_t fn = (brisc_swi_fn_t)reg_fn;
-    void* arg = (void*)reg_arg;
+    cpu_reg_t arg = reg_arg;
 	switch(fn)
 	{
         case BRISC_SWI_NOP:         return brisc_swi_nop(arg);
@@ -77,5 +59,36 @@ extern int brisc_swi_service(cpu_reg_t reg_fn,cpu_reg_t reg_arg)
         case BRISC_SET_PATTR:       return brisc_swi_set_pattr(arg);
 	}
 	return -1;
+}
+
+extern cpu_reg_t brisc_swi(brisc_swi_fn_t fn, void* arg)
+{
+	return cpu_swi((cpu_reg_t)fn,arg);
+}
+
+
+static cpu_reg_t brisc_swi_nop(cpu_reg_t arg)
+{
+	return arg;
+}
+
+static cpu_reg_t brisc_swi_shmem_palloc(cpu_reg_t arg)
+{
+	return 0;
+}
+
+static cpu_reg_t brisc_swi_shmem_pfree(cpu_reg_t arg)
+{
+	return 0;
+}
+
+static cpu_reg_t brisc_swi_get_pattr(cpu_reg_t arg)
+{
+	return 0;
+}
+
+static cpu_reg_t brisc_swi_set_pattr(cpu_reg_t arg)
+{
+	return 0;
 }
 
