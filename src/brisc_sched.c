@@ -34,15 +34,17 @@ SOFTWARE.
 #include <brisc_sched.h>
 #include <string.h>
 
-brisc_scheduler_t brisc_scheduler_state;
+volatile brisc_scheduler_t brisc_scheduler_state;
+
+static cpu_reg_t thread_next_id(void);
 
 /**
  * @brief determine which thread gets this time slice.
  * @return the context (stack pointer) to the thread to allocate this time slice to.
  */
-extern cpu_reg_t thread_schedule_next( void )
+extern cpu_reg_t b_thread_schedule_next( void )
 {
-    brisc_thread_t* thread;
+    volatile brisc_thread_t* thread;
             
     if ( brisc_scheduler_state.lock > 0 || --brisc_scheduler_state.prio > 0 )
     {
@@ -61,3 +63,20 @@ extern cpu_reg_t thread_schedule_next( void )
     }
     return 0;
 }
+
+extern volatile brisc_thread_t* b_thread_state(uint8_t id)
+{
+    if ( id >= 0 && id < BRISC_THREAD_MAX )
+        return &brisc_scheduler_state.threads[id];
+
+    return NULL;
+}
+
+static cpu_reg_t thread_next_id(void)
+{
+    if ( brisc_scheduler_state.thread_id+1 >= BRISC_THREAD_MAX )
+        return (brisc_scheduler_state.thread_id = 0);
+    
+    return ++brisc_scheduler_state.thread_id;
+}
+

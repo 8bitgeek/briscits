@@ -107,12 +107,16 @@ extern void __attribute__((naked)) chip_wfi(void)
 
 extern uint32_t cpu_atomic_acquire(cpu_reg_t* lock)
 {
+	cpu_reg_t t;
 	cpu_reg_t int_state = cpu_int_disable();
-    cpu_reg_t t = *lock;
-    *lock = 1;
+
+	if ( !(t=*lock) )
+    	*lock = 1;
+
     if ( int_state )
 		cpu_int_enable();
-    return t;
+    
+	return !t;
 }
 
 extern void cpu_atomic_release(cpu_reg_t* lock)

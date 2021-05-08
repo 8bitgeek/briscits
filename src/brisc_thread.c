@@ -44,7 +44,7 @@ static void      thread_exit  ( void );
  */
 int b_thread_init( const char* name )
 {
-    memset(&brisc_scheduler_state,0,sizeof(brisc_scheduler_state));
+    memset((void*)&brisc_scheduler_state,0,sizeof(brisc_scheduler_state));
     for(int n=0; n < BRISC_THREAD_MAX; n++)
         brisc_scheduler_state.threads[n].prio = BRISC_THREAD_PRIO_INACTIVE;
 
@@ -113,7 +113,7 @@ int b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_
     int id = thread_new_id();
     if ( id >= 0 )
     {
-        brisc_thread_t* thread = b_thread_state(id);
+        volatile brisc_thread_t* thread = b_thread_state(id);
         if ( thread_fn == NULL && stack == NULL )
         {
             /* 'main' thread already has 'context' */
@@ -136,7 +136,7 @@ int b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_
             thread->cpu_state  = cpu_state;
             thread->prio = BRISC_THREAD_PRIO_SUSPEND;
         }
-        strncpy( thread->name, name, BRISC_THREAD_NAME_MAX );
+        strncpy( (void*)thread->name, name, BRISC_THREAD_NAME_MAX );
      }
     return id;
 }
@@ -150,7 +150,7 @@ int b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_
  */
 int b_thread_set_prio ( int id, int8_t prio )
 {
-    brisc_thread_t* thread = b_thread_state(id);
+    volatile brisc_thread_t* thread = b_thread_state(id);
     if ( thread )
     {
         thread->prio = prio;

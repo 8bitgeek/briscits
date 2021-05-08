@@ -19,8 +19,11 @@
 /-------------------------------------------------------------------------*/
 
 #include "xprintf.h"
+#include "ftoa.h"
+
 #if XPRINTF_USE_FLOAT
-	#include "ftoa.h"
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wfloat-conversion"
 #endif
 
 #if XPRINTF_USE_XFUNC_OUT
@@ -472,5 +475,9 @@ int xatoi (			/* 0:Failed, 1:Successful */
 	*res = val;
 	return 1;
 }
+
+#if XPRINTF_USE_FLOAT
+	#pragma GCC diagnostic pop
+#endif
 
 #endif /* XPRINTF_USE_XFUNC_IN */

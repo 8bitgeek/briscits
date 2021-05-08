@@ -35,7 +35,7 @@ SOFTWARE.
 #include <brisc_sched.h>
 
 #define thread_scheduler_service()  register cpu_reg_t context_sp;          \
-                        if ( ( context_sp = thread_schedule_next() ) != 0 ) \
+                        if ( ( context_sp = b_thread_schedule_next() ) != 0 ) \
                                         cpu_wr_sp( context_sp )
 
 #define systick_service() ++brisc_scheduler_state.systick;                  \

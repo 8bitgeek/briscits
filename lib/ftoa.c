@@ -38,6 +38,11 @@ SOFTWARE.
 #include <math.h>
 #include <string.h>
 
+#if XPRINTF_USE_FLOAT
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wfloat-conversion"
+#endif
+
 void ftoa(float f, char *str, size_t str_max, uint8_t precision) 
 {
   uint8_t i, j, divisor = 1;
@@ -51,13 +56,13 @@ void ftoa(float f, char *str, size_t str_max, uint8_t precision)
 
   if (f < 0) {                             //if a negative number 
     str[0] = '-';                          //start the char array with '-'
-    f = abs(f);                            //store its positive absolute value
+    f = abs((int)f);                       //store its positive absolute value
   }
-  log_f = ceil(log10(f));                  //get number of digits before the decimal
+  log_f = (int8_t)ceil(log10(f));          //get number of digits before the decimal
   if (log_f > 0) {                         //log value > 0 indicates a number > 1
     if (log_f == precision) {              //if number of digits = significant figures
       f += 0.5;                            //add 0.5 to round up decimals >= 0.5
-      itoa(f, s1, 10);                     //itoa converts the number to a char array
+      itoa((int)f, s1, 10);                //itoa converts the number to a char array
       strcat(str, s1);                     //add to the number string
     }
     else if ((log_f - precision) > 0) {    //if more integer digits than significant digits
@@ -96,3 +101,7 @@ void ftoa(float f, char *str, size_t str_max, uint8_t precision)
     }
   }
 }
+
+#if XPRINTF_USE_FLOAT
+	#pragma GCC diagnostic pop
+#endif
