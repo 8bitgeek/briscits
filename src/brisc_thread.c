@@ -172,3 +172,8 @@ static int thread_new_id( void )
     }
     return -1;
 }
+
+volatile brisc_thread_t* b_thread_current( void )
+{
+    return &brisc_scheduler_state.threads[brisc_scheduler_state.thread_id];
+}

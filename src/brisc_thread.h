@@ -74,19 +74,20 @@ typedef struct brisc_thread
 #define b_thread_block_while(cond)  while((cond)) b_thread_yield()
 #define b_thread_prio_clear()       (brisc_scheduler_state.prio = 0)
 
+extern int              b_thread_init     ( const char* name );
+extern int              b_thread_create   ( const char* name, void (*thread_fn)(void*), void* arg, cpu_reg_t* stack, size_t n_stack_words );
+extern void             b_thread_start    ( int id );
+extern void             b_thread_stop     ( int id );
+extern void             b_thread_lock     ( void );
+extern void             b_thread_unlock   ( void );
+extern int              b_thread_set_prio ( int id, int8_t prio );
+extern void             b_thread_yield    ( void );
+extern brisc_systick_t  b_thread_systick  ( void );
 
-extern int      b_thread_init     ( const char* name );
-extern int      b_thread_create   ( const char* name, void (*thread_fn)(void*), void* arg, cpu_reg_t* stack, size_t n_stack_words );
-extern void     b_thread_start    ( int id );
-extern void     b_thread_stop     ( int id );
-extern void     b_thread_lock     ( void );
-extern void     b_thread_unlock   ( void );
-extern int      b_thread_set_prio ( int id, int8_t prio );
-extern void     b_thread_yield    ( void );
-brisc_systick_t b_thread_systick  ( void );
+extern volatile brisc_thread_t* b_thread_current  ( void );
 
-extern void     b_thread_set_systick_fn (void (*systick_fn)(void) );
-extern void     b_thread_set_yield_fn   (void (*yield_fn)(void) );
+extern void             b_thread_set_systick_fn (void (*systick_fn)(void) );
+extern void             b_thread_set_yield_fn   (void (*yield_fn)(void) );
 
 #ifdef __cplusplus
 }
