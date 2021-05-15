@@ -3,6 +3,7 @@
 #include <brisc_swi.h>
 #include <string.h>
 #include <microamp_c.h>
+#include <libopencm3/stm32/usart.h>
 
 #define EVER            ;;
 #define STACK_BYTES     (1024)
@@ -86,6 +87,7 @@ static void run_main(void* arg)
 {
     for(EVER)
     {
+        microamp_poll_hook();
         b_thread_yield();
     }
 }

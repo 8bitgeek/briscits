@@ -39,7 +39,7 @@ ASFLAGS += -Wall
 ASFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT) -mfpu=$(MCU_FPU)
 
 # C compilation directives
-CFLAGS += -DSTM32F746xx
+CFLAGS += -DSTM32F746xx -DSTM32F7
 CFLAGS += -c
 CFLAGS += -Wall
 # CFLAGS += -Os
@@ -72,6 +72,7 @@ C_SRC  += lib/xprintf.c
 C_SRC  += lib/ftoa.c
 
 # Header file directories.
+INCLUDE += -I bsp/lib/libopencm3/include
 INCLUDE += -I $(MICROAMP)/src
 INCLUDE += -I bsp/$(BOARD)
 INCLUDE += -I $(CPU)
