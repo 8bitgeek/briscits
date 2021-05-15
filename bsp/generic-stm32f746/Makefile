@@ -90,7 +90,7 @@ C_SRC  	+= $(CHIP_FAMILY)/cpp_init.c
 C_SRC   += $(CPU)/cpu.c
 
 # BOARD Source files
-C_SRC  += bsp/$(BOARD)/main.c
+# C_SRC  += bsp/$(BOARD)/main.c
 C_SRC  += bsp/$(BOARD)/brisc_board.c
 
 # BRISCIT Source Files
@@ -117,14 +117,31 @@ all: $(TARGET).bin
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDE) $< -o $@
 
+################# main.c ######################
+
 # Rule to create an ELF file from the compiled object files.
-$(TARGET).elf: $(OBJS)
+$(TARGET).elf:  bsp/$(BOARD)/main.o $(OBJS)
 	$(CC) $^ $(LFLAGS) -o $@
 
 # Rule to create a raw binary file from an ELF file.
 $(TARGET).bin: $(TARGET).elf
 	$(OC) -S -O binary $< $@
 	$(OS) $<
+
+################# main-test-mutex.c ######################
+
+# Rule to create an ELF file from the compiled object files.
+main-test-mutex.elf:  bsp/$(BOARD)/main-test-mutex.o $(OBJS)
+	$(CC) $^ $(LFLAGS) -o $@
+
+# Rule to create a raw binary file from an ELF file.
+main-test-mutex.bin: main-test-mutex.elf
+	$(OC) -S -O binary $< $@
+	$(OS) $<
+
+main-test-mutex: main-test-mutex.bin
+	mv main-test-mutex.bin $(TARGET).bin 
+	mv main-test-mutex.elf $(TARGET).elf
 
 # Rule to clear out generated build files.
 .PHONY: clean
