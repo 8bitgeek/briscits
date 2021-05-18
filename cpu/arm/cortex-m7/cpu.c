@@ -125,30 +125,6 @@ extern void cpu_atomic_release(cpu_reg_t* lock)
 }
 
 
-void __attribute__((naked)) chip_interrupts_enable(void)
-{
-	__asm("   isb                   \n"
-	      "   cpsie    i            \n"
-		  "   bx       lr           \n");
-}
-
-cpu_reg_t __attribute__((naked)) chip_interrupts_disable(void)
-{
-	__asm("   mrs     r0, primask  \n"
-		  "	  eor     r0, r0, #1   \n"
-		  "   cpsid	  i            \n"
-		  "   bx      lr           \n"
-		  ::: "r0");
-}
-
-cpu_reg_t	__attribute__((naked)) chip_interrupts_enabled(void)
-{
-	__asm(" mrs      r0, primask   \n"
-		  "	eor      r0, r0, #1    \n"
-		  " bx		 lr            \n"
-		  ::: "r0");
-}
-
 // return the current interrupt level from the IPSR register
 uint32_t __attribute__((naked)) chip_interrupt_level(void)
 {
@@ -157,16 +133,6 @@ uint32_t __attribute__((naked)) chip_interrupt_level(void)
 		  " bx		lr             \n"
 		  ::: "r0");
 }            
-
-void __attribute__((naked)) chip_interrupts_set(cpu_reg_t enable)
-{
-	__asm("   cmp	  r0, #0  \n"
-		  "   beq	  1f      \n"
-		  "	  cpsie   i       \n"
-		  "   bx      lr      \n"
-		  "1: cpsid   i       \n"
-		  "   bx      lr      \n");
-}
 
 extern void cpu_systick_clear(void)
 {
@@ -181,7 +147,6 @@ extern void cpu_yield_clear(void)
 extern void cpu_yield(void)
 {
 	SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-	__asm(" dsb\n");
 }
 
 extern void cpu_set_initial_state(cpu_state_t* cpu_state)
