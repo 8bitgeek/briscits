@@ -105,8 +105,6 @@ extern void __attribute__((naked)) chip_wfi(void)
 	      " bx lr  \n");
 }
 
-
-#if 1
 extern cpu_reg_t __attribute__((naked)) cpu_atomic_acquire (cpu_reg_t* lock)
 {
 	__asm__ __volatile__ (
@@ -124,23 +122,6 @@ extern cpu_reg_t __attribute__((naked)) cpu_atomic_acquire (cpu_reg_t* lock)
 		"2: bx		lr				\n"
 	);
 }
-#else
-extern uint32_t cpu_atomic_acquire(cpu_reg_t* lock)
-{
-	cpu_reg_t t;
-	cpu_reg_t int_state = cpu_int_disable();
-
-	if ( !(t=*lock) )
-    	*lock = 1;
-
-    if ( int_state )
-	{
-		__asm(" cpsie i\n");
-	}
-    
-	return !t;
-}
-#endif
 
 extern void cpu_atomic_release(cpu_reg_t* lock)
 {
