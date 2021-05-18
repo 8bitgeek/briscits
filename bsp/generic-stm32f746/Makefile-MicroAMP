@@ -7,6 +7,8 @@ MCU_FPU 		= fpv4-sp-d16
 BOARD=generic-stm32f746
 TARGET=$(BOARD)
 
+MICROAMP=../MicroAMP
+
 CFLAGS += -DBRISC_THREAD_MAX=4 -DARM_FVP_LAZY_STACKING -DHSE_VALUE=8000000
 
 # OpenOCD
@@ -37,7 +39,7 @@ ASFLAGS += -Wall
 ASFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT) -mfpu=$(MCU_FPU)
 
 # C compilation directives
-CFLAGS += -DSTM32F746xx
+CFLAGS += -DSTM32F746xx -DSTM32F7
 CFLAGS += -c
 CFLAGS += -Wall
 # CFLAGS += -Os
@@ -60,7 +62,7 @@ LFLAGS += -lm
 LFLAGS += --specs=nosys.specs
 LFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT) -mfpu=$(MCU_FPU)
 LFLAGS += -Wl,--gc-sections
-LFLAGS += -T$(CHIP)/linker.ld
+LFLAGS += -T$(CHIP)/linker-MicroAMP.ld
 
 # xprintf
 CFLAGS += -DXPRINTF_USE_XFUNC_OUT=1
@@ -70,6 +72,8 @@ C_SRC  += lib/xprintf.c
 C_SRC  += lib/ftoa.c
 
 # Header file directories.
+INCLUDE += -I bsp/lib/libopencm3/include
+INCLUDE += -I $(MICROAMP)/src
 INCLUDE += -I bsp/$(BOARD)
 INCLUDE += -I $(CPU)
 INCLUDE += -I $(CPU_COMMON)
@@ -90,7 +94,7 @@ C_SRC  	+= $(CHIP_FAMILY)/cpp_init.c
 C_SRC   += $(CPU)/cpu.c
 
 # BOARD Source files
-# C_SRC  += bsp/$(BOARD)/main.c
+C_SRC  += bsp/$(BOARD)/main-microamp.c
 C_SRC  += bsp/$(BOARD)/brisc_board.c
 
 # BRISCIT Source Files
@@ -100,6 +104,9 @@ C_SRC  += src/brisc_irq.c
 C_SRC  += src/brisc_thread.c
 C_SRC  += src/brisc_mutex.c
 C_SRC  += lib/brisc_delay.c
+
+# MICROAMP Source Filea
+C_SRC += $(MICROAMP)/src/microamp_c.c
 
 # Object files to build.
 OBJS  = $(AS_SRC:.S=.o)
@@ -117,31 +124,14 @@ all: $(TARGET).bin
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDE) $< -o $@
 
-################# main.c ######################
-
 # Rule to create an ELF file from the compiled object files.
-$(TARGET).elf:  bsp/$(BOARD)/main.o $(OBJS)
+$(TARGET).elf: $(OBJS)
 	$(CC) $^ $(LFLAGS) -o $@
 
 # Rule to create a raw binary file from an ELF file.
 $(TARGET).bin: $(TARGET).elf
 	$(OC) -S -O binary $< $@
 	$(OS) $<
-
-################# main-test-mutex.c ######################
-
-# Rule to create an ELF file from the compiled object files.
-main-test-mutex.elf:  bsp/$(BOARD)/main-test-mutex.o $(OBJS)
-	$(CC) $^ $(LFLAGS) -o $@
-
-# Rule to create a raw binary file from an ELF file.
-main-test-mutex.bin: main-test-mutex.elf
-	$(OC) -S -O binary $< $@
-	$(OS) $<
-
-main-test-mutex: main-test-mutex.bin
-	mv main-test-mutex.bin $(TARGET).bin 
-	mv main-test-mutex.elf $(TARGET).elf
 
 # Rule to clear out generated build files.
 .PHONY: clean
