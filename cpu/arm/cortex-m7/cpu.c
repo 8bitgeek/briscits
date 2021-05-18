@@ -127,7 +127,7 @@ extern void __attribute__((naked)) cpu_atomic_release(cpu_reg_t* lock)
 {
 	__asm__ __volatile__ (
 		"	mov		r3,r0			\n"
-		"	xor		r0,r0,r0		\n"
+		"	eor		r0,r0,r0		\n"
 		"	str 	r0,[r3]			\n"
 		"	bx		lr				\n"
 	);
