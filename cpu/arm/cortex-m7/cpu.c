@@ -105,6 +105,25 @@ extern void __attribute__((naked)) chip_wfi(void)
 	      " bx lr  \n");
 }
 
+
+#if 1
+extern cpu_reg_t cpu_atomic_acquire__attribute__((naked)) (cpu_reg_t* lock)
+{
+	__asm__ __volatile__ (
+		"	mov		r3,r0			\n"		/* r3 <= &lock 		*/
+		"	mrs     r2,primask		\n"		/* r2 <= ie state 	*/
+		"	eor     r2,r2,#1    	\n"		
+		"	ldr		r0,[r3]			\n"		/* r0 <= *lock 		*/		
+		"	eors 	r0,r0,#1		\n"		/* (r0 ^= 1) == 1?  */
+		"	beq 	1f				\n"
+		"	str		r0,[r3]			\n"		/* *lock <= 1		*/
+		"1:	cmp		r2,#0			\n"     /* ie was clear?    */
+		"	beq 	2f				\n"
+		"   cpsid	 i            	\n"		/* set ie           */
+		"2: bx		lr				\n"
+	);
+}
+#else
 extern uint32_t cpu_atomic_acquire(cpu_reg_t* lock)
 {
 	cpu_reg_t t;
@@ -114,10 +133,13 @@ extern uint32_t cpu_atomic_acquire(cpu_reg_t* lock)
     	*lock = 1;
 
     if ( int_state )
-		cpu_int_enable();
+	{
+		__asm(" cpsie i\n");
+	}
     
 	return !t;
 }
+#endif
 
 extern void cpu_atomic_release(cpu_reg_t* lock)
 {
