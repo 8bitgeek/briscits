@@ -111,21 +111,26 @@ extern cpu_reg_t __attribute__((naked)) cpu_atomic_acquire (cpu_reg_t* lock)
 		"	mov		r3,r0			\n"		/* r3 <= &lock 		*/
 		"	mrs     r2,primask		\n"		/* r2 <= ie state 	*/
 		"	eor     r2,r2,#1    	\n"
-		"   cpsid	i               \n"		/* ie = 0           */
+		"	cpsid	i               \n"		/* ie = 0           */
 		"	ldr		r0,[r3]			\n"		/* r0 <= *lock 		*/		
 		"	eors 	r0,r0,#1		\n"		/* (r0 ^= 1) == 1?  */
 		"	beq 	1f				\n"
 		"	str		r0,[r3]			\n"		/* *lock <= 1		*/
 		"1:	cmp		r2,#0			\n"     /* ie was clear?    */
 		"	beq 	2f				\n"
-		"   cpsie	 i            	\n"		/* set ie           */
-		"2: bx		lr				\n"
+		"	cpsie	i            	\n"		/* set ie           */
+		"2:	bx		lr				\n"
 	);
 }
 
-extern void cpu_atomic_release(cpu_reg_t* lock)
+extern void __attribute__((naked)) cpu_atomic_release(cpu_reg_t* lock)
 {
-    *lock = 0;
+	__asm__ __volatile__ (
+		"	mov		r3,r0			\n"
+		"	xor		r0,r0,r0		\n"
+		"	str 	r0,[r3]			\n"
+		"	bx		lr				\n"
+	);
 }
 
 

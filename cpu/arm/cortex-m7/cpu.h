@@ -175,7 +175,7 @@ typedef union cpu_state_t
 #endif
 
 extern cpu_reg_t __attribute__((naked)) cpu_atomic_acquire ( cpu_reg_t* lock );
-extern void      cpu_atomic_release ( cpu_reg_t* lock );
+extern void      __attribute__((naked)) cpu_atomic_release ( cpu_reg_t* lock );
 
 extern void*    	__attribute__((naked)) cpu_rd_sp(void);
 extern void 		__attribute__((naked)) cpu_int_enable(void);
