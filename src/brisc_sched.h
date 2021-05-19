@@ -43,13 +43,13 @@ extern "C"
 
 typedef struct brisc_scheduler
 {
-    brisc_systick_t     systick;
-    brisc_thread_t      threads[BRISC_THREAD_MAX];
     uint8_t             thread_id;
-    int8_t              prio;
     int8_t              lock;
+    int8_t              prio;
+    brisc_systick_t     systick;
     void (*systick_fn)(void);
     void (*yield_fn)(void);
+    brisc_thread_t      threads[BRISC_THREAD_MAX];
 } brisc_scheduler_t;
 
 extern volatile brisc_scheduler_t brisc_scheduler_state;

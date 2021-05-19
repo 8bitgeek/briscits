@@ -58,8 +58,8 @@ extern "C"
 
 typedef struct brisc_thread
 {
-    int8_t              prio;
     char                name[BRISC_THREAD_NAME_MAX+1];
+    int8_t              prio;
     cpu_state_t*        cpu_state;
 } brisc_thread_t;
 
@@ -71,6 +71,7 @@ typedef struct brisc_thread
 #define b_atomic_acquire(s)         cpu_atomic_acquire((s))
 #define b_atomic_release(s)         cpu_atomic_release((s))
 
+#define b_wfi()                     cpu_wfi();
 #define b_thread_block_while(cond)  while((cond)) b_thread_yield()
 #define b_thread_prio_clear()       (brisc_scheduler_state.prio = 0)
 

@@ -182,7 +182,7 @@ extern void 		__attribute__((naked)) cpu_int_enable(void);
 extern cpu_reg_t	__attribute__((naked)) cpu_int_disable(void);
 extern cpu_reg_t	__attribute__((naked)) cpu_int_enabled(void);
 extern void 		__attribute__((naked)) cpu_int_set(cpu_reg_t enable);
-extern void 		__attribute__((naked)) chip_wfi(void);
+extern void 		__attribute__((naked)) cpu_wfi(void);
 
 #define brisc_isr_yield 	PendSV_IRQ_Handler
 #define brisc_isr_systick 	SysTick_IRQ_Handler

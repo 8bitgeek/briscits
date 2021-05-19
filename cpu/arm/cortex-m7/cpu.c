@@ -99,7 +99,7 @@ extern void* __attribute__((naked)) cpu_rd_sp(void)
 	return (void*)0;
 }
 
-extern void __attribute__((naked)) chip_wfi(void)
+extern void __attribute__((naked)) cpu_wfi(void)
 {
 	__asm(" isb    \n"
 	      " wfi    \n"
@@ -130,16 +130,6 @@ extern void __attribute__((naked)) cpu_atomic_release(cpu_reg_t* lock)
 		"	bx		lr				\n"
 	::: "memory", "r0", "r3" );
 }
-
-
-// return the current interrupt level from the IPSR register
-uint32_t __attribute__((naked)) chip_interrupt_level(void)
-{
-	__asm(" mrs	    r0, psr        \n"
-		  "	and	    r0, r0, #0x3F  \n"
-		  " bx		lr             \n"
-		  ::: "r0");
-}            
 
 extern void cpu_systick_clear(void)
 {
