@@ -61,7 +61,7 @@ typedef struct brisc_thread
     char                name[BRISC_THREAD_NAME_MAX+1];
     int8_t              prio;
     cpu_state_t*        cpu_state;
-} brisc_thread_t;
+} brisc_thread_t __attribute__ ((aligned (8)));
 
 #define b_int_enabled()             cpu_int_enabled()
 #define b_int_enable()              cpu_int_enable()
