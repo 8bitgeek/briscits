@@ -35,6 +35,7 @@ SOFTWARE.
 #define _BRISC_THREAD_H_
 
 #include <brisc_board.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C"

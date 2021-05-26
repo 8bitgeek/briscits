@@ -34,6 +34,7 @@ SOFTWARE.
 #include <brisc_board.h>
 #include <stm32f746xx.h>
 #include <core_cm7.h>
+#include <stdbool.h>
 
 static bool mcu_clock_setup_extern( void );
 static void mcu_clock_setup( void );
