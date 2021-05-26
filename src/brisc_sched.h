@@ -50,7 +50,7 @@ typedef struct brisc_scheduler
     void (*systick_fn)(void);
     void (*yield_fn)(void);
     brisc_thread_t      threads[BRISC_THREAD_MAX];
-} brisc_scheduler_t;
+} brisc_scheduler_t __attribute__ ((aligned (8)));
 
 extern volatile brisc_scheduler_t brisc_scheduler_state;
 

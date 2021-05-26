@@ -141,9 +141,17 @@ extern void cpu_yield_clear(void)
 	SCB->ICSR |= SCB_ICSR_PENDSVCLR_Msk;
 }
 
-extern void cpu_yield(void)
+extern void __attribute__((naked)) cpu_yield(void)
 {
+	__asm__ __volatile__(	"	push {r3,lr} \n"
+							: :	: "memory"
+						);
+						
 	SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+
+	__asm__ __volatile__(	"	pop	{r3,pc}	\n"
+							: : : "memory"
+						);
 }
 
 extern void cpu_set_initial_state(cpu_state_t* cpu_state)

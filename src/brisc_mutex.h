@@ -35,6 +35,7 @@ SOFTWARE.
 #define _BRISC_MUTEX_H_
 
 #include <brisc_board.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C"
