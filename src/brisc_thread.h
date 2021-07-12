@@ -35,6 +35,9 @@ SOFTWARE.
 #define _BRISC_THREAD_H_
 
 #include <brisc_board.h>
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -58,10 +61,10 @@ extern "C"
 
 typedef struct brisc_thread
 {
-    int8_t              prio;
     char                name[BRISC_THREAD_NAME_MAX+1];
+    int8_t              prio;
     cpu_state_t*        cpu_state;
-} brisc_thread_t;
+} brisc_thread_t __attribute__ ((aligned (8)));
 
 #define b_int_enabled()             cpu_int_enabled()
 #define b_int_enable()              cpu_int_enable()
@@ -71,6 +74,7 @@ typedef struct brisc_thread
 #define b_atomic_acquire(s)         cpu_atomic_acquire((s))
 #define b_atomic_release(s)         cpu_atomic_release((s))
 
+#define b_wfi()                     cpu_wfi();
 #define b_thread_block_while(cond)  while((cond)) b_thread_yield()
 #define b_thread_prio_clear()       (brisc_scheduler_state.prio = 0)
 

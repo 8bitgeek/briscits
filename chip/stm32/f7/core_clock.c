@@ -34,6 +34,7 @@ SOFTWARE.
 #include <brisc_board.h>
 #include <stm32f746xx.h>
 #include <core_cm7.h>
+#include <stdbool.h>
 
 static bool mcu_clock_setup_extern( void );
 static void mcu_clock_setup( void );
@@ -50,7 +51,7 @@ extern void _core_clock_init( void )
     while( !(RCC->CR & RCC_CR_PLLRDY) );						/* Wait for PLL Ready */
 
     /* Configure FLASH Wait States */
-    FLASH->ACR |= FLASH_ACR_LATENCY_4WS;
+    FLASH->ACR |= FLASH_ACR_LATENCY_7WS; //FLASH_ACR_LATENCY_4WS;
 
     /* Select PLL as clock source */
     RCC->CFGR |= RCC_CFGR_SW_PLL | RCC_CFGR_HPRE_DIV1 | RCC_CFGR_PPRE1_DIV4 | RCC_CFGR_PPRE2_DIV2;

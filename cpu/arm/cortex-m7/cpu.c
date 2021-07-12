@@ -83,7 +83,8 @@ extern void __attribute__((naked)) cpu_int_set(cpu_reg_t enable)
 		  "	  cpsie   i       \n"
 		  "   bx      lr      \n"
 		  "1: cpsid   i       \n"
-		  "   bx      lr      \n");
+		  "   bx      lr      \n"
+		  ::: "cc" );
 }
 
 
@@ -98,74 +99,36 @@ extern void* __attribute__((naked)) cpu_rd_sp(void)
 	return (void*)0;
 }
 
-extern void __attribute__((naked)) chip_wfi(void)
+extern void __attribute__((naked)) cpu_wfi(void)
 {
 	__asm(" isb    \n"
 	      " wfi    \n"
 	      " bx lr  \n");
 }
 
-extern uint32_t cpu_atomic_acquire(cpu_reg_t* lock)
+extern cpu_reg_t __attribute__((naked)) cpu_atomic_acquire (cpu_reg_t* lock)
 {
-	cpu_reg_t t;
-	cpu_reg_t int_state = cpu_int_disable();
-
-	if ( !(t=*lock) )
-    	*lock = 1;
-
-    if ( int_state )
-		cpu_int_enable();
-    
-	return !t;
+	__asm__ __volatile__ (
+		"	mov		r3,r0			\n"		/* r3 <= &lock 		*/
+		"	mrs     r2,primask		\n"		/* r2 <= ie state 	*/
+		"	cpsid	i               \n"		/* ie = 0           */
+		"	ldr		r0,[r3]			\n"		/* r0 <= *lock 		*/		
+		"	eors 	r0,r0,#1		\n"		/* (r0 ^= 1) == 1?  */
+		"	beq 	1f				\n"
+		"	str		r0,[r3]			\n"		/* *lock <= 1		*/
+		"1:	msr		primask,r2		\n"		/* ie <= ei state   */
+		"	bx		lr				\n"
+	::: "cc", "memory", "r0", "r2", "r3" );
 }
 
-extern void cpu_atomic_release(cpu_reg_t* lock)
+extern void __attribute__((naked)) cpu_atomic_release(cpu_reg_t* lock)
 {
-    *lock = 0;
-}
-
-
-void __attribute__((naked)) chip_interrupts_enable(void)
-{
-	__asm("   isb                   \n"
-	      "   cpsie    i            \n"
-		  "   bx       lr           \n");
-}
-
-cpu_reg_t __attribute__((naked)) chip_interrupts_disable(void)
-{
-	__asm("   mrs     r0, primask  \n"
-		  "	  eor     r0, r0, #1   \n"
-		  "   cpsid	  i            \n"
-		  "   bx      lr           \n"
-		  ::: "r0");
-}
-
-cpu_reg_t	__attribute__((naked)) chip_interrupts_enabled(void)
-{
-	__asm(" mrs      r0, primask   \n"
-		  "	eor      r0, r0, #1    \n"
-		  " bx		 lr            \n"
-		  ::: "r0");
-}
-
-// return the current interrupt level from the IPSR register
-uint32_t __attribute__((naked)) chip_interrupt_level(void)
-{
-	__asm(" mrs	    r0, psr        \n"
-		  "	and	    r0, r0, #0x3F  \n"
-		  " bx		lr             \n"
-		  ::: "r0");
-}            
-
-void __attribute__((naked)) chip_interrupts_set(cpu_reg_t enable)
-{
-	__asm("   cmp	  r0, #0  \n"
-		  "   beq	  1f      \n"
-		  "	  cpsie   i       \n"
-		  "   bx      lr      \n"
-		  "1: cpsid   i       \n"
-		  "   bx      lr      \n");
+	__asm__ __volatile__ (
+		"	mov		r3,r0			\n"
+		"	eor		r0,r0,r0		\n"
+		"	str 	r0,[r3]			\n"
+		"	bx		lr				\n"
+	::: "memory", "r0", "r3" );
 }
 
 extern void cpu_systick_clear(void)
@@ -178,10 +141,17 @@ extern void cpu_yield_clear(void)
 	SCB->ICSR |= SCB_ICSR_PENDSVCLR_Msk;
 }
 
-extern void cpu_yield(void)
+extern void __attribute__((naked)) cpu_yield(void)
 {
+	__asm__ __volatile__(	"	push {r3,lr} \n"
+							: :	: "memory"
+						);
+						
 	SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-	__asm(" dsb\n");
+
+	__asm__ __volatile__(	"	pop	{r3,pc}	\n"
+							: : : "memory"
+						);
 }
 
 extern void cpu_set_initial_state(cpu_state_t* cpu_state)

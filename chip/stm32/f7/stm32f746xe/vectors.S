@@ -66,7 +66,7 @@ _vectors:
 		.word 	default_interrupt_handler
 		.word 	default_interrupt_handler
 		.word 	default_interrupt_handler
-		.word 	SVC_IRQ_Handler					/* Cortex-M7 SV Call Interrupt 			 */
+		.word 	SVC_IRQ_Handler						/* Cortex-M7 SV Call Interrupt 			 */
 		vector 	DebugMonitor_IRQ_Handler			/* Cortex-M7 Debug Monitor Interrupt 	 */
 		.word 	default_interrupt_handler
 		.word 	PendSV_IRQ_Handler					/* Cortex-M7 Pend SV Interrupt  		 */
