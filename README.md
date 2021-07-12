@@ -39,3 +39,37 @@ make -f bsp/sipeed-longan-nano-mutex/Makefile
 make -f bsp/generic-stm32f746/Makefile
 ~~~~
 
+~~~~
+static cpu_reg_t red_stack   [ STACK_WORDS ];
+static cpu_reg_t green_stack [ STACK_WORDS ];
+static cpu_reg_t blue_stack  [ STACK_WORDS ];
+
+static int red_thread_handle   = (-1);
+static int green_thread_handle = (-1);
+static int blue_thread_handle  = (-1);
+static int main_thread_handle  = (-1);
+
+....
+....
+....
+
+    if ( (main_thread_handle  = b_thread_init( (thread_name="main") )) >= 0 )
+    {
+        if ( (red_thread_handle = b_thread_create( (thread_name="red"),   run_red,   &delay, red_stack,   STACK_WORDS )) >= 0)
+        {
+            if ( (green_thread_handle = b_thread_create( (thread_name="green"), run_green, &delay, green_stack, STACK_WORDS )) >= 0)
+            {
+                if ( (blue_thread_handle  = b_thread_create( (thread_name="blue"),  run_blue,  &delay, blue_stack,  STACK_WORDS )) >= 0)
+                {
+                    b_thread_start( red_thread_handle );
+                    b_thread_start( green_thread_handle );
+                    b_thread_start( blue_thread_handle );
+                    run_main(&delay);
+                }
+            }
+        }
+    }
+....
+....
+....
+~~~~
