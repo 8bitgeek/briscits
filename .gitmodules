@@ -1,6 +1,0 @@
-[submodule "bsp/lib/GD32VF103_Firmware_Library"]
-	path = bsp/lib/GD32VF103_Firmware_Library
-	url = https://github.com/8bitgeek/GD32VF103_Firmware_Library.git
-[submodule "bsp/lib/libopencm3"]
-	path = bsp/lib/libopencm3
-	url = https://github.com/libopencm3/libopencm3.git
