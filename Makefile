@@ -1,35 +1,62 @@
+# Build Target
+TARGET=libbrisc.a
+
+# CPU
+CPU=cpu/${BRISC_CPU}
+
+# GCC toolchain programs.
+CC = ${BRISC_GCC}-gcc
+AR = ${BRISC_GCC}-ar
+
+# C compilation directives
+CFLAGS += -c
+CFLAGS += -Wall
+CFLAGS += -Os
+#CFLAGS += -g -Os
+#CFLAGS += -ggdb
+include $(CPU)/cflags.mk
+
+# Archiver Flags.
+AFLAGS += rcs 
+
+# Header file directories.
+INCLUDE += -I $(CPU)
+INCLUDE += -I src
+INCLUDE += -I lib
+
+# CPU Source files.
+C_SRC  += $(CPU)/cpu.c
+
+# BRISCIT Source Files
+C_SRC  += src/brisc_sched.c
+C_SRC  += src/brisc_irq.c
+C_SRC  += src/brisc_thread.c
+C_SRC  += src/brisc_mutex.c
+C_SRC  += src/brisc_delay.c
+
+# Object files to build.
+OBJS  = $(AS_SRC:.S=.o)
+OBJS += $(C_SRC:.c=.o)
+
+# Default rule to build the whole project.
 .PHONY: all
-all: sipeed-longan-nano \
-	 sipeed-longan-nano-mutex \
-	 seeedstudio-gd32
-	echo done
+all: $(TARGET)
 
-sipeed-longan-nano-mutex:
-	make -f bsp/sipeed-longan-nano-mutex/Makefile
+# Rule to build assembly files.
+%.o: %.S
+	$(CC) -x assembler-with-cpp $(ASFLAGS) $(INCLUDE) $< -o $@
 
-sipeed-longan-nano:
-	make -f bsp/sipeed-longan-nano/Makefile
+# Rule to compile C files.
+%.o: %.c
+	$(CC) $(CFLAGS) $(INCLUDE) $< -o $@
 
-seeedstudio-gd32:
-	make -f bsp/seeedstudio-gd32/Makefile
+# Rule to create an ELF file from the compiled object files.
+$(TARGET): $(OBJS)
+	$(AR) $(AFLAGS) $@  $^ 
 
-cleantargets:
-	rm -f seeedstudio-gd32.bin
-	rm -f seeedstudio-gd32.elf
-	rm -f seeedstudio-gd32.map
-	rm -f sipeed-longan-nano.bin
-	rm -f sipeed-longan-nano.elf
-	rm -f sipeed-longan-nano.map
-	rm -f sipeed-longan-nano-mutex.bin
-	rm -f sipeed-longan-nano-mutex.elf
-	rm -f sipeed-longan-nano-mutex.map
 
-clean: cleantargets
-	make -f bsp/sipeed-longan-nano-mutex/Makefile clean
-	make -f bsp/sipeed-longan-nano/Makefile clean
-	make -f bsp/seeedstudio-gd32/Makefile clean
+# Rule to clear out generated build files.
+.PHONY: clean
+clean:
+	rm -f $(OBJS) $(TARGET)
 
-distclean: cleantargets
-	make -f bsp/sipeed-longan-nano-mutex/Makefile cleanall
-	make -f bsp/sipeed-longan-nano/Makefile cleanall
-	make -f bsp/seeedstudio-gd32/Makefile cleanall

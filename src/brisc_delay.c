@@ -31,16 +31,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#include <brisc_board.h>
-#include <string.h>
+#include <brisc_delay.h>
+#include <brisc_thread.h>
 
-// Pre-defined memory locations for program initialization.
-extern uint32_t _sidata, _sdata, _edata, _sbss, _ebss;
 
-void _bss_init( void ) 
+void b_delay_ms( uint32_t ms ) 
 {
-    // Copy initialized data from .sidata (Flash) to .data (RAM)
-    memcpy( &_sdata, &_sidata, ( ( void* )&_edata - ( void* )&_sdata ) );
-    // Clear the .bss RAM section.
-    memset( &_sbss, 0x00, ( ( void* )&_ebss - ( void* )&_sbss ) );
+    brisc_systick_t start = b_thread_systick(); 
+    b_thread_block_while( (b_thread_systick() - start) < ms );
 }

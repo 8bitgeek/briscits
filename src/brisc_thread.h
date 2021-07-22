@@ -34,7 +34,7 @@ SOFTWARE.
 #ifndef _BRISC_THREAD_H_
 #define _BRISC_THREAD_H_
 
-#include <brisc_board.h>
+#include <cpu.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>

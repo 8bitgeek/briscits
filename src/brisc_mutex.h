@@ -34,7 +34,7 @@ SOFTWARE.
 #ifndef _BRISC_MUTEX_H_
 #define _BRISC_MUTEX_H_
 
-#include <brisc_board.h>
+#include <cpu.h>
 #include <stdbool.h>
 
 #ifdef __cplusplus

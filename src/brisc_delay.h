@@ -31,17 +31,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#ifndef _CORE_CLOCK_H_
-#define _CORE_CLOCK_H_
-
-#include <brisc_board.h>
+#ifndef _DELAY_H_
+#define _DELAY_H_
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-extern void _core_clock_init( void );
+#include <stdint.h>
+
+extern void b_delay_ms( uint32_t ms );
 
 #ifdef __cplusplus
 }
