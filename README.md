@@ -19,7 +19,7 @@ $ export BRISC_GCC=/opt/riscv-gcc/bin/riscv32-unknown-elf
 ## Cortex-M7
 ```
 $ export BRISC_CPU=arm/cortex-m7
-$ export BRISC_GCC=/opt/arm-gcc/bin/arm-none-eabi
+$ export BRISC_GCC=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi
 ```
 
 # Make Library
