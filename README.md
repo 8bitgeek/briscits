@@ -11,6 +11,7 @@
 RISC "Real-Time" Scheduler
 
 [API Documentation](http://www.8bitgeek.net/briscits/html/index.html)
+[Board Support](https://github.com/8bitgeek/briscits-bsp)
 
 Examples include RISC-V and Cotex-M CPU Support:
 
@@ -40,3 +41,6 @@ $ export BRISC_GCC=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi
 ```
 $ make
 ```
+
+# Board Support
+
