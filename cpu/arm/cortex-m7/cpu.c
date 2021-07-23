@@ -32,7 +32,6 @@ SOFTWARE.
 
 ******************************************************************************/
 #include "cpu.h"
-#include <stm32f746xx.h>
 #include <core_cm7.h>
 #include <brisc_irq.h>
 

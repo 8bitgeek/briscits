@@ -35,6 +35,8 @@ SOFTWARE.
 #define _CPU_H_
 
 #include <stdint.h>
+#include <riscv_encoding.h>
+#include <n200_timer.h>
 
 #ifdef __cplusplus
 extern "C"

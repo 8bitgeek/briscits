@@ -1,75 +1,42 @@
 # BRISCITS
-Basic RISC Intrinsic Time Scheduler = Lightweight preemtive multitasking for RISC-V RV32IMAC and ARM Cortex-M micro-controllers
 
-# Setup
+```
+ ________  ________  ___  ________  ________  ___  _________  ________      
+|\   __  \|\   __  \|\  \|\   ____\|\   ____\|\  \|\___   ___\\   ____\     
+\ \  \|\ /\ \  \|\  \ \  \ \  \___|\ \  \___|\ \  \|___ \  \_\ \  \___|_    
+ \ \   __  \ \   _  _\ \  \ \_____  \ \  \    \ \  \   \ \  \ \ \_____  \   
+  \ \  \|\  \ \  \\  \\ \  \|____|\  \ \  \____\ \  \   \ \  \ \|____|\  \  
+   \ \_______\ \__\\ _\\ \__\____\_\  \ \_______\ \__\   \ \__\  ____\_\  \ 
+    \|_______|\|__|\|__|\|__|\_________\|_______|\|__|    \|__| |\_________\
+                            \|_________|                        \|_________|
+```
+RISC "Real-Time" Scheduler
 
-* git clone --recurse-submodules https://github.com/8bitgeek/briscits.git
-* cd briscits 
-* git submodule update --init --recursive
+Examples include RISC-V and Cotex-M CPU Support:
 
-# Supported Chips
+* RISC_V RV32IMAC
+* ARM Cortex-M7
 
-* GD32VF103xB (RV32IMAC BumbleBee)
-* STM32F746xE (ARM Cortex-M7)
+# Environment Setup Example
 
-# BSP Support
+Prior to compiling for a particular CPU target, some environment variables need to be set up.
 
-* seeedstudio-gd32
-* sipeed-longan-nano
-* generic-stm32f746
+* BRISC_CPU should reference one of the CPU support packages under the cpu/ folder.
+* BRISC_GCC should contain the 'gcc' compiler prefix.
 
-# Make Examples
+## RISC-V
+```
+$ export BRISC_CPU=risc/RV32IMAC
+$ export BRISC_GCC=/opt/riscv-gcc/bin/riscv32-unknown-elf
+```
+## Cortex-M7
+```
+$ export BRISC_CPU=arm/cortex-m7
+$ export BRISC_GCC=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi
+```
 
-`make -f bsp/<board-support>/Makefile`
+# Compiling libbrisc.a
 
-### Start OpenOCD 
-`make -f bsp/<board-support>/Makefile start`
-  
-### FLASH Image - Requires OpenOCD started
-`make -f bsp/<board-support>/Makefile flash`
-
-### Stop OpenOCD
-`make -f bsp/<board-support>/Makefile stop`
-
-### Examples
-~~~~
-make -f bsp/seeedstudio-gd32/Makefile
-make -f bsp/sipeed-longan-nano/Makefile
-make -f bsp/sipeed-longan-nano-mutex/Makefile
-make -f bsp/generic-stm32f746/Makefile
-~~~~
-
-~~~~
-static cpu_reg_t red_stack   [ STACK_WORDS ];
-static cpu_reg_t green_stack [ STACK_WORDS ];
-static cpu_reg_t blue_stack  [ STACK_WORDS ];
-
-static int red_thread_handle   = (-1);
-static int green_thread_handle = (-1);
-static int blue_thread_handle  = (-1);
-static int main_thread_handle  = (-1);
-
-....
-....
-....
-
-    if ( (main_thread_handle  = b_thread_init( (thread_name="main") )) >= 0 )
-    {
-        if ( (red_thread_handle = b_thread_create( (thread_name="red"),   run_red,   &delay, red_stack,   STACK_WORDS )) >= 0)
-        {
-            if ( (green_thread_handle = b_thread_create( (thread_name="green"), run_green, &delay, green_stack, STACK_WORDS )) >= 0)
-            {
-                if ( (blue_thread_handle  = b_thread_create( (thread_name="blue"),  run_blue,  &delay, blue_stack,  STACK_WORDS )) >= 0)
-                {
-                    b_thread_start( red_thread_handle );
-                    b_thread_start( green_thread_handle );
-                    b_thread_start( blue_thread_handle );
-                    run_main(&delay);
-                }
-            }
-        }
-    }
-....
-....
-....
-~~~~
+```
+$ make
+```
