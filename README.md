@@ -14,6 +14,13 @@ RISC "Real-Time" Scheduler
 
 [Board Support](https://github.com/8bitgeek/briscits-bsp)
 
+# Initialize
+
+```
+$ git clone https://github.com/8bitgeek/briscits.git
+$ cd briscits
+```
+
 # Environment Setup
 
 Prior to compiling for a particular CPU target, some environment variables need to be set up.
@@ -37,6 +44,3 @@ $ export BRISC_GCC=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi
 ```
 $ make
 ```
-
-# Board Support
-
