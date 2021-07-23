@@ -44,14 +44,37 @@ extern "C"
 
 typedef uint32_t    brisc_mutex_t;
 
-#define BRISC_MUTEX_DECL(n)       brisc_mutex_t n = 0
+#define BRISC_MUTEX_DECL(n)  brisc_mutex_t n = 0
 
-#define b_mutex_init(mutex)       b_mutex_unlock((mutex))
+/** ***************************************************************************
+ * @brief Bring a mutex to it's initial state (unlocked).
+******************************************************************************/
+#define b_mutex_init(mutex)  b_mutex_unlock((mutex))
 
-extern void     b_mutex_lock      ( brisc_mutex_t* mutex );
-extern bool     b_mutex_try_lock  ( brisc_mutex_t* mutex );
-extern void     b_mutex_unlock    ( brisc_mutex_t* mutex );
-extern void     b_mutex_release   ( brisc_mutex_t* mutex );
+/** ***************************************************************************
+ * @brief Block while acquiring mutex lock.
+ * @param mutex pointer to an initialized @ref brisc_mutex_t variable. 
+******************************************************************************/
+extern void b_mutex_lock( brisc_mutex_t* mutex );
+
+/** ***************************************************************************
+ * @brief Non-vlocking acquiring mutex lock.
+ * @param mutex pointer to an initialized @ref brisc_mutex_t variable. 
+ * @return true if the lock was acquired.
+******************************************************************************/
+extern bool b_mutex_try_lock( brisc_mutex_t* mutex );
+
+/** ***************************************************************************
+ * @brief Un-lock a mutex and yields CPU after unlock (generally prefered).
+ * @param mutex pointer to an initialized @ref brisc_mutex_t variable. 
+******************************************************************************/
+extern void b_mutex_unlock( brisc_mutex_t* mutex );
+
+/** ***************************************************************************
+ * @brief Un-lock a mutex with no-yield CPU after unlock.
+ * @param mutex pointer to an initialized @ref brisc_mutex_t variable. 
+******************************************************************************/
+extern void b_mutex_release( brisc_mutex_t* mutex );
 
 #ifdef __cplusplus
 }

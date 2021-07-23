@@ -38,15 +38,11 @@ SOFTWARE.
 static int       thread_new_id( void );
 static void      thread_exit  ( void );
 
-/**
- * @brief Initialize briscits before any threads may be created.
- * @param name The name of the main thread.
- */
 int b_thread_init( const char* name )
 {
     memset((void*)&brisc_scheduler_state,0,sizeof(brisc_scheduler_state));
     for(int n=0; n < BRISC_THREAD_MAX; n++)
-        brisc_scheduler_state.threads[n].prio = BRISC_THREAD_PRIO_INACTIVE;
+        brisc_scheduler_state.threads[n].prio = BRISC_THREAD_PRIO_INVALID;
 
     /* insert the 'main' thread into the scheduler */
     return b_thread_create( name, NULL, NULL, NULL, 0 ); 
@@ -99,15 +95,6 @@ static void thread_exit( void )
     for(;;);
 }
 
-/**
- * @brief Create a new thread.
- * @param name A human readable name for the thread.
- * @param thread_fn A pointer to the entry point of the thread function.
- * @param arg This pointer will be passed as a parameter to the thread function.
- * @param stack Pointer to the base of the thread's program stack space on an even cpu_reg_t word boundary.
- * @param n_stack_words The number of cpu_reg_t words contained in the stack space.
- * @return a valid thread handle >= 0, or < 0 on failure.
- */
 int b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_reg_t* stack, size_t n_stack_words )
 {
     int id = thread_new_id();
@@ -141,13 +128,7 @@ int b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_
     return id;
 }
 
-/**
- * @brief set a thread priority. < 0 is inactive, = 0 is active but suspended.
- *        > 0 indicates the maximum number of contiguous time slices the thread is allowed to get.
- * @param id The thread handle.
- * @param prio The thread priority -1 .. 127
- * @return < 0 on failure
- */
+
 int b_thread_set_prio ( int id, int8_t prio )
 {
     volatile brisc_thread_t* thread = b_thread_state(id);
@@ -164,7 +145,7 @@ static int thread_new_id( void )
 {
     for(int id=0; id < BRISC_THREAD_MAX; id++)
     {
-        if ( brisc_scheduler_state.threads[id].prio == BRISC_THREAD_PRIO_INACTIVE )
+        if ( brisc_scheduler_state.threads[id].prio == BRISC_THREAD_PRIO_INVALID )
         {
             brisc_scheduler_state.threads[id].prio = BRISC_THREAD_PRIO_SUSPEND;
             return id;

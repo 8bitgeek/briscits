@@ -34,16 +34,23 @@ SOFTWARE.
 #include <brisc_irq.h>
 #include <brisc_sched.h>
 
+/******************************************************************************
+ * @brief Ask the scheduler to provide the entry point to the next 
+ * runnable thread.
+******************************************************************************/
 #define thread_scheduler_service()  register cpu_reg_t context_sp;          \
-                        if ( ( context_sp = b_thread_schedule_next() ) != 0 ) \
+                    if ( ( context_sp = b_thread_schedule_next() ) != 0 )   \
                                         cpu_wr_sp( context_sp )
 
+/******************************************************************************
+ * @brief Perform regular servicing routins, increment systick, clear 
+ * timer int.
+******************************************************************************/
 #define systick_service() ++brisc_scheduler_state.systick;                  \
                         cpu_systick_clear()
 
-/**
- * @brief timer interrupt, increment systick, and potentially switch thread context
- */
+
+
 __attribute__( ( naked ) ) void brisc_isr_systick( void ) 
 {
     cpu_systick_enter();
@@ -60,9 +67,7 @@ __attribute__( ( naked ) ) void brisc_isr_systick( void )
     cpu_systick_exit();
 }
 
-/**
- * @brief software interrupt, thread yield, give up remaining prio and switch context.
- */
+
 __attribute__( ( naked ) ) void brisc_isr_yield( void )
 {
     cpu_systick_enter();
