@@ -14,7 +14,7 @@ RISC "Real-Time" Scheduler
 
 [Board Support](https://github.com/8bitgeek/briscits-bsp)
 
-# Environment Setup Example
+# Environment Setup
 
 Prior to compiling for a particular CPU target, some environment variables need to be set up.
 
