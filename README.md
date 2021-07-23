@@ -14,11 +14,6 @@ RISC "Real-Time" Scheduler
 
 [Board Support](https://github.com/8bitgeek/briscits-bsp)
 
-Examples include RISC-V and Cotex-M CPU Support:
-
-* RISC_V RV32IMAC
-* ARM Cortex-M7
-
 # Environment Setup Example
 
 Prior to compiling for a particular CPU target, some environment variables need to be set up.
