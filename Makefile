@@ -12,8 +12,6 @@ AR = ${BRISC_GCC}-ar
 CFLAGS += -c
 CFLAGS += -Wall
 CFLAGS += -Os
-#CFLAGS += -g -Os
-#CFLAGS += -ggdb
 include $(CPU)/cflags.mk
 
 # Archiver Flags.
@@ -21,8 +19,7 @@ AFLAGS += rcs
 
 # Header file directories.
 INCLUDE += -I $(CPU)
-INCLUDE += -I src
-INCLUDE += -I lib
+INCLUDE += -I inc
 
 # CPU Source files.
 C_SRC  += $(CPU)/cpu.c

@@ -1,15 +1,28 @@
 # BRISCITS
 
+```
+ ________  ________  ___  ________  ________  ___  _________  ________      
+|\   __  \|\   __  \|\  \|\   ____\|\   ____\|\  \|\___   ___\\   ____\     
+\ \  \|\ /\ \  \|\  \ \  \ \  \___|\ \  \___|\ \  \|___ \  \_\ \  \___|_    
+ \ \   __  \ \   _  _\ \  \ \_____  \ \  \    \ \  \   \ \  \ \ \_____  \   
+  \ \  \|\  \ \  \\  \\ \  \|____|\  \ \  \____\ \  \   \ \  \ \|____|\  \  
+   \ \_______\ \__\\ _\\ \__\____\_\  \ \_______\ \__\   \ \__\  ____\_\  \ 
+    \|_______|\|__|\|__|\|__|\_________\|_______|\|__|    \|__| |\_________\
+                            \|_________|                        \|_________|
+```
 RISC "Real-Time" Scheduler
 
-With RISC-V and Cotex-M Examples
-
-# Supported CPUS
+Examples include RISC-V and Cotex-M CPU Support:
 
 * RISC_V RV32IMAC
 * ARM Cortex-M7
 
 # Environment Setup Example
+
+Prior to compiling for a particular CPU target, some environment variables need to be set up.
+
+* BRISC_CPU should reference one of the CPU support packages under the cpu/ folder.
+* BRISC_GCC should contain the 'gcc' compiler prefix.
 
 ## RISC-V
 ```
@@ -22,9 +35,8 @@ $ export BRISC_CPU=arm/cortex-m7
 $ export BRISC_GCC=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi
 ```
 
-# Make Library
+# Compiling libbrisc.a
 
 ```
-$ cd briscits
 $ make
 ```
