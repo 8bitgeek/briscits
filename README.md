@@ -12,7 +12,7 @@
 ```
 RISC "Real-Time" Scheduler
 
-[API Documentation](https://github.com/8bitgeek/briscits/doc/html/index.html)
+[API Documentation](https://www.8bitgeek.net/briscits/html/index.html)
 
 Examples include RISC-V and Cotex-M CPU Support:
 
