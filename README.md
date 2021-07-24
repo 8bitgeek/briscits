@@ -17,8 +17,8 @@ RISC "Real-Time" Scheduler
 # Initialize
 
 ```
-$ git clone https://github.com/8bitgeek/briscits.git
-$ cd briscits
+git clone https://github.com/8bitgeek/briscits.git
+cd briscits
 ```
 
 # Environment Setup
@@ -30,17 +30,17 @@ Prior to compiling for a particular CPU target, some environment variables need 
 
 ## RISC-V
 ```
-$ export BRISC_CPU=riscv/RV32IMAC
-$ export BRISC_GCC=/opt/riscv-gcc/bin/riscv32-unknown-elf
+export BRISC_CPU=riscv/RV32IMAC
+export BRISC_GCC=/opt/riscv/bin/riscv32-unknown-elf
 ```
 ## Cortex-M7
 ```
-$ export BRISC_CPU=arm/cortex-m7
-$ export BRISC_GCC=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi
+export BRISC_CPU=arm/cortex-m7
+export BRISC_GCC=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi
 ```
 
 # Compiling libbrisc.a
 
 ```
-$ make
+make
 ```
