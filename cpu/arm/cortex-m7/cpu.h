@@ -186,14 +186,12 @@ extern void 		__attribute__((naked)) cpu_wfi(void);
 
 #define brisc_isr_yield 	PendSV_IRQ_Handler
 #define brisc_isr_systick 	SysTick_IRQ_Handler
-#define brisc_isr_swi 		SVC_IRQ_Handler
 
 extern void cpu_systick_clear(void);
 extern void cpu_yield_clear(void);
 extern void __attribute__((naked)) cpu_yield(void);
 extern void cpu_set_initial_state(cpu_state_t* cpu_state);
 extern void	_fpu_init(void);
-extern cpu_reg_t cpu_swi(cpu_reg_t fn, void* arg);
 
 #ifdef __cplusplus
 }
