@@ -30,7 +30,7 @@ Prior to compiling for a particular CPU target, some environment variables need 
 
 ## RISC-V
 ```
-$ export BRISC_CPU=risc/RV32IMAC
+$ export BRISC_CPU=riscv/RV32IMAC
 $ export BRISC_GCC=/opt/riscv-gcc/bin/riscv32-unknown-elf
 ```
 ## Cortex-M7
