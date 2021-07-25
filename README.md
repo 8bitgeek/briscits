@@ -14,6 +14,25 @@ RISC "Real-Time" Scheduler
 
 [Board Support](https://github.com/8bitgeek/briscits-bsp)
 
+# Prerequisite 
+
+## RISCV GCC
+
+### Git Repository
+https://github.com/riscv/riscv-gnu-toolchain
+
+### Pre-compiled binary for 64-bit ARM (aarch64) Linux
+`./configure --prefix=/opt/riscv --with-arch=rv32i --with-abi=ilp32 --enable-multilib`
+[riscv32-unknown-elf-gcc-aarch64-11.1.0.tar.gz](http://8bitgeek.net/uploads/riscv32-unknown-elf-gcc-aarch64-11.1.0.tar.gz)
+
+## RISCV OpenOCD
+
+### Git Repository
+https://github.com/riscv/riscv-openocd
+
+### Pre-compiled binary for 64-bit ARM (aarch64) Linux
+[riscv-openod-0.00.0-aarch64.tar.gz](http://8bitgeek.net/uploads/riscv-openod-0.00.0-aarch64.tar.gz)
+
 # Initialize
 
 ```
@@ -27,16 +46,25 @@ Prior to compiling for a particular CPU target, some environment variables need 
 
 * BRISC_CPU should reference one of the CPU support packages under the cpu/ folder.
 * BRISC_GCC should contain the 'gcc' compiler prefix.
+* BRISC_CFLAGS should contains compiler flags for instance "-ggdb" or "-Os"
 
-## RISC-V
+## RISC-V (debug)
 ```
 export BRISC_CPU=riscv/RV32IMAC
-export BRISC_GCC=/opt/riscv/bin/riscv32-unknown-elf
+export BRISC_GCC=riscv64-unknown-elf
 ```
-## Cortex-M7
+## Cortex-M7 (debug)
 ```
 export BRISC_CPU=arm/cortex-m7
-export BRISC_GCC=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi
+export BRISC_GCC=arm-none-eabi
+```
+## Debug
+```
+export BRISC_CFLAGS=-ggdb
+```
+## Release
+```
+export BRISC_CFLAGS=-Os
 ```
 
 # Compiling libbrisc.a

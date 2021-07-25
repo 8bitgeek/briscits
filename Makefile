@@ -11,7 +11,7 @@ AR = ${BRISC_GCC}-ar
 # C compilation directives
 CFLAGS += -c
 CFLAGS += -Wall
-CFLAGS += -Os
+CFLAGS += ${BRISC_CFLAGS}
 include $(CPU)/cflags.mk
 
 # Archiver Flags.
