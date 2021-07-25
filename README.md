@@ -23,6 +23,7 @@ https://github.com/riscv/riscv-gnu-toolchain
 
 ### Pre-compiled binary for 64-bit ARM (aarch64) Linux
 `./configure --prefix=/opt/riscv --with-arch=rv32i --with-abi=ilp32 --enable-multilib`
+
 [riscv32-unknown-elf-gcc-aarch64-11.1.0.tar.gz](http://8bitgeek.net/uploads/riscv32-unknown-elf-gcc-aarch64-11.1.0.tar.gz)
 
 ## RISCV OpenOCD
