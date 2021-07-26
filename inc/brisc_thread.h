@@ -73,6 +73,32 @@ extern "C"
  * 
 ******************************************************************************/
 
+/** ***************************************************************************
+ * @page briscthread BRISC Thread API
+ * 
+ * Thread Control Group.
+ * 
+ * @ref b_thread_create()
+ * 
+ * @ref b_thread_start()
+ * 
+ * @ref b_thread_stop()
+ * 
+ * @ref b_thread_lock()
+ * 
+ * @ref b_thread_unlock()
+ * 
+ * @ref b_thread_yield()
+ * 
+ * Thread State Group
+ * 
+ * @ref b_thread_current()
+ * 
+ * @ref b_thread_systick()
+ * 
+ * 
+******************************************************************************/
+
 #ifndef BRISC_THREAD_MAX
     #define BRISC_THREAD_MAX      8 /**< Maximum number of threads */
 #endif
@@ -125,7 +151,7 @@ typedef struct brisc_thread
 extern int  b_thread_init( const char* name );
 
 /** ***************************************************************************
- * @brief Create a new thread.
+ * @brief Allocate a new thread in the run queue.
  * @param name A human readable name for the thread.
  * @param thread_fn A pointer to the entry point of the thread function.
  * @param arg This pointer will be passed as a parameter to the thread 
@@ -133,19 +159,22 @@ extern int  b_thread_init( const char* name );
  * @param stack Pointer to the base of the thread's program stack space on an 
  * even cpu_reg_t word boundary.
  * @param n_stack_words The number of cpu_reg_t words contained in the stack space.
- * @return a valid thread handle >= 0, or < 0 on failure (not enogh thread 
+ * @return a valid thread descriptor >= 0, or < 0 on failure (not enogh thread 
  * slots @ref BRISC_THREAD_MAX).
 ******************************************************************************/
 extern int  b_thread_create( const char* name, void (*thread_fn)(void*), void* arg, cpu_reg_t* stack, size_t n_stack_words );
 
 /** ***************************************************************************
- * @brief Start a thread.
+ * @brief Start a thread with the default priority of 
+ * @ref BRISC_THREAD_PRIO_MIN. TO start thread with other priority, start
+ * thread using @ref b_thread_set_prio().
  * @param id Thread descriptor.
 ******************************************************************************/
 extern void b_thread_start( int id );
 
 /** ***************************************************************************
- * @brief Stop a thread.
+ * @brief Stop a thread. The thread remains active in the run queue, yet 
+ * receives no run time.
  * @param id Thread descriptor.
 ******************************************************************************/
 extern void b_thread_stop( int id );
