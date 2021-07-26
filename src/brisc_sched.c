@@ -38,10 +38,6 @@ volatile brisc_scheduler_t brisc_scheduler_state;
 
 static cpu_reg_t thread_next_id(void);
 
-/**
- * @brief determine which thread gets this time slice.
- * @return the context (stack pointer) to the thread to allocate this time slice to.
- */
 extern cpu_reg_t b_thread_schedule_next( void )
 {
     volatile brisc_thread_t* thread;
@@ -72,6 +68,9 @@ extern volatile brisc_thread_t* b_thread_state(uint8_t id)
     return NULL;
 }
 
+/** ***************************************************************************
+ * @return The next thread id in a round-robin manner
+******************************************************************************/
 static cpu_reg_t thread_next_id(void)
 {
     if ( brisc_scheduler_state.thread_id+1 >= BRISC_THREAD_MAX )

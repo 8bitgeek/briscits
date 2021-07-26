@@ -52,7 +52,7 @@ Prior to compiling for a particular CPU target, some environment variables need 
 ## RISC-V (debug)
 ```
 export BRISC_CPU=riscv/RV32IMAC
-export BRISC_GCC=riscv64-unknown-elf
+export BRISC_GCC=riscv32-unknown-elf
 ```
 ## Cortex-M7 (debug)
 ```

@@ -140,6 +140,16 @@ int b_thread_set_prio ( int id, int8_t prio )
     return -1;
 }
 
+int8_t b_thread_priority( int id )
+{
+    volatile brisc_thread_t* thread = b_thread_state(id);
+    if ( thread )
+    {
+        return thread->prio;
+    }
+    return BRISC_THREAD_PRIO_INVALID;
+}
+
 
 static int thread_new_id( void )
 {

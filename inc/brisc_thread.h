@@ -44,6 +44,35 @@ extern "C"
 {
 #endif
 
+/** ***************************************************************************
+ * @mainpage libbrisc.a: The "Real Time" Scheduler and Support Library
+ * 
+ * GitHub Page https://www.github.com/8bitgeek/briscits
+ * 
+ * @subsection briscitsintroduction Introduction
+ * 
+ * BRISCITS is intended to form the basis for more sophisticated 
+ * so-called "RTOS" frameworks.
+ * 
+ * At this time, BRISCITS (libbrisc.a) considts of a thread API, a round-robin 
+ * priority schduler, a mutex API, and a delay API. 
+ * 
+ * Current CPU architectures supported are RISC-V RV32IMAC, and ARM Cortex-M7.
+ * 
+ * BRISCITS has no chip support, no peripheral support, no board support, 
+ * and no bootstrap code. Those must all be provied by the board support 
+ * package.
+ * 
+ * @subsection briscitsbsp Board Support
+ * 
+ * There is another project which provides board support packages that use
+ * libbrisc.a.
+ * 
+ * For more information on BRISCITS Board Support, see 
+ * https://www.github.com/8bitgeek/briscits-bsp
+ * 
+******************************************************************************/
+
 #ifndef BRISC_THREAD_MAX
     #define BRISC_THREAD_MAX      8 /**< Maximum number of threads */
 #endif
@@ -141,6 +170,12 @@ extern void b_thread_unlock( void );
  * @return < 0 on failure
 ******************************************************************************/
 extern int b_thread_set_prio( int id, int8_t prio );
+
+/** ***************************************************************************
+ * @return Given a thread descriptor, return the corresponding thread prority
+ * or return BRISC_THREAD_PRIO_INVALID if descriptor is invalid.
+******************************************************************************/
+extern int8_t b_thread_priority( int id );
 
 /** ***************************************************************************
  * @brief Yield the remainder of the current thread's time slice(s).
