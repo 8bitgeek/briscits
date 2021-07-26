@@ -54,7 +54,7 @@ extern "C"
  * BRISCITS is intended to form the basis for more sophisticated 
  * so-called "RTOS" frameworks.
  * 
- * At this time, BRISCITS (libbrisc.a) considts of a thread API, a round-robin 
+ * At this time, BRISCITS (libbrisc.a) consists of a thread API, a round-robin 
  * priority schduler, a mutex API, and a delay API. 
  * 
  * Current CPU architectures supported are RISC-V RV32IMAC, and ARM Cortex-M7.
