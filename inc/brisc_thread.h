@@ -57,7 +57,7 @@ extern "C"
  * At this time, BRISCITS (libbrisc.a) consists of a thread API, a round-robin 
  * priority schduler, a mutex API, and a delay API. 
  * 
- * Current CPU architectures supported are RISC-V RV32IMAC, and ARM Cortex-M7.
+ * Currently supported CPU architectures are RISC-V RV32IMAC, and ARM Cortex-M7.
  * 
  * BRISCITS has no chip support, no peripheral support, no board support, 
  * and no bootstrap code. Those must all be provied by the board support 
