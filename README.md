@@ -49,12 +49,12 @@ Prior to compiling for a particular CPU target, some environment variables need 
 * BRISC_GCC should contain the 'gcc' compiler prefix.
 * BRISC_CFLAGS should contains compiler flags for instance "-ggdb" or "-Os"
 
-## RISC-V (debug)
+## RISC-V
 ```
 export BRISC_CPU=riscv/RV32IMAC
 export BRISC_GCC=riscv32-unknown-elf
 ```
-## Cortex-M7 (debug)
+## Cortex-M7
 ```
 export BRISC_CPU=arm/cortex-m7
 export BRISC_GCC=arm-none-eabi
