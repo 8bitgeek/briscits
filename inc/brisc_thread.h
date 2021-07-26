@@ -96,6 +96,51 @@ extern "C"
  * 
  * @ref b_thread_systick()
  * 
+ * Example Usage:
+ * 
+ * @code
+ *   #define STACK_BYTES     (1024)
+ *   #define STACK_WORDS     STACK_BYTES / sizeof(cpu_reg_t)
+ *
+ *   static cpu_reg_t red_stack   [ STACK_WORDS ];
+ *   static cpu_reg_t green_stack [ STACK_WORDS ];
+ *   static cpu_reg_t blue_stack  [ STACK_WORDS ];
+ *
+ *   static int red_thread_handle   = (-1);
+ *   static int green_thread_handle = (-1);
+ *   static int blue_thread_handle  = (-1);
+ *   static int main_thread_handle  = (-1);
+ *
+ *   ....
+ *   ....
+ *   
+ *   int main( void )
+ *   {
+ *       ....
+ *       ....
+ *  
+ *       if ( (main_thread_handle  = b_thread_init( "main" )) >= 0 )
+ *       {
+ *           if ( (red_thread_handle = b_thread_create( "red", run_red, &delay, red_stack, STACK_WORDS )) >= 0)
+ *           {
+ *               if ( (green_thread_handle = b_thread_create( "green", run_green, &delay, green_stack, STACK_WORDS )) >= 0)
+ *               {
+ *                   if ( (blue_thread_handle = b_thread_create( "blue", run_blue, &delay, blue_stack, STACK_WORDS )) >= 0)
+ *                   {
+ *                       b_thread_start( red_thread_handle );
+ *                       b_thread_start( blue_thread_handle );
+ *                       b_thread_start( green_thread_handle );
+ *                       run_main( &delay );
+ *                   }
+ *               }
+ *           }
+ *       } 
+ * 
+ *       ....
+ *       ....
+ * 
+ *   }
+ * @endcode
  * 
 ******************************************************************************/
 
