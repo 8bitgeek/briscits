@@ -29,6 +29,7 @@ C_SRC  += src/brisc_sched.c
 C_SRC  += src/brisc_irq.c
 C_SRC  += src/brisc_thread.c
 C_SRC  += src/brisc_mutex.c
+C_SRC  += src/brisc_sem.c
 C_SRC  += src/brisc_delay.c
 
 # Object files to build.

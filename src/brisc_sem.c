@@ -31,53 +31,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#ifndef _BRISC_MUTEX_H_
-#define _BRISC_MUTEX_H_
+#include <brisc_sem.h>
+#include <brisc_thread.h>
+#include <string.h>
 
-#include <cpu.h>
-#include <stdbool.h>
-
-#ifdef __cplusplus
-extern "C"
+extern void b_sem_acquire( brisc_sem_t* sem )
 {
-#endif
-
-typedef cpu_reg_t   brisc_mutex_t;
-
-#define BRISC_MUTEX_DECL(n)  brisc_mutex_t n = 0
-
-/** ***************************************************************************
- * @brief Bring a mutex to it's initial state (unlocked).
-******************************************************************************/
-#define b_mutex_init(mutex)  b_mutex_unlock((mutex))
-
-/** ***************************************************************************
- * @brief Block while acquiring mutex lock.
- * @param mutex pointer to an initialized @ref brisc_mutex_t variable. 
-******************************************************************************/
-extern void b_mutex_lock( brisc_mutex_t* mutex );
-
-/** ***************************************************************************
- * @brief Non-vlocking acquiring mutex lock.
- * @param mutex pointer to an initialized @ref brisc_mutex_t variable. 
- * @return true if the lock was acquired.
-******************************************************************************/
-extern bool b_mutex_try_lock( brisc_mutex_t* mutex );
-
-/** ***************************************************************************
- * @brief Un-lock a mutex.
- * @param mutex pointer to an initialized @ref brisc_mutex_t variable. 
-******************************************************************************/
-extern void b_mutex_unlock( brisc_mutex_t* mutex );
-
-/** ***************************************************************************
- * @brief Un-lock a mutex with yield CPU after unlock.
- * @param mutex pointer to an initialized @ref brisc_mutex_t variable. 
-******************************************************************************/
-extern void b_mutex_release( brisc_mutex_t* mutex );
-
-#ifdef __cplusplus
+    b_thread_block_while( !b_sem_try_acquire(sem) ); 
 }
-#endif
 
-#endif
+extern bool b_sem_try_acquire( brisc_sem_t* sem )
+{
+    bool acquired=false;
+    if ( b_atomic_acquire(&sem->lock) )
+    {
+        if ( (acquired = (sem->count > 0) ) )
+            --sem->count;
+        b_atomic_release(&sem->lock);
+    }
+    return acquired;
+}
+
+extern void b_sem_release( brisc_sem_t* sem )
+{
+    b_thread_block_while( !b_atomic_acquire(&sem->lock) );
+    ++sem->count;
+    b_atomic_release(&sem->lock);
+}

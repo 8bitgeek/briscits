@@ -47,12 +47,12 @@ extern bool b_mutex_try_lock( brisc_mutex_t* mutex )
 
 extern void b_mutex_unlock( brisc_mutex_t* mutex )
 {
-    b_mutex_release(mutex);
-    b_thread_yield();
+    b_atomic_release(mutex);
 }
 
 extern void b_mutex_release( brisc_mutex_t* mutex )
 {
     b_atomic_release(mutex);
+    b_thread_yield();
 }
 

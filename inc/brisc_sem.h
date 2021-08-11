@@ -31,8 +31,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#ifndef _BRISC_MUTEX_H_
-#define _BRISC_MUTEX_H_
+#ifndef _BRISC_SEM_H_
+#define _BRISC_SEM_H_
 
 #include <cpu.h>
 #include <stdbool.h>
@@ -42,39 +42,40 @@ extern "C"
 {
 #endif
 
-typedef cpu_reg_t   brisc_mutex_t;
+typedef struct 
+{
+    cpu_reg_t   lock;
+    int32_t     count;
+} brisc_sem_t;
 
-#define BRISC_MUTEX_DECL(n)  brisc_mutex_t n = 0
-
-/** ***************************************************************************
- * @brief Bring a mutex to it's initial state (unlocked).
-******************************************************************************/
-#define b_mutex_init(mutex)  b_mutex_unlock((mutex))
-
-/** ***************************************************************************
- * @brief Block while acquiring mutex lock.
- * @param mutex pointer to an initialized @ref brisc_mutex_t variable. 
-******************************************************************************/
-extern void b_mutex_lock( brisc_mutex_t* mutex );
+#define BRISC_SEM_DECL(n,cnt)  brisc_sem_t n = {0,(cnt)}
 
 /** ***************************************************************************
- * @brief Non-vlocking acquiring mutex lock.
- * @param mutex pointer to an initialized @ref brisc_mutex_t variable. 
- * @return true if the lock was acquired.
+ * @brief Bring a sem to it's initial state (unlocked).
+ * @param sem pointer to an initialized @ref brisc_sem_t variable. 
+ * @param cnt initial token count. 
 ******************************************************************************/
-extern bool b_mutex_try_lock( brisc_mutex_t* mutex );
+#define b_sem_init(sem,cnt) { (sem)->lock=0; (sem)->count=(cnt); }
 
 /** ***************************************************************************
- * @brief Un-lock a mutex.
- * @param mutex pointer to an initialized @ref brisc_mutex_t variable. 
+ * @brief Block while acquiring sem token.
+ * @param sem pointer to an initialized @ref brisc_sem_t variable. 
 ******************************************************************************/
-extern void b_mutex_unlock( brisc_mutex_t* mutex );
+extern void b_sem_acquire( brisc_sem_t* sem );
 
 /** ***************************************************************************
- * @brief Un-lock a mutex with yield CPU after unlock.
- * @param mutex pointer to an initialized @ref brisc_mutex_t variable. 
+ * @brief Non-vlocking acquiring sem token.
+ * @param sem pointer to an initialized @ref brisc_sem_t variable. 
+ * @return true if the token was acquired.
 ******************************************************************************/
-extern void b_mutex_release( brisc_mutex_t* mutex );
+extern bool b_sem_try_acquire( brisc_sem_t* sem );
+
+/** ***************************************************************************
+ * @brief Release a semaphore token.
+ * @param sem pointer to an initialized @ref brisc_sem_t variable. 
+******************************************************************************/
+extern void b_sem_release( brisc_sem_t* sem );
+
 
 #ifdef __cplusplus
 }
