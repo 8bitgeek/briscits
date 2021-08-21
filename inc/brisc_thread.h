@@ -164,7 +164,8 @@ typedef struct brisc_thread
     char                name[BRISC_THREAD_NAME_MAX+1];      /**< An ASCII readable name for the thread */
     int8_t              prio;                               /**< Thread priority */
     cpu_state_t*        cpu_state;                          /**< The cpu state preserved for this thread */
-} brisc_thread_t __attribute__ ((aligned (8)));
+    void                (*block_fn)(void);                  /**< Optional callback from blocking I/O */
+} brisc_thread_t;
 
 #define b_int_enabled()             cpu_int_enabled()       /**< @return CPU global interrupt enable state */
 #define b_int_enable()              cpu_int_enable()        /**< CPU global interrupt enable */
@@ -180,7 +181,14 @@ typedef struct brisc_thread
  * @brief Block while a condition exists.
  * @param cond An expression that can resolve to a bool.
 ******************************************************************************/
-#define b_thread_block_while(cond)  while((cond)) b_thread_yield()
+#define b_thread_block_while(cond) {                                          \
+                        volatile brisc_thread_t* thread = b_thread_current(); \
+                        while((cond)) {                                       \
+                            if ( thread->block_fn != NULL )                   \
+                                thread->block_fn();                           \
+                            b_thread_yield();                                 \
+                        }                                                     \
+                    }
 
 /** ***************************************************************************
  * @brief Clears the current thread's priority, effective causing the thread
@@ -267,6 +275,11 @@ extern brisc_systick_t b_thread_systick( void );
 extern volatile brisc_thread_t* b_thread_current( void );
 
 /** ***************************************************************************
+ * @return a pointer to the current thread context id.
+******************************************************************************/
+extern int b_thread_current_id( void );
+
+/** ***************************************************************************
  * @brief Insert a callback on systick interrupt.
 ******************************************************************************/
 extern void b_thread_set_systick_fn(void (*systick_fn)(void) );
@@ -275,6 +288,11 @@ extern void b_thread_set_systick_fn(void (*systick_fn)(void) );
  * @brief Insert a callback on yield interrupt.
 ******************************************************************************/
 extern void b_thread_set_yield_fn(void (*yield_fn)(void) );
+
+/** ***************************************************************************
+ * @brief Insert a callback on blocking I/O interrupt.
+******************************************************************************/
+extern void b_thread_set_block_fn(void (*block_fn)(void) );
 
 #ifdef __cplusplus
 }
