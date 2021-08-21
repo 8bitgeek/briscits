@@ -34,12 +34,12 @@ SOFTWARE.
 #ifndef _DELAY_H_
 #define _DELAY_H_
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include <stdint.h>
 
 /** ***************************************************************************
  * @brief Introduce a delay while yielding CPU cyeles. Delay will be at least

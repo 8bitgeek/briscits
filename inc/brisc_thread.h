@@ -161,9 +161,9 @@ extern "C"
 
 typedef struct brisc_thread
 {
-    char                name[BRISC_THREAD_NAME_MAX+1];
-    int8_t              prio;
-    cpu_state_t*        cpu_state;
+    char                name[BRISC_THREAD_NAME_MAX+1];      /**< An ASCII readable name for the thread */
+    int8_t              prio;                               /**< Thread priority */
+    cpu_state_t*        cpu_state;                          /**< The cpu state preserved for this thread */
 } brisc_thread_t __attribute__ ((aligned (8)));
 
 #define b_int_enabled()             cpu_int_enabled()       /**< @return CPU global interrupt enable state */
