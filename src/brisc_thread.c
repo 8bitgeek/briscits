@@ -60,8 +60,7 @@ extern void b_thread_set_yield_fn(void (*yield_fn)(void))
 
 extern void b_thread_set_block_fn(void (*block_fn)(void) )
 {
-    volatile brisc_thread_t* thread = b_thread_current();
-    thread->block_fn = block_fn;
+    brisc_scheduler_state.block_fn = block_fn;
 }
 
 brisc_systick_t b_thread_systick( void )
@@ -177,4 +176,13 @@ volatile brisc_thread_t* b_thread_current( void )
 int b_thread_current_id( void )
 {
     return brisc_scheduler_state.thread_id;
+}
+
+void b_thread_block(void)
+{
+    if ( brisc_scheduler_state.block_fn != NULL )
+    {
+        brisc_scheduler_state.block_fn();
+        b_thread_yield();
+    }
 }

@@ -104,6 +104,7 @@ typedef struct brisc_scheduler
     brisc_systick_t     systick;    /**< Systick counter, typical 1 millisecond */
     void (*systick_fn)(void);       /**< Optional callback from systick ISR */
     void (*yield_fn)(void);         /**< Optional callback from yield ISR */
+    void (*block_fn)(void);         /**< Optional callback from blocking */
     /** 
      * Thread queue, threads which have a valid prio may be scheduled to run 
      * */

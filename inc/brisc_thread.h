@@ -164,7 +164,6 @@ typedef struct brisc_thread
     char                name[BRISC_THREAD_NAME_MAX+1];      /**< An ASCII readable name for the thread */
     int8_t              prio;                               /**< Thread priority */
     cpu_state_t*        cpu_state;                          /**< The cpu state preserved for this thread */
-    void                (*block_fn)(void);                  /**< Optional callback from blocking I/O */
 } brisc_thread_t;
 
 #define b_int_enabled()             cpu_int_enabled()       /**< @return CPU global interrupt enable state */
@@ -181,14 +180,10 @@ typedef struct brisc_thread
  * @brief Block while a condition exists.
  * @param cond An expression that can resolve to a bool.
 ******************************************************************************/
-#define b_thread_block_while(cond) {                                          \
-                        volatile brisc_thread_t* thread = b_thread_current(); \
+#define b_thread_block_while(cond)                                            \
                         while((cond)) {                                       \
-                            if ( thread->block_fn != NULL )                   \
-                                thread->block_fn();                           \
-                            b_thread_yield();                                 \
-                        }                                                     \
-                    }
+                            b_thread_block();                                 \
+                        }
 
 /** ***************************************************************************
  * @brief Clears the current thread's priority, effective causing the thread
@@ -293,6 +288,12 @@ extern void b_thread_set_yield_fn(void (*yield_fn)(void) );
  * @brief Insert a callback on blocking I/O interrupt.
 ******************************************************************************/
 extern void b_thread_set_block_fn(void (*block_fn)(void) );
+
+/** ***************************************************************************
+ * @brief block
+******************************************************************************/
+extern void b_thread_block(void);
+
 
 #ifdef __cplusplus
 }
