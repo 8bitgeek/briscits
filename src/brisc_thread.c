@@ -183,6 +183,6 @@ void b_thread_block(void)
     if ( brisc_scheduler_state.block_fn != NULL )
     {
         brisc_scheduler_state.block_fn();
-        b_thread_yield();
     }
+    b_thread_yield();
 }
