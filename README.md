@@ -8,7 +8,7 @@
     \|_______|\|__|\|__|\|__|\_________\|_______|\|__|    \|__| |\_________\
                             \|_________|                        \|_________|
 ```
-RISC "Real-Time" Scheduler
+RISC "Real-Time" Preemptive Scheduler for RISC-V and ARM Micro-Controllers
 
 [API Documentation](http://www.8bitgeek.net/briscits/html/index.html)
 
