@@ -89,23 +89,11 @@ typedef struct{
 /* memory mapped structure for SysTick */
 typedef struct
 {
-  __IO uint32_t CTLR;
-  __IO uint8_t CNTL0;
-  __IO uint8_t CNTL1;
-  __IO uint8_t CNTL2;
-  __IO uint8_t CNTL3;
-  __IO uint8_t CNTH0;
-  __IO uint8_t CNTH1;
-  __IO uint8_t CNTH2;
-  __IO uint8_t CNTH3;
-  __IO uint8_t CMPLR0;
-  __IO uint8_t CMPLR1;
-  __IO uint8_t CMPLR2;
-  __IO uint8_t CMPLR3;
-  __IO uint8_t CMPHR0;
-  __IO uint8_t CMPHR1;
-  __IO uint8_t CMPHR2;
-  __IO uint8_t CMPHR3;
+  __IO uint32_t R32_STK_CTLR;
+  __IO uint32_t R32_STK_CNTL;
+  __IO uint32_t R32_STK_CNTH;
+  __IO uint32_t R32_STK_CMPLR;
+  __IO uint32_t R32_STK_CMPHR;
 }SysTick_Type;
 
 
