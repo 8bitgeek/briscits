@@ -194,9 +194,6 @@ extern cpu_reg_t    cpu_int_disable(void);
 extern cpu_reg_t    cpu_int_enabled(void);
 extern void         cpu_int_set(cpu_reg_t enable);
 
-volatile __attribute__( ( naked ) ) void eclic_mtip_handler( void );
-volatile __attribute__( ( naked ) ) void eclic_msip_handler( void );
-
 #define cpu_systick_clear()   *( volatile uint64_t * )( TIMER_CTRL_ADDR + TIMER_MTIME ) = 0
 #define cpu_yield_clear()     *( volatile uint8_t * )( TIMER_CTRL_ADDR + TIMER_MSIP ) = 0x00
 #define cpu_yield()           *( volatile uint8_t * )( TIMER_CTRL_ADDR + TIMER_MSIP ) = 0x01

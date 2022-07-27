@@ -54,6 +54,11 @@ Prior to compiling for a particular CPU target, some environment variables need 
 export BRISC_CPU=riscv/BumbleBee/RV32IMAC
 export BRISC_GCC=riscv32-unknown-elf
 ```
+```
+export BRISC_CPU=riscv/Qingke/RV32IMAC
+export BRISC_GCC=riscv32-unknown-elf
+```
+
 ## Cortex-M7
 ```
 export BRISC_CPU=arm/cortex-m7

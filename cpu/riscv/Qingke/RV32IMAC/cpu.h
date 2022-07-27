@@ -36,7 +36,7 @@ SOFTWARE.
 
 #include <stdint.h>
 #include <riscv_encoding.h>
-#include <n200_timer.h>
+#include <core_riscv.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -186,22 +186,19 @@ typedef union cpu_state_t
 
 extern void*    __attribute__((naked))  cpu_rd_sp      ( void );
 
-extern cpu_reg_t cpu_atomic_acquire ( cpu_reg_t* lock );
-extern void      cpu_atomic_release ( cpu_reg_t* lock );
+extern cpu_reg_t    cpu_atomic_acquire ( cpu_reg_t* lock );
+extern void         cpu_atomic_release ( cpu_reg_t* lock );
 
 extern void         cpu_int_enable(void);
 extern cpu_reg_t    cpu_int_disable(void);
 extern cpu_reg_t    cpu_int_enabled(void);
 extern void         cpu_int_set(cpu_reg_t enable);
 
-volatile __attribute__( ( naked ) ) void eclic_mtip_handler( void );
-volatile __attribute__( ( naked ) ) void eclic_msip_handler( void );
+extern void         cpu_systick_clear(void);
+extern void         cpu_yield_clear(void);
+extern void         cpu_yield(void);
 
-#define cpu_systick_clear()   *( volatile uint64_t * )( TIMER_CTRL_ADDR + TIMER_MTIME ) = 0
-#define cpu_yield_clear()     *( volatile uint8_t * )( TIMER_CTRL_ADDR + TIMER_MSIP ) = 0x00
-#define cpu_yield()           *( volatile uint8_t * )( TIMER_CTRL_ADDR + TIMER_MSIP ) = 0x01
-
-extern void cpu_set_initial_state(cpu_state_t* cpu_state);
+extern void         cpu_set_initial_state(cpu_state_t* cpu_state);
 
 #ifdef __cplusplus
 }

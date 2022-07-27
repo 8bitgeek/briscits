@@ -91,14 +91,17 @@ extern void cpu_int_set(cpu_reg_t enable)
         cpu_int_disable();
 }
 
-volatile __attribute__( ( naked ) ) void eclic_mtip_handler( void )
+extern void cpu_systick_clear(void)
 {
-    brisc_isr_systick();
+    for(;;);
 }
-
-volatile __attribute__( ( naked ) ) void eclic_msip_handler( void )
+extern void cpu_yield_clear(void)
 {
-    brisc_isr_yield();
+    for(;;)
+}
+extern void cpu_yield(void)
+{
+    for(;;)
 }
 
 extern void cpu_set_initial_state(cpu_state_t* cpu_state)
