@@ -97,11 +97,11 @@ extern void cpu_systick_clear(void)
 }
 extern void cpu_yield_clear(void)
 {
-    for(;;)
+    for(;;);
 }
 extern void cpu_yield(void)
 {
-    for(;;)
+    for(;;);
 }
 
 extern void cpu_set_initial_state(cpu_state_t* cpu_state)

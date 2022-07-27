@@ -36,7 +36,6 @@ SOFTWARE.
 
 #include <stdint.h>
 #include <riscv_encoding.h>
-#include <core_riscv.h>
 
 #ifdef __cplusplus
 extern "C"
