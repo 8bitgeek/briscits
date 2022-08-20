@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "brisc_irq.h": "c",
-        "brisc_thread.h": "c"
-    }
-}
