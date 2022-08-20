@@ -10,3 +10,4 @@ SRCS_CC  += $(SRC_BRISCITS)/src/brisc_mutex.c
 SRCS_CC  += $(SRC_BRISCITS)/src/brisc_sem.c
 SRCS_CC  += $(SRC_BRISCITS)/src/brisc_delay.c
 
+include ${SRC_ROOT}/string/_src.mk
