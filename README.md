@@ -1,3 +1,18 @@
+# NOTE REPOSITORY HAS MOVED
+
+
+
+
+## REPOSITORY URL: https://bitbucket.org/8bitgeek/briscits
+
+
+
+
+
+
+
+
+
 ```
  ________  ________  ___  ________  ________  ___  _________  ________      
 |\   __  \|\   __  \|\  \|\   ____\|\   ____\|\  \|\___   ___\\   ____\     
